@@ -7,6 +7,7 @@
 * Install the [Supabase CLI](https://supabase.com/docs/guides/cli/getting-started)
 ### Setup
 * Clone the repo
+* Copy `.env.example` to `.env`
 * Run `npm i` in the root directory to install dependencies
 * Run `supabase start` to start and run Supabase locally
 * Run `npm run dev` and open the [dashboard](http://localhost:5173/)
