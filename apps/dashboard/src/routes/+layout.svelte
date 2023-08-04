@@ -10,7 +10,8 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	import { faUser, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+	import { faUser, faRightToBracket, faLink } from '@fortawesome/free-solid-svg-icons';
+	import { faGithub } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
 
 	export let data;
@@ -33,11 +34,22 @@
 	<svelte:fragment slot="header">
 		<AppBar>
 			<svelte:fragment slot="lead"
-				><a href="/" class="text-xl text-white">Turtle Links</a></svelte:fragment
+				><a href="/" class="text-xl font-bold"
+					><button type="button" class="btn variant-filled-surface">
+						<span><Fa icon={faLink} /></span>
+						<span><span class="text-green-400">Turtle</span> Links</span>
+					</button></a
+				></svelte:fragment
 			>
+
 			<svelte:fragment slot="trail">
+				<a href="https://github.com/chandertech/turtlelinks"
+					><button type="button" class="btn-icon variant-filled-surface">
+						<Fa icon={faGithub} />
+					</button></a
+				>
 				<a href="/login"
-					><button type="button" class="btn variant">
+					><button type="button" class="btn variant-filled-surface">
 						{#if data.session}
 							<Fa icon={faUser} />
 							<span>Account</span>
