@@ -6,9 +6,12 @@
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
 
-	import { AppShell, AppBar, Avatar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
+
+	import { faUser, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+	import Fa from 'svelte-fa';
 
 	export let data;
 
@@ -33,7 +36,17 @@
 				><a href="/" class="text-xl text-white">Turtle Links</a></svelte:fragment
 			>
 			<svelte:fragment slot="trail">
-				<a href="/login"><button type="button" class="btn variant-filled">Account</button></a>
+				<a href="/login"
+					><button type="button" class="btn variant">
+						{#if data.session}
+							<Fa icon={faUser} />
+							<span>Account</span>
+						{:else}
+							<Fa icon={faRightToBracket} />
+							<span>Login</span>
+						{/if}
+					</button></a
+				>
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>

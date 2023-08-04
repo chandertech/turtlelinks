@@ -16,10 +16,13 @@
 		"gen-types": "supabase gen types typescript --local > src/types/database.types.ts && npm run format"
 	},
 	"dependencies": {
+		"@fortawesome/free-brands-svg-icons": "^6.4.2",
+		"@fortawesome/free-solid-svg-icons": "^6.4.2",
 		"@supabase/auth-helpers-sveltekit": "^0.10.1",
 		"@supabase/auth-ui-shared": "^0.1.6",
 		"@supabase/auth-ui-svelte": "^0.2.2",
-		"@supabase/supabase-js": "^2.31.0"
+		"@supabase/supabase-js": "^2.31.0",
+		"svelte-fa": "^3.0.4"
 	},
 	"devDependencies": {
 		"@floating-ui/dom": "^1.4.5",

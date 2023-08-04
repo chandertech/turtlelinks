@@ -2,6 +2,9 @@
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
+	import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+	import Fa from 'svelte-fa';
+
 	export let data;
 	export let form;
 
@@ -86,7 +89,7 @@
 		/>
 
 		<button class="btn variant-filled-primary ml-1" form="sign-out" disabled={loading}
-			>Sign Out</button
+			><Fa icon={faRightFromBracket} /><span>Sign Out</span></button
 		>
 	</div>
 </div>
