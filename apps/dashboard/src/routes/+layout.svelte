@@ -1,6 +1,6 @@
 <script lang="ts">
 	// The ordering of these imports is critical to your app working properly
-	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
+	import '@skeletonlabs/skeleton/themes/theme-crimson.css';
 	// If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	// Most of your app wide CSS should be put in this file
@@ -29,16 +29,11 @@
 <AppShell>
 	<svelte:fragment slot="header">
 		<AppBar>
-			<svelte:fragment slot="lead"><a href="/">Turtle Links</a></svelte:fragment>
-			<svelte:fragment slot="trail"
-				><button type="button" class="btn variant-filled-primary">Post Item</button>
-				<a href="/login"
-					><Avatar
-						src="https://images.unsplash.com/photo-1617296538902-887900d9b592?ixid=M3w0Njc5ODF8MHwxfGFsbHx8fHx8fHx8fDE2ODc5NzExMDB8&ixlib=rb-4.0.3&w=128&h=128&auto=format&fit=crop"
-						width="w-8"
-						rounded="rounded-full"
-					/>
-				</a>
+			<svelte:fragment slot="lead"
+				><a href="/" class="text-xl text-white">Turtle Links</a></svelte:fragment
+			>
+			<svelte:fragment slot="trail">
+				<a href="/login"><button type="button" class="btn variant-filled">Account</button></a>
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
