@@ -48,6 +48,14 @@
 						<Fa icon={faGithub} />
 					</button></a
 				>
+				{#if data.session}
+					<a href="/links"
+						><button type="button" class="btn variant-filled-surface">
+							<Fa icon={faLink} />
+							<span>Links</span>
+						</button></a
+					>
+				{/if}
 				<a href="/login"
 					><button type="button" class="btn variant-filled-surface">
 						{#if data.session}
