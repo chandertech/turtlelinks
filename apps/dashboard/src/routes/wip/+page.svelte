@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Modal, modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
+	import { popup } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
 
 	import { faEllipsisV, faAdd } from '@fortawesome/free-solid-svg-icons';
@@ -13,7 +14,13 @@
 		}
 	};
 
-	const tableData = [{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 }];
+	const tableData = [
+		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 },
+		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 },
+		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 },
+		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 },
+		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 }
+	];
 </script>
 
 <svelte:head>
@@ -58,10 +65,23 @@
 							<td>{row.URL}</td>
 							<td>{row.created}</td>
 							<td>{row.clicks}</td>
-							<button type="button" class="btn-icon btn-icon-sm variant-filled-surface mt-2">
+							<button
+								type="button"
+								use:popup={{ event: 'click', target: `editLinkPopup-${i}` }}
+								class="btn-icon btn-icon-sm variant-filled-surface mt-2"
+							>
 								<Fa icon={faEllipsisV} />
 							</button>
 						</tr>
+
+						<!-- Popup -->
+						<div class="card shadow-xl" data-popup="editLinkPopup-{i}">
+							<div class="flex flex-col items-start">
+								<button type="button" class="btn bg-initial"> Edit </button>
+								<button type="button" class="btn bg-initial"> Link details </button>
+								<button type="button" class="btn bg-initial"> Archive link </button>
+							</div>
+						</div>
 					{/each}
 				</tbody>
 			</table>

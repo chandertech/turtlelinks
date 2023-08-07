@@ -15,6 +15,10 @@
 	import { faGithub } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
 
+	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
+	import { storePopup } from '@skeletonlabs/skeleton';
+	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
+
 	export let data;
 
 	let { supabase, session } = data;
