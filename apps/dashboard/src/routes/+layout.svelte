@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Modal } from '@skeletonlabs/skeleton';
 	// The ordering of these imports is critical to your app working properly
 	import '@skeletonlabs/skeleton/themes/theme-crimson.css';
 	// If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
@@ -30,6 +31,8 @@
 	});
 </script>
 
+<Modal />
+
 <AppShell>
 	<svelte:fragment slot="header">
 		<AppBar>
@@ -43,6 +46,7 @@
 			>
 
 			<svelte:fragment slot="trail">
+				<a href="/wip"><button type="button" class="btn variant-filled-surface"> WIP </button></a>
 				<a href="https://github.com/chandertech/turtlelinks"
 					><button type="button" class="btn-icon variant-filled-surface">
 						<Fa icon={faGithub} />
