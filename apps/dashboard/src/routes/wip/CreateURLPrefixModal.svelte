@@ -4,18 +4,11 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 
-	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
-	const cHeader = 'text-2xl font-bold';
-	const cForm = 'border border-surface-500 p-4 space-y-4 rounded-container-token';
-
 	// Step 1 (domain)
 	let domain = '';
 	$: isDomainValid = domain.length != 0; // TODO: Validate more.
 
-	// Step 2
-	// Step 3
-
-	// Step 4 (finish)
+	// Step 2 (finish)
 	function onFormSubmit(event: Event): void {
 		if ($modalStore[0].response) $modalStore[0].response('');
 		modalStore.close();
@@ -23,7 +16,7 @@
 </script>
 
 {#if $modalStore[0]}
-	<div class="modal-example-form {cBase}">
+	<div class="card p-4 w-modal shadow-xl space-y-4">
 		<Stepper on:complete={onFormSubmit}>
 			<Step locked={!isDomainValid}>
 				<svelte:fragment slot="header">Add URL prefix</svelte:fragment>
