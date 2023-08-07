@@ -2,6 +2,9 @@
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
+	import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+	import Fa from 'svelte-fa';
+
 	export let data;
 	export let form;
 
@@ -30,7 +33,7 @@
 </script>
 
 <div class="mx-auto container p-4">
-	<h1 class="mb-4">Account Information</h1>
+	<h1 class="mb-4 text-2xl">Account Information</h1>
 	<form
 		id="account-info"
 		method="post"
@@ -40,7 +43,7 @@
 	/>
 	<form id="sign-out" method="post" action="?/signout" use:enhance={handleSignOut} />
 
-	<label for="email" class="label">Email</label>
+	<label for="email" class="label text-lg pb-2">Email</label>
 	<input
 		id="email"
 		form="account-info"
@@ -49,7 +52,7 @@
 		value={session.user.email}
 		disabled
 	/>
-	<label for="fullName" class="label">Full Name</label>
+	<label for="fullName" class="label text-lg pb-2">Full Name</label>
 	<input
 		id="fullName"
 		form="account-info"
@@ -58,7 +61,7 @@
 		class="input mb-4"
 		value={form?.fullName ?? fullName}
 	/>
-	<label for="username" class="label">Username</label>
+	<label for="username" class="label text-lg pb-2">Username</label>
 	<input
 		id="username"
 		form="account-info"
@@ -67,7 +70,7 @@
 		class="input mb-4"
 		value={form?.username ?? username}
 	/>
-	<label for="website" class="label">Website</label>
+	<label for="website" class="label text-lg pb-2">Website</label>
 	<input
 		id="website"
 		form="account-info"
@@ -80,13 +83,13 @@
 		<input
 			type="submit"
 			form="account-info"
-			class="btn variant-filled-primary"
+			class="btn variant-ringed-secondary"
 			value={loading ? 'Loading...' : 'Update'}
 			disabled={loading}
 		/>
 
-		<button class="btn variant-filled-secondary ml-4" form="sign-out" disabled={loading}
-			>Sign Out</button
+		<button class="btn variant-ringed-primary ml-1" form="sign-out" disabled={loading}
+			><Fa icon={faRightFromBracket} /><span>Sign Out</span></button
 		>
 	</div>
 </div>
