@@ -5,7 +5,7 @@
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
 	import CreateLinkModal from './CreateLinkModal.svelte';
 
-	import { faEllipsisV, faAdd } from '@fortawesome/free-solid-svg-icons';
+	import { faEllipsisV, faAdd, faPencil, faLink, faMinus } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	const urlCreationModal: ModalSettings = {
@@ -91,9 +91,15 @@
 						<!-- Popup -->
 						<div class="card shadow-xl" data-popup="editLinkPopup-{i}">
 							<div class="flex flex-col items-start">
-								<button type="button" class="btn bg-initial"> Edit </button>
-								<button type="button" class="btn bg-initial"> Link details </button>
-								<button type="button" class="btn bg-initial"> Archive link </button>
+								<button type="button" class="btn bg-initial"
+									><Fa icon={faPencil} /><span>Edit</span></button
+								>
+								<button type="button" class="btn bg-initial"
+									><Fa icon={faLink} /><span>Link Details</span></button
+								>
+								<button type="button" class="btn bg-initial"
+									><Fa icon={faMinus} /><span>Archive Link</span></button
+								>
 							</div>
 						</div>
 					{/each}

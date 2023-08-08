@@ -43,7 +43,7 @@
 			<svelte:fragment slot="lead"
 				><a href="/" class="text-xl font-bold"
 					><button type="button" class="btn variant-filled-surface">
-						<span><Fa icon={faLink} /></span>
+						<Fa icon={faLink} />
 						<span><span class="text-green-400">Turtle</span> Links</span>
 					</button></a
 				></svelte:fragment

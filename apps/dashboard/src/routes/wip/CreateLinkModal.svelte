@@ -24,21 +24,16 @@
 					<label class="label">
 						<span>URL prefix</span>
 						<input
-							class="input variant-form-material"
+							class="input"
 							title="domain"
 							type="text"
-							placeholder="https://testlink.turtle.link"
+							placeholder="https://testlink.turtle.link/"
 							disabled={true}
 						/>
 					</label>
 					<label class="label">
 						<span>URL suffix</span>
-						<input
-							class="input variant-form-material"
-							title="suffix"
-							type="text"
-							bind:value={urlSuffix}
-						/>
+						<input class="input" title="suffix" type="text" bind:value={urlSuffix} />
 					</label>
 				</div>
 			</Step>
@@ -47,7 +42,7 @@
 				<label class="label">
 					<span>Deep link URL</span>
 					<input
-						class="input variant-form-material"
+						class="input"
 						title="url"
 						type="text"
 						placeholder="Example: https://yourapp.com/welcome"
@@ -55,12 +50,7 @@
 				</label>
 				<label class="label">
 					<span>Deep link name</span>
-					<input
-						class="input variant-form-material"
-						title="name"
-						type="text"
-						placeholder="Example: Seasonal Promo"
-					/>
+					<input class="input" title="name" type="text" placeholder="Example: Seasonal Promo" />
 				</label>
 			</Step>
 			<Step>
