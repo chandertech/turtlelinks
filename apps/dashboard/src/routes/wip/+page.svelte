@@ -4,11 +4,12 @@
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
 	import LinkTable from './LinkTable.svelte';
 
+	export let data;
+
 	const urlCreationModal: ModalSettings = {
 		type: 'component',
-		component: {
-			ref: CreateURLPrefixModal
-		}
+		component: { ref: CreateURLPrefixModal },
+		response: (url: string) => {}
 	};
 </script>
 

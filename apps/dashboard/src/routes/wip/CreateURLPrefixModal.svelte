@@ -9,11 +9,11 @@
 
 	// Step 1 (domain)
 	let domain = '';
-	$: isDomainValid = domain.length == 0; // TODO: Validate more.
+	$: isDomainValid = domain.length != 0; // TODO: Validate more.
 
 	// Step 2 (finish)
 	function onFormSubmit(event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response('');
+		if ($modalStore[0].response) $modalStore[0].response(domain);
 		modalStore.close();
 	}
 </script>
