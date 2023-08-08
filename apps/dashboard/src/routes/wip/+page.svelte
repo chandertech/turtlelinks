@@ -3,14 +3,22 @@
 	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 	import { popup } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
+	import CreateLinkModal from './CreateLinkModal.svelte';
 
 	import { faEllipsisV, faAdd } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
-	const modal: ModalSettings = {
+	const urlCreationModal: ModalSettings = {
 		type: 'component',
 		component: {
 			ref: CreateURLPrefixModal
+		}
+	};
+
+	const newLinkModal: ModalSettings = {
+		type: 'component',
+		component: {
+			ref: CreateLinkModal
 		}
 	};
 
@@ -33,7 +41,7 @@
 			type="button"
 			class="btn variant-filled-surface"
 			on:click={() => {
-				modalStore.trigger(modal);
+				modalStore.trigger(urlCreationModal);
 			}}
 		>
 			URL Prefix Creation Flow
@@ -42,7 +50,13 @@
 
 	<div class="w-1/2">
 		<div class="flex justify-end py-4">
-			<button type="button" class="btn variant-filled">
+			<button
+				type="button"
+				class="btn variant-filled"
+				on:click={() => {
+					modalStore.trigger(newLinkModal);
+				}}
+			>
 				<Fa icon={faAdd} />
 				<span>New Link</span>
 			</button>
