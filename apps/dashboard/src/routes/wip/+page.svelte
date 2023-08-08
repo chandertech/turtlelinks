@@ -4,6 +4,7 @@
 	import { popup } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
 	import CreateLinkModal from './CreateLinkModal.svelte';
+	import LinkDetailsModal from './LinkDetailsModal.svelte';
 
 	import { faEllipsisV, faAdd, faPencil, faLink, faMinus } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
@@ -19,6 +20,13 @@
 		type: 'component',
 		component: {
 			ref: CreateLinkModal
+		}
+	};
+
+	const linkDetailsModal: ModalSettings = {
+		type: 'component',
+		component: {
+			ref: LinkDetailsModal
 		}
 	};
 
@@ -94,8 +102,12 @@
 								<button type="button" class="btn bg-initial"
 									><Fa icon={faPencil} /><span>Edit</span></button
 								>
-								<button type="button" class="btn bg-initial"
-									><Fa icon={faLink} /><span>Link Details</span></button
+								<button
+									type="button"
+									class="btn bg-initial"
+									on:click={() => {
+										modalStore.trigger(linkDetailsModal);
+									}}><Fa icon={faLink} /><span>Link Details</span></button
 								>
 								<button type="button" class="btn bg-initial"
 									><Fa icon={faMinus} /><span>Archive Link</span></button

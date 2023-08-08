@@ -15,7 +15,7 @@
 </script>
 
 {#if $modalStore[0]}
-	<div class="card p-4 w-modal shadow-xl space-y-4">
+	<div class="card p-8 w-modal shadow-xl space-y-4">
 		<Stepper on:complete={onFormSubmit}>
 			<Step locked={!isURLSuffixValid}>
 				<svelte:fragment slot="header">Setup your short URL link</svelte:fragment>
