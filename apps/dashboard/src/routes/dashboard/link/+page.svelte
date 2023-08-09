@@ -47,13 +47,32 @@
 
 <div class="mx-auto max-w-screen-xl lg:p-12 px-4">
 	<div class="flex justify-between py-4">
-		<button class="btn variant-filled w-48 justify-between">
-			<span class="capitalize">{currentPrefix}</span>
+		<button
+			class="btn variant-filled-surface w-48 justify-between"
+			use:popup={{ event: 'click', target: `popupClick` }}
+		>
+			<span>{currentPrefix}</span>
 			<span>↓</span>
 		</button>
+		<!-- Popup -->
+		<div class="card shadow-xl" data-popup="popupClick">
+			<div class="flex flex-col items-start">
+				<button type="button" class="btn bg-initial"
+					><Fa icon={faLink} /><span>suffix2</span></button
+				>
+				<button type="button" class="btn bg-initial"
+					><Fa icon={faLink} /><span>suffix3</span></button
+				>
+				<button type="button" class="btn bg-initial"
+					><Fa icon={faAdd} /><span>Add URL suffix</span></button
+				>
+			</div>
+			<div class="arrow" />
+		</div>
+
 		<button
 			type="button"
-			class="btn btn-sm variant-filled"
+			class="btn btn-sm variant-filled-surface"
 			on:click={() => {
 				modalStore.trigger(newLinkModal);
 			}}
