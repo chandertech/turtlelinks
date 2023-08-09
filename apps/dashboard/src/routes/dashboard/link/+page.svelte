@@ -7,6 +7,10 @@
 	import { faEllipsisV, faAdd, faPencil, faLink, faMinus } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
+	export let data;
+	const { currentPrefix, linkData } = data;
+	const tableData = linkData ?? [];
+
 	const newLinkModal: ModalSettings = {
 		type: 'component',
 		component: {
@@ -21,13 +25,7 @@
 		}
 	};
 
-	const tableData = [
-		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 },
-		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 },
-		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 },
-		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 },
-		{ name: 'Link Name', URL: 'https://link', created: '...', clicks: 0 }
-	];
+	console.log(tableData);
 </script>
 
 <svelte:head>
@@ -35,7 +33,11 @@
 </svelte:head>
 
 <div class="mx-auto max-w-screen-xl lg:p-12 px-4">
-	<div class="flex justify-end py-4">
+	<div class="flex justify-between py-4">
+		<button class="btn variant-filled w-48 justify-between">
+			<span class="capitalize">{currentPrefix}</span>
+			<span>↓</span>
+		</button>
 		<button
 			type="button"
 			class="btn btn-sm variant-filled"
@@ -61,10 +63,10 @@
 			<tbody>
 				{#each tableData as row, i}
 					<tr on:click={() => {}}>
-						<td>{row.name}</td>
-						<td>{row.URL}</td>
-						<td>{row.created}</td>
-						<td>{row.clicks}</td>
+						<td>{row.friendly_name}</td>
+						<td>{row.prefix_url}/{row.suffix_url}</td>
+						<td>...</td>
+						<td>...</td>
 						<button
 							type="button"
 							use:popup={{ event: 'click', target: `editLinkPopup-${i}` }}
