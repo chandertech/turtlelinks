@@ -25,7 +25,13 @@
 		}
 	};
 
-	console.log(tableData);
+	async function deleteLink(suffix: string) {
+		await fetch('link/', {
+			method: 'DELETE',
+			body: JSON.stringify({ suffix: suffix }),
+			headers: { 'content-type': 'application/json' }
+		});
+	}
 </script>
 
 <svelte:head>
@@ -89,8 +95,12 @@
 									modalStore.trigger(linkDetailsModal);
 								}}><Fa icon={faLink} /><span>Link Details</span></button
 							>
-							<button type="button" class="btn bg-initial"
-								><Fa icon={faMinus} /><span>Archive Link</span></button
+							<button
+								type="button"
+								class="btn bg-initial"
+								on:click={() => {
+									deleteLink(row.suffix_url);
+								}}><Fa icon={faMinus} /><span>Delete Link</span></button
 							>
 						</div>
 					</div>
