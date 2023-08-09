@@ -2,14 +2,17 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
-	import LinkTable from './LinkTable.svelte';
-
-	export let data;
 
 	const urlCreationModal: ModalSettings = {
 		type: 'component',
 		component: { ref: CreateURLPrefixModal },
-		response: (url: string) => {}
+		response: async (url: string) => {
+			const res = await fetch('/dashboard/', {
+				method: 'POST',
+				body: JSON.stringify({ url: url }),
+				headers: { 'content-type': 'application/json' }
+			});
+		}
 	};
 </script>
 
@@ -26,9 +29,7 @@
 				modalStore.trigger(urlCreationModal);
 			}}
 		>
-			URL Prefix Creation Flow
+			Create URL Prefix
 		</button>
 	</div>
-
-	<LinkTable />
 </div>

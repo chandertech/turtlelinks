@@ -11,6 +11,8 @@ create table "public"."prefix_urls" (
 );
 
 
+alter table "public"."prefix_urls" enable row level security;
+
 create table "public"."profiles" (
     "id" uuid not null,
     "updated_at" timestamp with time zone,
@@ -25,6 +27,8 @@ alter table "public"."profiles" enable row level security;
 
 CREATE UNIQUE INDEX dynamic_links_pkey ON public.dynamic_links USING btree (prefix_url);
 
+CREATE UNIQUE INDEX prefix_urls_pkey ON public.prefix_urls USING btree (prefix_url);
+
 CREATE UNIQUE INDEX prefix_urls_prefix_url_key ON public.prefix_urls USING btree (prefix_url);
 
 CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id);
@@ -33,11 +37,9 @@ CREATE UNIQUE INDEX profiles_username_key ON public.profiles USING btree (userna
 
 alter table "public"."dynamic_links" add constraint "dynamic_links_pkey" PRIMARY KEY using index "dynamic_links_pkey";
 
+alter table "public"."prefix_urls" add constraint "prefix_urls_pkey" PRIMARY KEY using index "prefix_urls_pkey";
+
 alter table "public"."profiles" add constraint "profiles_pkey" PRIMARY KEY using index "profiles_pkey";
-
-alter table "public"."dynamic_links" add constraint "dynamic_links_prefix_url_fkey" FOREIGN KEY (prefix_url) REFERENCES prefix_urls(prefix_url) ON DELETE CASCADE not valid;
-
-alter table "public"."dynamic_links" validate constraint "dynamic_links_prefix_url_fkey";
 
 alter table "public"."prefix_urls" add constraint "prefix_urls_created_by_fkey" FOREIGN KEY (created_by) REFERENCES profiles(id) ON DELETE CASCADE not valid;
 
@@ -69,6 +71,14 @@ begin
 end;
 $function$
 ;
+
+create policy "Enable insert for authenticated users only"
+on "public"."prefix_urls"
+as permissive
+for insert
+to authenticated
+with check (true);
+
 
 create policy "Public profiles are viewable by everyone."
 on "public"."profiles"
