@@ -6,10 +6,10 @@
 
 	// Step 1 (suffix)
 	let urlSuffix = '';
-	$: isURLSuffixValid = urlSuffix.length == 0; // TODO: Validate more.
+	$: isURLSuffixValid = urlSuffix.length != 0; // TODO: Validate more.
 
 	function onFormSubmit(event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response('');
+		if ($modalStore[0].response) $modalStore[0].response(urlSuffix);
 		modalStore.close();
 	}
 </script>

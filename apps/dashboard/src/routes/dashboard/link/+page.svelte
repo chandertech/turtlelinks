@@ -15,6 +15,13 @@
 		type: 'component',
 		component: {
 			ref: CreateLinkModal
+		},
+		response: async (suffix: string) => {
+			await fetch('link/', {
+				method: 'POST',
+				body: JSON.stringify({ prefix: currentPrefix, suffix: suffix }),
+				headers: { 'content-type': 'application/json' }
+			});
 		}
 	};
 
