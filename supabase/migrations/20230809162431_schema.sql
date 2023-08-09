@@ -11,8 +11,6 @@ create table "public"."prefix_urls" (
 );
 
 
-alter table "public"."prefix_urls" enable row level security;
-
 create table "public"."profiles" (
     "id" uuid not null,
     "updated_at" timestamp with time zone,
