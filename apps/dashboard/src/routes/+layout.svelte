@@ -50,9 +50,6 @@
 			>
 
 			<svelte:fragment slot="trail">
-				<a href="/dashboard"
-					><button type="button" class="btn variant-filled-surface"> Dashboard </button></a
-				>
 				<a href="https://github.com/chandertech/turtlelinks"
 					><button type="button" class="btn-icon variant-filled-surface">
 						<Fa icon={faGithub} />

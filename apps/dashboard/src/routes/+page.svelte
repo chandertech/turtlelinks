@@ -8,7 +8,8 @@
 	import { popup } from '@skeletonlabs/skeleton';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
-	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
+	import CreateURLPrefixModal from './modals/CreateURLPrefixModal.svelte';
+	import CreateLinkModal from './modals/CreateLinkModal.svelte';
 
 	interface URLInfo {
 		url: string;
@@ -43,7 +44,7 @@
 		selectURL(urls[0].url);
 	});
 
-	const urlCreationModal: ModalSettings = {
+	const createURLModal: ModalSettings = {
 		type: 'component',
 		component: { ref: CreateURLPrefixModal },
 		response: async (res) => {
@@ -64,6 +65,14 @@
 			urls = [...urls, newURL];
 			selectURL(newURL.url);
 		}
+	};
+
+	const createLinkModal: ModalSettings = {
+		type: 'component',
+		component: {
+			ref: CreateLinkModal
+		},
+		response: async (suffix: string) => {}
 	};
 
 	async function selectURL(url: string) {
@@ -87,11 +96,11 @@
 			type="button"
 			class="btn variant-filled-surface"
 			on:click={() => {
-				modalStore.trigger(urlCreationModal);
+				modalStore.trigger(createURLModal);
 			}}
 		>
-			<Fa icon={faAdd} />
-			<span>Create URL Prefix</span>
+			<Fa icon={faLink} />
+			<span>New URL Prefix</span>
 		</button>
 	</div>
 
@@ -118,8 +127,12 @@
 								}}><Fa icon={faLink} /><span>{urlData.url}</span></button
 							>
 						{/each}
-						<button type="button" class="btn bg-initial"
-							><Fa icon={faAdd} /><span>Add URL suffix</span></button
+						<button
+							type="button"
+							class="btn bg-initial"
+							on:click={() => {
+								modalStore.trigger(createURLModal);
+							}}><Fa icon={faLink} /><span>New URL Prefix</span></button
 						>
 					</div>
 					<div class="arrow" />
@@ -129,7 +142,7 @@
 					type="button"
 					class="btn btn-sm variant-filled-surface"
 					on:click={() => {
-						// modalStore.trigger(newLinkModal);
+						modalStore.trigger(createLinkModal);
 					}}
 				>
 					<Fa icon={faAdd} />
