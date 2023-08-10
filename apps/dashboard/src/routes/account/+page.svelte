@@ -5,6 +5,8 @@
 	import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
+	import Organizations from './Organizations.svelte';
+
 	export let data;
 	export let form;
 
@@ -15,6 +17,8 @@
 	let fullName = profile?.full_name ?? null;
 	let username = profile?.username ?? null;
 	let website = profile?.website ?? null;
+
+	const organizations = data.organizations ?? [];
 
 	const handleSubmit: SubmitFunction = () => {
 		loading = true;
@@ -92,4 +96,8 @@
 			><Fa icon={faRightFromBracket} /><span>Sign Out</span></button
 		>
 	</div>
+	{#if organizations.length > 0}
+		<h2 class="pt-8">Organizations</h2>
+		<Organizations {organizations} />
+	{/if}
 </div>
