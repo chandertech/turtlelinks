@@ -65,12 +65,13 @@
 
 			const { suffix, deepLink, friendlyName } = res;
 			const newLink: LinkInfo = {
+				link: selectedURL + '/' + suffix,
 				url: selectedURL,
 				suffix: suffix,
 				deep_link: deepLink,
 				friendly_name: friendlyName
 			};
-			const { error: linkError } = await data.supabase.from('dynamic_links').insert(newLink);
+			const { error: linkError } = await data.supabase.from('dynamic_links').upsert(newLink);
 			if (linkError) return; // TODO: Maybe display an error modal?
 
 			modalStore.close();
@@ -94,11 +95,11 @@
 		const { data: linkError } = await data.supabase
 			.from('dynamic_links')
 			.delete()
-			.match({ url: link });
+			.match({ link: link });
 
 		if (linkError) return;
 
-		links = links.filter((l) => l.url != link);
+		links = links.filter((l) => l.link != link);
 	}
 </script>
 
@@ -177,7 +178,7 @@
 						{#each links as link, i}
 							<tr on:click={() => {}}>
 								<td>{link.friendly_name}</td>
-								<td>{link.url}/{link.suffix}</td>
+								<td>{link.link}</td>
 								<td>...</td>
 								<td>...</td>
 								<button
@@ -216,7 +217,7 @@
 										type="button"
 										class="btn bg-initial"
 										on:click={() => {
-											deleteLink(link.url);
+											deleteLink(link.link);
 										}}><Fa icon={faMinus} /><span>Delete Link</span></button
 									>
 								</div>

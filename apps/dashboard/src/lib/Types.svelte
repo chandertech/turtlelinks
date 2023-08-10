@@ -8,6 +8,7 @@
 	}
 
 	export interface LinkInfo {
+		link: string;
 		url: string;
 		suffix: string;
 		deep_link: string;
