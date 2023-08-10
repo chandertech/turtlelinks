@@ -101,6 +101,17 @@
 		selectedURL = url;
 		links = linkData;
 	}
+
+	async function deleteLink(link: string) {
+		const { data: linkError } = await data.supabase
+			.from('dynamic_links')
+			.delete()
+			.match({ url: link });
+
+		if (linkError) return;
+
+		links = links.filter((l) => l.url != link);
+	}
 </script>
 
 <div class="sm:container sm:mx-auto justify-center p-8">
@@ -175,10 +186,10 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each links as row, i}
+						{#each links as link, i}
 							<tr on:click={() => {}}>
-								<td>{row.friendly_name}</td>
-								<td>{row.url}/{row.suffix}</td>
+								<td>{link.friendly_name}</td>
+								<td>{link.url}/{link.suffix}</td>
 								<td>...</td>
 								<td>...</td>
 								<button
@@ -207,7 +218,7 @@
 										type="button"
 										class="btn bg-initial"
 										on:click={() => {
-											// deleteLink(row.suffix_url);
+											deleteLink(link.url);
 										}}><Fa icon={faMinus} /><span>Delete Link</span></button
 									>
 								</div>
