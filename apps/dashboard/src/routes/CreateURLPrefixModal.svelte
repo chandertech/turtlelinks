@@ -13,8 +13,7 @@
 	$: showWarning = subdomain.length > 0 && !isValid;
 
 	function onFormSubmit(event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response(subdomain);
-		modalStore.close();
+		if ($modalStore[0].response) $modalStore[0].response({ subdomain: subdomain, domain: domain });
 	}
 </script>
 
