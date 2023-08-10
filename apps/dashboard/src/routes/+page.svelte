@@ -40,16 +40,7 @@
 		if (urlError || !urlData || !urlData.length) return;
 
 		urls = urlData;
-		selectedURL = urls[0].url;
-
-		const { data: linkData, error: linkError } = await data.supabase
-			.from('dynamic_links')
-			.select('*')
-			.eq('url', selectedURL);
-
-		if (linkError || !linkData || !linkData.length) return;
-
-		links = linkData;
+		selectURL(urls[0].url);
 	});
 
 	const urlCreationModal: ModalSettings = {
@@ -66,13 +57,27 @@
 				subdomain: subdomain,
 				domain: domain
 			};
-			const { error: urlError } = await data.supabase.from('urls').upsert(newURL);
+			const { error: urlError } = await data.supabase.from('urls').upsert(newURL); // TODO: Maybe display an error modal?
 			if (urlError) return;
 
 			modalStore.close();
 			urls = [...urls, newURL];
+			selectURL(newURL.url);
 		}
 	};
+
+	async function selectURL(url: string) {
+		selectedURL = url;
+
+		const { data: linkData, error: linkError } = await data.supabase
+			.from('dynamic_links')
+			.select('*')
+			.eq('url', selectedURL);
+
+		if (linkError || !linkData) return;
+
+		links = linkData;
+	}
 </script>
 
 <div class="sm:container sm:mx-auto justify-center p-8">
@@ -105,8 +110,12 @@
 				<div class="card shadow-xl" data-popup="popupClick">
 					<div class="flex flex-col items-start">
 						{#each urls.filter((d) => d.url != selectedURL) as urlData}
-							<button type="button" class="btn bg-initial"
-								><Fa icon={faLink} /><span>{urlData.url}</span></button
+							<button
+								type="button"
+								class="btn bg-initial"
+								on:click={() => {
+									selectURL(urlData.url);
+								}}><Fa icon={faLink} /><span>{urlData.url}</span></button
 							>
 						{/each}
 						<button type="button" class="btn bg-initial"
