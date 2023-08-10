@@ -3,14 +3,17 @@
 
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
+	import type { LinkInfo } from '$lib/Types.svelte';
 
-	let suffix = '';
+	let link = $modalStore[0].meta as LinkInfo;
+
+	let suffix = link?.suffix ?? '';
 	$: isSuffixValid = suffix.length != 0; // TODO: Validate more.
 
-	let deepLink = '';
+	let deepLink = link?.deep_link ?? '';
 	$: isDeepLinkValid = deepLink.length != 0;
 
-	let friendlyName = '';
+	let friendlyName = link?.friendly_name ?? '';
 	$: isFriendlyLinkValid = friendlyName.length != 0;
 
 	function onFormSubmit(event: Event): void {

@@ -11,20 +11,7 @@
 	import CreateURLPrefixModal from './modals/CreateURLPrefixModal.svelte';
 	import CreateLinkModal from './modals/CreateLinkModal.svelte';
 	import LinkDetailModal from './modals/LinkDetailModal.svelte';
-
-	interface URLInfo {
-		url: string;
-		id: string;
-		subdomain: string;
-		domain: string;
-	}
-
-	interface LinkInfo {
-		url: string;
-		suffix: string;
-		deep_link: string;
-		friendly_name: string;
-	}
+	import type { URLInfo, LinkInfo } from '$lib/Types.svelte';
 
 	export let data;
 	let selectedURL: string;
@@ -59,7 +46,7 @@
 				subdomain: subdomain,
 				domain: domain
 			};
-			const { error: urlError } = await data.supabase.from('urls').upsert(newURL); // TODO: Maybe display an error modal?
+			const { error: urlError } = await data.supabase.from('urls').insert(newURL); // TODO: Maybe display an error modal?
 			if (urlError) return;
 
 			modalStore.close();
@@ -83,7 +70,7 @@
 				deep_link: deepLink,
 				friendly_name: friendlyName
 			};
-			const { error: linkError } = await data.supabase.from('dynamic_links').upsert(newLink);
+			const { error: linkError } = await data.supabase.from('dynamic_links').insert(newLink);
 			if (linkError) return; // TODO: Maybe display an error modal?
 
 			modalStore.close();
@@ -205,8 +192,12 @@
 							<!-- Popup -->
 							<div class="card shadow-xl" data-popup="editLinkPopup-{i}">
 								<div class="flex flex-col items-start">
-									<button type="button" class="btn bg-initial"
-										><Fa icon={faPencil} /><span>Edit</span></button
+									<button
+										type="button"
+										class="btn bg-initial"
+										on:click={() => {
+											modalStore.trigger({ ...createLinkModal, meta: link });
+										}}><Fa icon={faPencil} /><span>Edit</span></button
 									>
 									<button
 										type="button"

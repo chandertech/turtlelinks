@@ -3,10 +3,10 @@
 
 	import { faAndroid, faApple } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
-
 	import { modalStore } from '@skeletonlabs/skeleton';
+	import type { LinkInfo } from '$lib/Types.svelte';
 
-	let link = $modalStore[0].meta;
+	let link = $modalStore[0].meta as LinkInfo;
 
 	function onFormSubmit(event: Event): void {
 		if ($modalStore[0].response) $modalStore[0].response('');
