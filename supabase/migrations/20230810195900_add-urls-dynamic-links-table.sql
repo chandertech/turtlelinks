@@ -1,8 +1,8 @@
 create table "public"."dynamic_links" (
     "url" text not null,
     "suffix" text not null,
-    "name" text not null,
-    "link" text not null
+    "friendly_name" text not null,
+    "deep_link" text not null
 );
 
 
