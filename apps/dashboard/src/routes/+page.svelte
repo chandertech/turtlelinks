@@ -72,19 +72,33 @@
 		component: {
 			ref: CreateLinkModal
 		},
-		response: async (suffix: string) => {}
+		response: async (res) => {
+			if (!res) return;
+
+			const { suffix, deepLink, friendlyName } = res;
+			const newLink: LinkInfo = {
+				url: selectedURL,
+				suffix: suffix,
+				deep_link: deepLink,
+				friendly_name: friendlyName
+			};
+			const { error: linkError } = await data.supabase.from('dynamic_links').upsert(newLink);
+			if (linkError) return; // TODO: Maybe display an error modal?
+
+			modalStore.close();
+			links = [...links, newLink];
+		}
 	};
 
 	async function selectURL(url: string) {
-		selectedURL = url;
-
 		const { data: linkData, error: linkError } = await data.supabase
 			.from('dynamic_links')
 			.select('*')
-			.eq('url', selectedURL);
+			.eq('url', url);
 
 		if (linkError || !linkData) return;
 
+		selectedURL = url;
 		links = linkData;
 	}
 </script>
