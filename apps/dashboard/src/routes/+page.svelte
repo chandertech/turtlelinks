@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { beforeUpdate, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
 	import { faAdd, faLink, faEllipsisV, faPencil, faMinus } from '@fortawesome/free-solid-svg-icons';
@@ -17,12 +17,20 @@
 		domain: string;
 	}
 
+	interface LinkInfo {
+		url: string;
+		suffix: string;
+		deep_link: string;
+		friendly_name: string;
+	}
+
 	export let data;
 	let selectedURL: string;
-	let tableData: URLInfo[] = [];
+	let urls: URLInfo[] = [];
+	let links: LinkInfo[] = [];
 
-	// TODO: Figure out if there is a better place to fetch data, maybe beforeMount?
-	beforeUpdate(async () => {
+	// TODO: Figure out if there is a better place to fetch data?
+	onMount(async () => {
 		if (!data.session) goto('/login');
 
 		const { data: urlData, error: urlError } = await data.supabase
@@ -30,12 +38,19 @@
 			.select('*')
 			.eq('id', data.session?.user.id);
 
-		if (urlError) return;
+		if (urlError || !urlData || !urlData.length) return;
 
-		if (urlData && urlData.length) {
-			tableData = urlData;
-			selectedURL = tableData[0].url;
-		}
+		urls = urlData;
+		selectedURL = urls[0].url;
+
+		const { data: linkData, error: linkError } = await data.supabase
+			.from('dynamic_links')
+			.select('*')
+			.eq('url', selectedURL);
+
+		if (linkError || !linkData || !linkData.length) return;
+
+		links = linkData;
 	});
 
 	const urlCreationModal: ModalSettings = {
@@ -112,10 +127,10 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each tableData as row, i}
+						{#each links as row, i}
 							<tr on:click={() => {}}>
-								<!-- <td>{row.friendly_name}</td>
-							<td>{row.prefix_url}/{row.suffix_url}</td> -->
+								<td>{row.friendly_name}</td>
+								<td>{row.url}/{row.suffix}</td>
 								<td>...</td>
 								<td>...</td>
 								<button
