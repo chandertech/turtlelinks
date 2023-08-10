@@ -11,6 +11,6 @@ export const load: PageLoad = async ({ parent }) => {
     if (err)
         throw error(500, 'Failed to fetch data.');
 
-    if (data.length > 0)
-        throw redirect(303, '/dashboard/link');
+    // if (data.length > 0)
+    //     throw redirect(303, '/dashboard/link');
 };

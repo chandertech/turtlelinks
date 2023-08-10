@@ -2,7 +2,7 @@
 	import { redirect } from '@sveltejs/kit';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
-	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
+	import CreateURLPrefixModal from '../CreateURLPrefixModal.svelte';
 	import { goto } from '$app/navigation';
 
 	const urlCreationModal: ModalSettings = {
@@ -15,7 +15,7 @@
 				headers: { 'content-type': 'application/json' }
 			});
 
-			goto('/dashboard/link');
+			// goto('/dashboard/link');
 		}
 	};
 </script>

@@ -32,8 +32,8 @@
 	};
 </script>
 
-<div class="mx-auto container p-4">
-	<h1 class="mb-4 text-2xl">Account Information</h1>
+<div class="mx-auto container p-8">
+	<h1 class="mb-4 text-4xl">Account Information</h1>
 	<form
 		id="account-info"
 		method="post"
