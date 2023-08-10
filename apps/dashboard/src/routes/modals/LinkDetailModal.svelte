@@ -6,6 +6,8 @@
 
 	import { modalStore } from '@skeletonlabs/skeleton';
 
+	let link = $modalStore[0].meta;
+
 	function onFormSubmit(event: Event): void {
 		if ($modalStore[0].response) $modalStore[0].response('');
 		modalStore.close();
@@ -16,11 +18,11 @@
 	<div class="card p-8 w-modal shadow-xl space-y-8">
 		<div>
 			<p class="text-l">Link name</p>
-			<p>...</p>
+			<p>{link.friendly_name}</p>
 		</div>
 		<div>
 			<p class="text-l">Deep link</p>
-			<p>...</p>
+			<p>{link.deep_link}</p>
 		</div>
 		<div class="grid grid-cols-2">
 			<div>
@@ -36,11 +38,11 @@
 		</div>
 		<div>
 			<p class="text-l">Long Dynamic Link</p>
-			<p>...</p>
+			<p>{link.url + link.suffix + link.deep_link}</p>
 		</div>
 		<div>
 			<p class="text-l">Short Dynamic Link</p>
-			<p>...</p>
+			<p>{link.url + link.suffix}</p>
 		</div>
 	</div>
 {/if}

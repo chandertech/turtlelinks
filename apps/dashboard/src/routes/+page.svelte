@@ -10,6 +10,7 @@
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './modals/CreateURLPrefixModal.svelte';
 	import CreateLinkModal from './modals/CreateLinkModal.svelte';
+	import LinkDetailModal from './modals/LinkDetailModal.svelte';
 
 	interface URLInfo {
 		url: string;
@@ -211,7 +212,13 @@
 										type="button"
 										class="btn bg-initial"
 										on:click={() => {
-											// modalStore.trigger(linkDetailsModal);
+											modalStore.trigger({
+												type: 'component',
+												component: {
+													ref: LinkDetailModal
+												},
+												meta: link
+											});
 										}}><Fa icon={faLink} /><span>Link Details</span></button
 									>
 									<button
