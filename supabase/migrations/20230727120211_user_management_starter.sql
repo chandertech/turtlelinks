@@ -1,16 +1,3 @@
-create table "public"."dynamic_links" (
-    "prefix_url" text not null,
-    "friendly_name" text not null,
-    "suffix_url" text not null
-);
-
-
-create table "public"."prefix_urls" (
-    "created_by" uuid not null,
-    "prefix_url" text not null
-);
-
-
 create table "public"."profiles" (
     "id" uuid not null,
     "updated_at" timestamp with time zone,
@@ -23,27 +10,11 @@ create table "public"."profiles" (
 
 alter table "public"."profiles" enable row level security;
 
-CREATE UNIQUE INDEX dynamic_links_pkey ON public.dynamic_links USING btree (prefix_url);
-
-CREATE UNIQUE INDEX prefix_urls_pkey ON public.prefix_urls USING btree (prefix_url);
-
-CREATE UNIQUE INDEX prefix_urls_prefix_url_key ON public.prefix_urls USING btree (prefix_url);
-
 CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id);
 
 CREATE UNIQUE INDEX profiles_username_key ON public.profiles USING btree (username);
 
-alter table "public"."dynamic_links" add constraint "dynamic_links_pkey" PRIMARY KEY using index "dynamic_links_pkey";
-
-alter table "public"."prefix_urls" add constraint "prefix_urls_pkey" PRIMARY KEY using index "prefix_urls_pkey";
-
 alter table "public"."profiles" add constraint "profiles_pkey" PRIMARY KEY using index "profiles_pkey";
-
-alter table "public"."prefix_urls" add constraint "prefix_urls_created_by_fkey" FOREIGN KEY (created_by) REFERENCES profiles(id) ON DELETE CASCADE not valid;
-
-alter table "public"."prefix_urls" validate constraint "prefix_urls_created_by_fkey";
-
-alter table "public"."prefix_urls" add constraint "prefix_urls_prefix_url_key" UNIQUE using index "prefix_urls_prefix_url_key";
 
 alter table "public"."profiles" add constraint "profiles_id_fkey" FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE not valid;
 
@@ -69,14 +40,6 @@ begin
 end;
 $function$
 ;
-
-create policy "Enable insert for authenticated users only"
-on "public"."prefix_urls"
-as permissive
-for insert
-to authenticated
-with check (true);
-
 
 create policy "Public profiles are viewable by everyone."
 on "public"."profiles"
