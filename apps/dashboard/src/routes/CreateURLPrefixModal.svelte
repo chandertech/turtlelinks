@@ -7,13 +7,14 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 
-	let subdomain = '';
+	let inputDomain = '';
 	let domain = '.turt.link';
-	$: isValid = subdomain.length > 0 && subdomain.endsWith(domain);
-	$: showWarning = subdomain.length > 0 && !isValid;
+	$: isValid = inputDomain.length > 0 && inputDomain.endsWith(domain);
+	$: showWarning = inputDomain.length > 0 && !isValid;
 
 	function onFormSubmit(event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response({ subdomain: subdomain, domain: domain });
+		if ($modalStore[0].response)
+			$modalStore[0].response({ subdomain: inputDomain.replaceAll(domain, ''), domain: domain });
 	}
 </script>
 
@@ -24,7 +25,7 @@
 				<svelte:fragment slot="header">Add URL prefix</svelte:fragment>
 				<label class="label">
 					<span>Domain</span>
-					<input bind:value={subdomain} class="input" title="domain" type="text" placeholder="" />
+					<input bind:value={inputDomain} class="input" title="domain" type="text" placeholder="" />
 					{#if showWarning}
 						<span class="flex text-xs text-red-500"
 							><Fa class="place-self-center pr-1" icon={faExclamationCircle} />Domain must end with {domain}</span
@@ -37,7 +38,7 @@
 				<div class="card flex flex-row variant-filled-success p-2 px-4">
 					<span class="flex"
 						><Fa class="place-self-center pr-3" icon={faCheck} />
-						{subdomain + domain} has been verified and approved for use</span
+						{inputDomain} has been verified and approved for use</span
 					>
 				</div>
 			</Step>

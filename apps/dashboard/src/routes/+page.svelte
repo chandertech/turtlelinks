@@ -29,7 +29,6 @@
 	let urls: URLInfo[] = [];
 	let links: LinkInfo[] = [];
 
-	// TODO: Figure out if there is a better place to fetch data?
 	onMount(async () => {
 		if (!data.session) goto('/login');
 
@@ -56,8 +55,22 @@
 	const urlCreationModal: ModalSettings = {
 		type: 'component',
 		component: { ref: CreateURLPrefixModal },
-		response: async ({ subdomain, domain }) => {
+		response: async (res) => {
+			if (!res) return;
+
+			// TODO: Do we need to check session here again?
+			const { subdomain, domain } = res;
+			const newURL: URLInfo = {
+				url: subdomain + domain,
+				id: data.session?.user.id ?? '0',
+				subdomain: subdomain,
+				domain: domain
+			};
+			const { error: urlError } = await data.supabase.from('urls').upsert(newURL);
+			if (urlError) return;
+
 			modalStore.close();
+			urls = [...urls, newURL];
 		}
 	};
 </script>
@@ -91,12 +104,11 @@
 				<!-- Popup -->
 				<div class="card shadow-xl" data-popup="popupClick">
 					<div class="flex flex-col items-start">
-						<button type="button" class="btn bg-initial"
-							><Fa icon={faLink} /><span>suffix2</span></button
-						>
-						<button type="button" class="btn bg-initial"
-							><Fa icon={faLink} /><span>suffix3</span></button
-						>
+						{#each urls.filter((d) => d.url != selectedURL) as urlData}
+							<button type="button" class="btn bg-initial"
+								><Fa icon={faLink} /><span>{urlData.url}</span></button
+							>
+						{/each}
 						<button type="button" class="btn bg-initial"
 							><Fa icon={faAdd} /><span>Add URL suffix</span></button
 						>
