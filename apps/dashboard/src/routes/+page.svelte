@@ -1,10 +1,19 @@
 <script lang="ts">
+	import { beforeUpdate } from 'svelte';
+	import { goto } from '$app/navigation';
+
 	import { faAdd } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
+
+	export let data;
+
+	beforeUpdate(async () => {
+		if (!data.session) goto('/login');
+	});
 
 	const urlCreationModal: ModalSettings = {
 		type: 'component',
