@@ -38,7 +38,8 @@
 		response: async (res) => {
 			if (!res) return;
 
-			// TODO: Do we need to check session here again?
+			if (!data.session) goto('/login');
+
 			const { subdomain, domain } = res;
 			const newURL: URLInfo = {
 				url: subdomain + domain,
