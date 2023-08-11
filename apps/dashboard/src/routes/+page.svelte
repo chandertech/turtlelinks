@@ -2,13 +2,21 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
-	import { faAdd, faLink, faEllipsisV, faPencil, faMinus } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faAdd,
+		faLink,
+		faEllipsisV,
+		faPencil,
+		faMinus,
+		faTrash
+	} from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import { popup } from '@skeletonlabs/skeleton';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './modals/CreateURLPrefixModal.svelte';
+	import DeleteUrlPrefixModal from './modals/DeleteURLPrefixModal.svelte';
 	import CreateLinkModal from './modals/CreateLinkModal.svelte';
 	import LinkDetailModal from './modals/LinkDetailModal.svelte';
 	import type { URLInfo, LinkInfo } from '$lib/Types.svelte';
@@ -53,6 +61,21 @@
 			modalStore.close();
 			urls = [...urls, newURL];
 			selectURL(newURL.url);
+		}
+	};
+
+	const deleteURLModal: ModalSettings = {
+		type: 'component',
+		component: { ref: DeleteUrlPrefixModal },
+		response: async (res) => {
+			if (!res) return;
+
+			const { error: urlError } = await data.supabase.from('urls').delete().eq('url', selectedURL);
+			if (urlError) return;
+
+			modalStore.close();
+			urls = urls.filter((url) => url.url != selectedURL);
+			selectURL(urls.length > 0 ? urls[0].url : '');
 		}
 	};
 
@@ -164,16 +187,41 @@
 					<div class="arrow" />
 				</div>
 
-				<button
-					type="button"
-					class="btn btn-sm variant-filled-surface"
-					on:click={() => {
-						modalStore.trigger(createLinkModal);
-					}}
-				>
-					<Fa icon={faAdd} />
-					<span>New Link</span>
-				</button>
+				<div>
+					<button
+						type="button"
+						class="btn btn-sm variant-filled-surface mr-1"
+						on:click={() => {
+							modalStore.trigger(createLinkModal);
+						}}
+					>
+						<Fa icon={faAdd} />
+						<span>New Link</span>
+					</button>
+					<button
+						type="button"
+						class="btn-icon btn-icon-sm variant-filled-surface mt-2"
+						use:popup={{ event: 'click', target: `deleteURLPopup` }}
+					>
+						<Fa icon={faEllipsisV} />
+					</button>
+
+					<!-- Popup -->
+					<div class="card shadow-xl" data-popup="deleteURLPopup">
+						<div class="flex flex-col items-start">
+							<button
+								type="button"
+								class="btn bg-initial"
+								on:click={() => {
+									modalStore.trigger({
+										...deleteURLModal,
+										meta: { url: selectedURL, count: links.length }
+									});
+								}}><Fa icon={faTrash} /><span>Delete URL Prefix</span></button
+							>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="table-container">
 				<table class="table">
