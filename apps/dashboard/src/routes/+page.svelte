@@ -94,7 +94,7 @@
 		const { data: linkData, error: linkError } = await data.supabase
 			.from('dynamic_links')
 			.select('*')
-			.eq('url', url);
+			.match({ url: url, is_archived: false });
 
 		if (linkError || !linkData) return;
 
@@ -105,8 +105,8 @@
 	async function deleteLink(link: string) {
 		const { data: linkError } = await data.supabase
 			.from('dynamic_links')
-			.delete()
-			.match({ link: link });
+			.update({ is_archived: true })
+			.eq('link', link);
 
 		if (linkError) return;
 
@@ -232,7 +232,7 @@
 										class="btn bg-initial"
 										on:click={() => {
 											deleteLink(link.link);
-										}}><Fa icon={faMinus} /><span>Delete Link</span></button
+										}}><Fa icon={faMinus} /><span>Archive Link</span></button
 									>
 								</div>
 							</div>

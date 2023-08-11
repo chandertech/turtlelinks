@@ -1,8 +1,10 @@
 create table "public"."dynamic_links" (
-    "url" text not null,
+    "link" text not null,
     "suffix" text not null,
+    "deep_link" text not null,
     "friendly_name" text not null,
-    "deep_link" text not null
+    "url" text not null,
+    "is_archived" boolean not null default false
 );
 
 
@@ -14,7 +16,7 @@ create table "public"."urls" (
 );
 
 
-CREATE UNIQUE INDEX dynamic_links_pkey ON public.dynamic_links USING btree (url);
+CREATE UNIQUE INDEX dynamic_links_pkey ON public.dynamic_links USING btree (link);
 
 CREATE UNIQUE INDEX urls_pkey ON public.urls USING btree (url);
 
