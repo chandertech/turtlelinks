@@ -31,12 +31,16 @@
 			<div class="pb-4">
 				When you delete <b>{url}</b>, the following will immediately happen:
 				<ol class="list">
-					<li>
-						<span>-</span>
-						<span
-							>All <b>{count} dynamic links</b> associated with this domain are permanently deleted</span
-						>
-					</li>
+					{#if count > 0}
+						<li>
+							<span>-</span>
+							<span
+								>{count > 1 ? 'All' : ''}
+								<b>{count} dynamic {count == 1 ? 'link' : 'links'}</b> associated with this domain are
+								permanently deleted</span
+							>
+						</li>
+					{/if}
 					<li>
 						<span>-</span>
 						<span>...</span>

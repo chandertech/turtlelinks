@@ -191,7 +191,7 @@
 				<div>
 					<button
 						type="button"
-						class="btn btn-sm variant-filled-surface mr-1"
+						class="btn variant-filled-surface mr-1"
 						on:click={() => {
 							modalStore.trigger(createLinkModal);
 						}}
@@ -201,7 +201,7 @@
 					</button>
 					<button
 						type="button"
-						class="btn-icon btn-icon-sm variant-filled-surface mt-2"
+						class="btn-icon variant-filled-surface mt-2"
 						use:popup={{ event: 'click', target: `deleteURLPopup` }}
 					>
 						<Fa icon={faEllipsisV} />
