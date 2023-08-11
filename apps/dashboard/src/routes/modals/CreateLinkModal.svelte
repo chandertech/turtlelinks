@@ -5,7 +5,8 @@
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 	import type { LinkInfo } from '$lib/Types.svelte';
 
-	let link = $modalStore[0].meta as LinkInfo;
+	const link = $modalStore[0]?.meta?.link as LinkInfo;
+	const isEditing = $modalStore[0]?.meta?.isEditing;
 
 	let suffix = link?.suffix ?? '';
 	$: isSuffixValid = suffix.length != 0; // TODO: Validate more.
@@ -17,7 +18,8 @@
 	$: isFriendlyLinkValid = friendlyName.length != 0;
 
 	function onFormSubmit(event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response({ suffix, deepLink, friendlyName });
+		if ($modalStore[0].response)
+			$modalStore[0].response({ suffix, deepLink, friendlyName, isEditing });
 	}
 </script>
 
@@ -40,7 +42,13 @@
 					</label>
 					<label class="label">
 						<span>URL suffix</span>
-						<input class="input" title="suffix" type="text" bind:value={suffix} />
+						<input
+							class="input"
+							title="suffix"
+							type="text"
+							bind:value={suffix}
+							disabled={isEditing}
+						/>
 					</label>
 				</div>
 			</Step>

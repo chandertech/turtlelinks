@@ -62,20 +62,31 @@
 		},
 		response: async (res) => {
 			if (!res) return;
+			const { suffix, deepLink, friendlyName, isEditing } = res;
+			const link = selectedURL + '/' + suffix;
 
-			const { suffix, deepLink, friendlyName } = res;
 			const newLink: LinkInfo = {
-				link: selectedURL + '/' + suffix,
+				link: link,
 				url: selectedURL,
 				suffix: suffix,
 				deep_link: deepLink,
 				friendly_name: friendlyName
 			};
-			const { error: linkError } = await data.supabase.from('dynamic_links').upsert(newLink);
+			const { error: linkError } = isEditing
+				? await data.supabase.from('dynamic_links').update(newLink).eq('link', link)
+				: await data.supabase.from('dynamic_links').insert(newLink);
 			if (linkError) return; // TODO: Maybe display an error modal?
 
 			modalStore.close();
-			links = [...links, newLink];
+
+			// If we are editing an existing link, we just need to update the entry.
+			// Otherwise, add to the link array.
+			if (isEditing) {
+				var existingLinkIndex = links.findIndex((l) => l.link == link);
+				links[existingLinkIndex] = newLink;
+			} else {
+				links = [...links, newLink];
+			}
 		}
 	};
 
@@ -197,7 +208,10 @@
 										type="button"
 										class="btn bg-initial"
 										on:click={() => {
-											modalStore.trigger({ ...createLinkModal, meta: link });
+											modalStore.trigger({
+												...createLinkModal,
+												meta: { link: link, isEditing: true }
+											});
 										}}><Fa icon={faPencil} /><span>Edit</span></button
 									>
 									<button
