@@ -8,6 +8,8 @@ create table "public"."dynamic_links" (
 );
 
 
+alter table "public"."dynamic_links" enable row level security;
+
 create table "public"."urls" (
     "url" text not null,
     "id" uuid not null,
@@ -15,6 +17,8 @@ create table "public"."urls" (
     "domain" text not null
 );
 
+
+alter table "public"."urls" enable row level security;
 
 CREATE UNIQUE INDEX dynamic_links_pkey ON public.dynamic_links USING btree (link);
 
@@ -32,20 +36,35 @@ alter table "public"."urls" add constraint "urls_id_fkey" FOREIGN KEY (id) REFER
 
 alter table "public"."urls" validate constraint "urls_id_fkey";
 
-set check_function_bodies = off;
+create policy "Enable insert for authenticated users only"
+on "public"."dynamic_links"
+as permissive
+for insert
+to authenticated
+with check (true);
 
-CREATE OR REPLACE FUNCTION public.handle_new_user()
- RETURNS trigger
- LANGUAGE plpgsql
- SECURITY DEFINER
-AS $function$
-begin
-  insert into public.profiles (id, full_name, avatar_url)
-  values (new.id, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url');
-  return new;
-end;
-$function$
-;
+
+create policy "Users can only read dynamic links they own"
+on "public"."dynamic_links"
+as permissive
+for select
+to authenticated
+using ((EXISTS ( SELECT 1
+   FROM (urls u
+     JOIN profiles p ON ((u.id = p.id)))
+  WHERE ((u.url = dynamic_links.url) AND (p.id = auth.uid())))));
+
+
+create policy "Users can only update dynamic links they own"
+on "public"."dynamic_links"
+as permissive
+for update
+to authenticated
+using ((EXISTS ( SELECT 1
+   FROM (urls u
+     JOIN profiles p ON ((u.id = p.id)))
+  WHERE ((u.url = dynamic_links.url) AND (p.id = auth.uid())))));
+
 
 create policy "Enable insert for authenticated users only"
 on "public"."urls"
@@ -53,6 +72,26 @@ as permissive
 for insert
 to authenticated
 with check (true);
+
+
+create policy "Users can only delete URLs they own"
+on "public"."urls"
+as permissive
+for delete
+to authenticated
+using ((id = ( SELECT profiles.id
+   FROM profiles
+  WHERE (auth.uid() = profiles.id))));
+
+
+create policy "Users can only read URLs they own"
+on "public"."urls"
+as permissive
+for select
+to authenticated
+using ((id = ( SELECT profiles.id
+   FROM profiles
+  WHERE (auth.uid() = profiles.id))));
 
 
 
