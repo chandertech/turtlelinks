@@ -83,12 +83,12 @@
 		<input
 			type="submit"
 			form="account-info"
-			class="btn variant-ringed-secondary"
+			class="btn variant-filled-primary"
 			value={loading ? 'Loading...' : 'Update'}
 			disabled={loading}
 		/>
 
-		<button class="btn variant-ringed-primary ml-1" form="sign-out" disabled={loading}
+		<button class="btn variant-filled-error ml-1" form="sign-out" disabled={loading}
 			><Fa icon={faRightFromBracket} /><span>Sign Out</span></button
 		>
 	</div>

@@ -57,7 +57,7 @@
 		<footer class="card-footer flex justify-end pb-4 px-8">
 			<button
 				type="button"
-				class="btn variant-filled-primary"
+				class="btn variant-filled-error"
 				on:click={onFormSubmit}
 				disabled={isDeleteDisabled}>Delete URL Prefix</button
 			>
