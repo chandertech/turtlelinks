@@ -22,6 +22,8 @@
 	import LinkDetailModal from './modals/LinkDetailModal.svelte';
 	import type { URLInfo, LinkInfo } from '$lib/Types.svelte';
 
+	const scheme = 'https://';
+
 	export let data;
 	let selectedURL: string;
 	let urls: URLInfo[] = [];
@@ -160,10 +162,10 @@
 		<div class="py-12">
 			<div class="flex justify-between py-4">
 				<button
-					class="btn variant-filled-surface w-48 justify-between"
+					class="btn variant-filled-surface w-64 justify-between"
 					use:popup={{ event: 'click', target: `popupClick` }}
 				>
-					<span>{selectedURL}</span>
+					<span class="overflow-hidden">{scheme + selectedURL}</span>
 					<Fa icon={faArrowDown} />
 				</button>
 				<!-- Popup -->
@@ -240,7 +242,7 @@
 						{#each links as link, i}
 							<tr on:click={() => {}}>
 								<td>{link.friendly_name}</td>
-								<td>{link.link}</td>
+								<td>{scheme + link.link}</td>
 								<td>...</td>
 								<td>...</td>
 								<button

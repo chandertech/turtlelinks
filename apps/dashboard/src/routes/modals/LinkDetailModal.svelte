@@ -6,6 +6,8 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { LinkInfo } from '$lib/Types.svelte';
 
+	const scheme = 'https://';
+
 	let link = $modalStore[0].meta as LinkInfo;
 
 	function onFormSubmit(event: Event): void {
@@ -38,11 +40,11 @@
 		</div>
 		<div>
 			<p class="text-l">Long Dynamic Link</p>
-			<p>{link.url + link.suffix + link.deep_link}</p>
+			<p>{scheme + link.url + link.suffix + '/?link=' + link.deep_link}</p>
 		</div>
 		<div>
 			<p class="text-l">Short Dynamic Link</p>
-			<p>{link.url + link.suffix}</p>
+			<p>{scheme + link.url + '/' + link.suffix}</p>
 		</div>
 	</div>
 {/if}
