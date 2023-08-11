@@ -22,12 +22,21 @@
 	import LinkDetailModal from './modals/LinkDetailModal.svelte';
 	import type { URLInfo, LinkInfo } from '$lib/Types.svelte';
 
+	import { toastStore } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
+
 	const scheme = 'https://';
 
 	export let data;
 	let selectedURL: string;
 	let urls: URLInfo[] = [];
 	let links: LinkInfo[] = [];
+
+	const serverError: ToastSettings = {
+		message: 'An unexpected error has occurred.',
+		background: 'variant-filled-error',
+		timeout: 5000
+	};
 
 	onMount(async () => {
 		if (!data.session) goto('/login');
@@ -37,7 +46,12 @@
 			.select('*')
 			.eq('id', data.session?.user.id);
 
-		if (urlError || !urlData || !urlData.length) return;
+		if (urlError) {
+			toastStore.trigger(serverError);
+			return;
+		}
+
+		if (!urlData || !urlData.length) return;
 
 		urls = urlData;
 		selectURL(urls[0].url);
@@ -124,7 +138,12 @@
 			.select('*')
 			.match({ url: url, is_archived: false });
 
-		if (linkError || !linkData) return;
+		if (linkError) {
+			toastStore.trigger(serverError);
+			return;
+		}
+
+		if (!linkData) return;
 
 		selectedURL = url;
 		links = linkData;

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Modal } from '@skeletonlabs/skeleton';
 	// The ordering of these imports is critical to your app working properly
 	import '../theme.postcss';
 	// If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
@@ -7,7 +6,7 @@
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
 
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Modal, Toast } from '@skeletonlabs/skeleton';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 
@@ -36,6 +35,7 @@
 </script>
 
 <Modal />
+<Toast />
 
 <AppShell>
 	<svelte:fragment slot="header">
