@@ -8,7 +8,8 @@
 		faEllipsisV,
 		faPencil,
 		faMinus,
-		faTrash
+		faTrash,
+		faArrowDown
 	} from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
@@ -163,15 +164,15 @@
 					use:popup={{ event: 'click', target: `popupClick` }}
 				>
 					<span>{selectedURL}</span>
-					<span>↓</span>
+					<Fa icon={faArrowDown} />
 				</button>
 				<!-- Popup -->
 				<div class="card shadow-xl" data-popup="popupClick">
-					<div class="flex flex-col items-start">
+					<div class="flex flex-col">
 						{#each urls.filter((d) => d.url != selectedURL) as urlData}
 							<button
 								type="button"
-								class="btn bg-initial"
+								class="btn variant-soft-surface"
 								on:click={() => {
 									selectURL(urlData.url);
 								}}><Fa icon={faLink} /><span>{urlData.url}</span></button
@@ -179,7 +180,7 @@
 						{/each}
 						<button
 							type="button"
-							class="btn bg-initial"
+							class="btn variant-soft-surface"
 							on:click={() => {
 								modalStore.trigger(createURLModal);
 							}}><Fa icon={faLink} /><span>New URL Prefix</span></button
@@ -209,10 +210,10 @@
 
 					<!-- Popup -->
 					<div class="card shadow-xl" data-popup="deleteURLPopup">
-						<div class="flex flex-col items-start">
+						<div class="flex flex-col">
 							<button
 								type="button"
-								class="btn bg-initial"
+								class="btn variant-soft-surface"
 								on:click={() => {
 									modalStore.trigger({
 										...deleteURLModal,
@@ -253,10 +254,10 @@
 
 							<!-- Popup -->
 							<div class="card shadow-xl" data-popup="editLinkPopup-{i}">
-								<div class="flex flex-col items-start">
+								<div class="flex flex-col">
 									<button
 										type="button"
-										class="btn bg-initial"
+										class="btn variant-soft-surface"
 										on:click={() => {
 											modalStore.trigger({
 												...createLinkModal,
@@ -266,7 +267,7 @@
 									>
 									<button
 										type="button"
-										class="btn bg-initial"
+										class="btn variant-soft-surface"
 										on:click={() => {
 											modalStore.trigger({
 												type: 'component',
@@ -279,7 +280,7 @@
 									>
 									<button
 										type="button"
-										class="btn bg-initial"
+										class="btn variant-soft-surface"
 										on:click={() => {
 											deleteLink(link.link);
 										}}><Fa icon={faMinus} /><span>Archive Link</span></button
