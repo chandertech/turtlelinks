@@ -13,5 +13,6 @@
 		suffix: string;
 		deep_link: string;
 		friendly_name: string;
+		is_archived: boolean;
 	}
 </script>

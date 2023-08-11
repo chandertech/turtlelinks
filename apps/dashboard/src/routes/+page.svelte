@@ -94,7 +94,8 @@
 				url: selectedURL,
 				suffix: suffix,
 				deep_link: deepLink,
-				friendly_name: friendlyName
+				friendly_name: friendlyName,
+				is_archived: false
 			};
 			const { error: linkError } = isEditing
 				? await data.supabase.from('dynamic_links').update(newLink).eq('link', link)

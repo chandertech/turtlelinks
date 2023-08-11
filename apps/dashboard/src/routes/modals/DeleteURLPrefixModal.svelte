@@ -19,7 +19,10 @@
 
 {#if $modalStore[0]}
 	<div class="card w-modal shadow-xl space-y-4 overflow-hidden">
-		<header class="card-header text-2xl font-medium flex bg-red-600 py-4 px-8">
+		<header
+			class="card-header text-2xl font-medium flex py-4 px-8"
+			style="background-color: #D4163C"
+		>
 			<Fa icon={faTriangleExclamation} class="place-self-center pr-2" /><span
 				>Delete URL Prefix and associated links</span
 			>
