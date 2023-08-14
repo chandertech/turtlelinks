@@ -4,7 +4,7 @@
 	import { faAndroid, faApple } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
 	import { modalStore } from '@skeletonlabs/skeleton';
-	import type { LinkInfo } from '$lib/Types.svelte';
+	import type { LinkInfo } from '../../types/database.types';
 
 	const scheme = 'https://';
 

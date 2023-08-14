@@ -20,10 +20,10 @@
 	import DeleteUrlPrefixModal from './modals/DeleteURLPrefixModal.svelte';
 	import CreateLinkModal from './modals/CreateLinkModal.svelte';
 	import LinkDetailModal from './modals/LinkDetailModal.svelte';
-	import type { URLInfo, LinkInfo } from '$lib/Types.svelte';
 
 	import { toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
+	import type { URLInfo, LinkInfo } from '../types/database.types';
 
 	const scheme = 'https://';
 

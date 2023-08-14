@@ -3,7 +3,7 @@
 
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
-	import type { LinkInfo } from '$lib/Types.svelte';
+	import type { LinkInfo } from '../../types/database.types';
 
 	const link = $modalStore[0]?.meta?.link as LinkInfo;
 	const isEditing = $modalStore[0]?.meta?.isEditing;
