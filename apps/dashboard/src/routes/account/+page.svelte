@@ -32,8 +32,8 @@
 	};
 </script>
 
-<div class="mx-auto container p-4">
-	<h1 class="mb-4 text-2xl">Account Information</h1>
+<div class="mx-auto container p-8">
+	<h1 class="mb-4 text-4xl">Account Information</h1>
 	<form
 		id="account-info"
 		method="post"
@@ -83,12 +83,12 @@
 		<input
 			type="submit"
 			form="account-info"
-			class="btn variant-ringed-secondary"
+			class="btn variant-filled-primary"
 			value={loading ? 'Loading...' : 'Update'}
 			disabled={loading}
 		/>
 
-		<button class="btn variant-ringed-primary ml-1" form="sign-out" disabled={loading}
+		<button class="btn variant-filled-error ml-1" form="sign-out" disabled={loading}
 			><Fa icon={faRightFromBracket} /><span>Sign Out</span></button
 		>
 	</div>
