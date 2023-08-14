@@ -28,6 +28,40 @@ export interface Database {
 	};
 	public: {
 		Tables: {
+			dynamic_links: {
+				Row: {
+					deep_link: string;
+					friendly_name: string;
+					is_archived: boolean;
+					link: string;
+					suffix: string;
+					url: string;
+				};
+				Insert: {
+					deep_link: string;
+					friendly_name: string;
+					is_archived?: boolean;
+					link: string;
+					suffix: string;
+					url: string;
+				};
+				Update: {
+					deep_link?: string;
+					friendly_name?: string;
+					is_archived?: boolean;
+					link?: string;
+					suffix?: string;
+					url?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'dynamic_links_url_fkey';
+						columns: ['url'];
+						referencedRelation: 'urls';
+						referencedColumns: ['url'];
+					}
+				];
+			};
 			profiles: {
 				Row: {
 					avatar_url: string | null;
@@ -58,6 +92,34 @@ export interface Database {
 						foreignKeyName: 'profiles_id_fkey';
 						columns: ['id'];
 						referencedRelation: 'users';
+						referencedColumns: ['id'];
+					}
+				];
+			};
+			urls: {
+				Row: {
+					domain: string;
+					id: string;
+					subdomain: string;
+					url: string;
+				};
+				Insert: {
+					domain: string;
+					id: string;
+					subdomain: string;
+					url: string;
+				};
+				Update: {
+					domain?: string;
+					id?: string;
+					subdomain?: string;
+					url?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'urls_id_fkey';
+						columns: ['id'];
+						referencedRelation: 'profiles';
 						referencedColumns: ['id'];
 					}
 				];
