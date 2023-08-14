@@ -1,6 +1,4 @@
 <script lang="ts">
-	export let parent: any;
-
 	import { faCheck, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
