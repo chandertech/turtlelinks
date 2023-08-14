@@ -1,6 +1,4 @@
 <script lang="ts">
-	export let parent: any;
-
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 	import type { LinkInfo } from '$lib/supabase/supabase-types';
