@@ -15,6 +15,7 @@
 	function onFormSubmit(event: Event): void {
 		if ($modalStore[0].response)
 			$modalStore[0].response({ subdomain: inputDomain.replaceAll(domain, ''), domain: domain });
+		modalStore.close();
 	}
 </script>
 

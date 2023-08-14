@@ -6,7 +6,7 @@
 	import type { LinkInfo } from '$lib/supabase/supabase-types';
 
 	const link = $modalStore[0]?.meta?.link as LinkInfo;
-	const isEditing = $modalStore[0]?.meta?.isEditing;
+	const isEditing = $modalStore[0]?.meta?.isEditing ?? false;
 
 	let suffix = link?.suffix ?? '';
 	$: isSuffixValid = suffix.length != 0; // TODO: Validate more.
@@ -20,6 +20,7 @@
 	function onFormSubmit(event: Event): void {
 		if ($modalStore[0].response)
 			$modalStore[0].response({ suffix, deepLink, friendlyName, isEditing });
+		modalStore.close();
 	}
 </script>
 

@@ -72,10 +72,16 @@
 				subdomain: subdomain,
 				domain: domain
 			};
-			const { error: urlError } = await data.supabase.from('urls').insert(newURL); // TODO: Maybe display an error modal?
-			if (urlError) return;
+			const { error: urlError } = await data.supabase.from('urls').insert(newURL);
+			if (urlError) {
+				var msg =
+					urlError.code == '23505'
+						? `URL Prefix with the domain "${subdomain + domain}" already exists!`
+						: serverError.message;
+				toastStore.trigger({ ...serverError, message: msg });
+				return;
+			}
 
-			modalStore.close();
 			urls = [...urls, newURL];
 			selectURL(newURL.url);
 		}
@@ -88,9 +94,11 @@
 			if (!res) return;
 
 			const { error: urlError } = await data.supabase.from('urls').delete().eq('url', selectedURL);
-			if (urlError) return;
+			if (urlError) {
+				toastStore.trigger(serverError);
+				return;
+			}
 
-			modalStore.close();
 			urls = urls.filter((url) => url.url != selectedURL);
 			selectURL(urls.length > 0 ? urls[0].url : '');
 		}
@@ -117,9 +125,15 @@
 			const { error: linkError } = isEditing
 				? await data.supabase.from('dynamic_links').update(newLink).eq('link', link)
 				: await data.supabase.from('dynamic_links').insert(newLink);
-			if (linkError) return; // TODO: Maybe display an error modal?
 
-			modalStore.close();
+			if (linkError) {
+				var msg =
+					linkError.code == '23505'
+						? `Link with the suffix "/${suffix}" already exists!`
+						: serverError.message;
+				toastStore.trigger({ ...serverError, message: msg });
+				return;
+			}
 
 			// If we are editing an existing link, we just need to update the entry.
 			// Otherwise, add to the link array.
@@ -155,7 +169,10 @@
 			.update({ is_archived: true })
 			.eq('link', link);
 
-		if (linkError) return;
+		if (linkError) {
+			toastStore.trigger(serverError);
+			return;
+		}
 
 		links = links.filter((l) => l.link != link);
 	}

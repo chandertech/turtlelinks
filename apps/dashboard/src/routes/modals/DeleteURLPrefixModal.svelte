@@ -14,6 +14,7 @@
 
 	function onFormSubmit(event: Event): void {
 		if ($modalStore[0].response) $modalStore[0].response({ success: true });
+		modalStore.close();
 	}
 </script>
 
