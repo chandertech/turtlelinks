@@ -32,7 +32,7 @@
 	let urls: URLInfo[] = [];
 	let links: LinkInfo[] = [];
 
-	const serverError: ToastSettings = {
+	const toastError: ToastSettings = {
 		message: 'An unexpected error has occurred.',
 		background: 'variant-filled-error',
 		timeout: 5000
@@ -45,7 +45,7 @@
 			.eq('id', data.session?.user.id);
 
 		if (urlError) {
-			toastStore.trigger(serverError);
+			toastStore.trigger(toastError);
 			return;
 		}
 
@@ -75,11 +75,17 @@
 				var msg =
 					urlError.code == '23505'
 						? `URL Prefix with the domain "${subdomain + domain}" already exists!`
-						: serverError.message;
-				toastStore.trigger({ ...serverError, message: msg });
+						: toastError.message;
+				toastStore.trigger({ ...toastError, message: msg });
 				return;
 			}
 
+			modalStore.close();
+			toastStore.trigger({
+				message: `"${newURL.url}" has been successfully created.`,
+				background: 'variant-filled-success',
+				timeout: 5000
+			});
 			urls = [...urls, newURL];
 			selectURL(newURL.url);
 		}
@@ -93,10 +99,11 @@
 
 			const { error: urlError } = await data.supabase.from('urls').delete().eq('url', selectedURL);
 			if (urlError) {
-				toastStore.trigger(serverError);
+				toastStore.trigger(toastError);
 				return;
 			}
 
+			modalStore.close();
 			urls = urls.filter((url) => url.url != selectedURL);
 			selectURL(urls.length > 0 ? urls[0].url : '');
 		}
@@ -127,11 +134,13 @@
 			if (linkError) {
 				var msg =
 					linkError.code == '23505'
-						? `Link with the suffix "/${suffix}" already exists!`
-						: serverError.message;
-				toastStore.trigger({ ...serverError, message: msg });
+						? `Link with the suffix "${suffix}" already exists!`
+						: toastError.message;
+				toastStore.trigger({ ...toastError, message: msg });
 				return;
 			}
+
+			modalStore.close();
 
 			// If we are editing an existing link, we just need to update the entry.
 			// Otherwise, add to the link array.
@@ -151,7 +160,7 @@
 			.match({ url: url, is_archived: false });
 
 		if (linkError) {
-			toastStore.trigger(serverError);
+			toastStore.trigger(toastError);
 			return;
 		}
 
@@ -168,7 +177,7 @@
 			.eq('link', link);
 
 		if (linkError) {
-			toastStore.trigger(serverError);
+			toastStore.trigger(toastError);
 			return;
 		}
 

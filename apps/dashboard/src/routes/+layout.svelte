@@ -34,8 +34,9 @@
 	});
 </script>
 
-<Modal />
+<!-- Toast should appear above any modals -->
 <Toast />
+<Modal zIndex="z-[777]" />
 
 <AppShell>
 	<svelte:fragment slot="header">
