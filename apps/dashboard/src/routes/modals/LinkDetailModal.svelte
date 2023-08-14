@@ -4,7 +4,7 @@
 	import { faAndroid, faApple } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
 	import { modalStore } from '@skeletonlabs/skeleton';
-	import type { LinkInfo } from '../../types/database.types';
+	import type { LinkInfo } from '$lib/supabase/supabase-types';
 
 	const scheme = 'https://';
 

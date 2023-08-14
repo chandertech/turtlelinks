@@ -1,6 +1,3 @@
-export type URLInfo = Database['public']['Tables']['urls']['Row'];
-export type LinkInfo = Database['public']['Tables']['dynamic_links']['Row'];
-
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export interface Database {

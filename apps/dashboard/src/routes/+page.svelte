@@ -23,7 +23,7 @@
 
 	import { toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
-	import type { URLInfo, LinkInfo } from '../types/database.types';
+	import type { URLInfo, LinkInfo } from '$lib/supabase/supabase-types';
 
 	const scheme = 'https://';
 
