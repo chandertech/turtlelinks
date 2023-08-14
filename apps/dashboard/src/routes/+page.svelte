@@ -39,8 +39,6 @@
 	};
 
 	onMount(async () => {
-		if (!data.session) goto('/login');
-
 		const { data: urlData, error: urlError } = await data.supabase
 			.from('urls')
 			.select('*')
