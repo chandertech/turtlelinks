@@ -10,6 +10,17 @@
 	$: isValid = inputDomain.length > 0 && inputDomain.endsWith(domain);
 	$: showWarning = inputDomain.length > 0 && !isValid;
 
+	let isVerified = false;
+
+	async function onStepHandler(e: {
+		detail: { state: { current: number; total: number }; step: number };
+	}) {
+		if (e.detail.step == 0) {
+			const domainRes = await fetch(`/api/check-domain?domain=${inputDomain}`, { method: 'GET' });
+			isVerified = domainRes.ok;
+		}
+	}
+
 	function onFormSubmit(event: Event): void {
 		if ($modalStore[0].response)
 			$modalStore[0].response({ subdomain: inputDomain.replaceAll(domain, ''), domain: domain });
@@ -18,7 +29,7 @@
 
 {#if $modalStore[0]}
 	<div class="card p-8 w-modal shadow-xl space-y-4">
-		<Stepper on:complete={onFormSubmit}>
+		<Stepper on:complete={onFormSubmit} on:step={onStepHandler}>
 			<Step locked={!isValid}>
 				<svelte:fragment slot="header">Add URL prefix</svelte:fragment>
 				<label class="label">
@@ -30,6 +41,10 @@
 						>
 					{/if}
 				</label>
+			</Step>
+			<Step locked={!isVerified}>
+				<svelte:fragment slot="header">Verifying the domain configuration</svelte:fragment>
+				...
 			</Step>
 			<Step>
 				<svelte:fragment slot="header">Finished!</svelte:fragment>
