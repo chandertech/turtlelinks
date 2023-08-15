@@ -1,6 +1,4 @@
 <script lang="ts">
-	export let parent: any;
-
 	import { faAndroid, faApple } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
 	import { modalStore } from '@skeletonlabs/skeleton';
