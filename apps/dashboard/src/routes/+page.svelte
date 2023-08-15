@@ -183,29 +183,40 @@
 
 		links = links.filter((l) => l.link != link);
 	}
-
-	async function testCreate() {
-		const res = await fetch('/api/add-domain', {
-			method: 'POST',
-			body: JSON.stringify({ domain: 'test2.turt.link' })
-		});
-
-		console.log(res);
-	}
 </script>
 
 <div class="sm:container sm:mx-auto justify-center p-8">
-	<!-- Testing... -->
-	<button
-		type="button"
-		class="btn variant-filled-surface"
-		on:click={() => {
-			testCreate();
-		}}
-	>
-		<Fa icon={faLink} />
-		<span>Create Domain</span>
-	</button>
+	<div class="flex flex-col gap-4">
+		<button
+			type="button"
+			class="btn variant-filled-surface"
+			on:click={async () => {
+				const res = await fetch('/api/add-domain', {
+					method: 'POST',
+					body: JSON.stringify({ domain: 'test2.turt.link' })
+				});
+
+				console.log(res);
+			}}
+		>
+			<span>Create Domain</span>
+		</button>
+
+		<button
+			type="button"
+			class="btn variant-filled-surface"
+			on:click={async () => {
+				const res = await fetch('/api/delete-domain', {
+					method: 'DELETE',
+					body: JSON.stringify({ domain: 'test2.turt.link' })
+				});
+
+				console.log(res);
+			}}
+		>
+			<span>Delete Domain</span>
+		</button>
+	</div>
 
 	<div class="flex justify-between">
 		<div class="flex text-4xl">Dashboard</div>
