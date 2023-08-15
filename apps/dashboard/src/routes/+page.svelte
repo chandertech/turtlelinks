@@ -64,6 +64,16 @@
 			if (!data.session) goto('/login');
 
 			const { subdomain, domain } = res;
+			const domainRes = await fetch('/api/add-domain', {
+				method: 'POST',
+				body: JSON.stringify({ url: subdomain + domain })
+			});
+
+			if (!domainRes.ok) {
+				toastStore.trigger(toastError);
+				return;
+			}
+
 			const newURL: URLInfo = {
 				url: subdomain + domain,
 				id: data.session?.user.id ?? '0',
@@ -96,6 +106,16 @@
 		component: { ref: DeleteUrlPrefixModal },
 		response: async (res) => {
 			if (!res) return;
+
+			const domainRes = await fetch('/api/delete-domain', {
+				method: 'DELETE',
+				body: JSON.stringify({ url: selectedURL })
+			});
+
+			if (!domainRes.ok) {
+				toastStore.trigger(toastError);
+				return;
+			}
 
 			const { error: urlError } = await data.supabase.from('urls').delete().eq('url', selectedURL);
 			if (urlError) {
@@ -186,38 +206,6 @@
 </script>
 
 <div class="sm:container sm:mx-auto justify-center p-8">
-	<div class="flex flex-col gap-4">
-		<button
-			type="button"
-			class="btn variant-filled-surface"
-			on:click={async () => {
-				const res = await fetch('/api/add-domain', {
-					method: 'POST',
-					body: JSON.stringify({ domain: 'test2.turt.link' })
-				});
-
-				console.log(res);
-			}}
-		>
-			<span>Create Domain</span>
-		</button>
-
-		<button
-			type="button"
-			class="btn variant-filled-surface"
-			on:click={async () => {
-				const res = await fetch('/api/delete-domain', {
-					method: 'DELETE',
-					body: JSON.stringify({ domain: 'test2.turt.link' })
-				});
-
-				console.log(res);
-			}}
-		>
-			<span>Delete Domain</span>
-		</button>
-	</div>
-
 	<div class="flex justify-between">
 		<div class="flex text-4xl">Dashboard</div>
 		<button

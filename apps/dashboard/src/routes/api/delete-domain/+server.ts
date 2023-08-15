@@ -3,16 +3,16 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const DELETE: RequestHandler = async ({ request }) => {
-	const { domain } = await request.json();
+	const { url } = await request.json();
 
-	// Comment from demo V
+	// Comment from domains demo... investigate later
 	// not required –> only for this demo to prevent removal of a few restricted domains
-	if (restrictedDomains.includes(domain)) {
+	if (restrictedDomains.includes(url)) {
 		throw error(403);
 	}
 
 	const response = await fetch(
-		`https://api.vercel.com/v9/projects/${PROJECT_ID_VERCEL}/domains/${domain}?teamId=${TEAM_ID_VERCEL}`,
+		`https://api.vercel.com/v9/projects/${PROJECT_ID_VERCEL}/domains/${url}?teamId=${TEAM_ID_VERCEL}`,
 		{
 			headers: {
 				Authorization: `Bearer ${AUTH_BEARER_TOKEN}`

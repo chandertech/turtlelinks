@@ -3,12 +3,12 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
-	const { domain } = await request.json();
+	const { url } = await request.json();
 
 	const response = await fetch(
 		`https://api.vercel.com/v9/projects/${PROJECT_ID_VERCEL}/domains?teamId=${TEAM_ID_VERCEL}`,
 		{
-			body: `{\n  "name": "${domain}"\n}`,
+			body: `{\n  "name": "${url}"\n}`,
 			headers: {
 				Authorization: `Bearer ${AUTH_BEARER_TOKEN}`,
 				'Content-Type': 'application/json'
