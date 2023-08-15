@@ -183,9 +183,30 @@
 
 		links = links.filter((l) => l.link != link);
 	}
+
+	async function testCreate() {
+		const res = await fetch('/api/add-domain', {
+			method: 'POST',
+			body: JSON.stringify({ domain: 'test2.turt.link' })
+		});
+
+		console.log(res);
+	}
 </script>
 
 <div class="sm:container sm:mx-auto justify-center p-8">
+	<!-- Testing... -->
+	<button
+		type="button"
+		class="btn variant-filled-surface"
+		on:click={() => {
+			testCreate();
+		}}
+	>
+		<Fa icon={faLink} />
+		<span>Create Domain</span>
+	</button>
+
 	<div class="flex justify-between">
 		<div class="flex text-4xl">Dashboard</div>
 		<button
