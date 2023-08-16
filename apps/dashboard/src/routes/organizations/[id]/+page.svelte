@@ -4,7 +4,7 @@
 </script>
 
 <div class="p-4">
-	<h1 class="py-2">{data.organization?.name}</h1>
+	<h1 class="h1 py-2">{data.organization.name}</h1>
 	<h2 class="py-2">Members</h2>
 	<div class="card container content-center my-2 max-w-lg p-2">
 		{#each data.members as member}

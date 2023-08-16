@@ -62,9 +62,71 @@ export interface Database {
 					}
 				];
 			};
+			organization_invites: {
+				Row: {
+					created_at: string;
+					id: number;
+					invite_code: string;
+					invitee_email: string;
+					inviter_id: string;
+					organization_id: number;
+					status: number;
+				};
+				Insert: {
+					created_at?: string;
+					id?: number;
+					invite_code: string;
+					invitee_email: string;
+					inviter_id: string;
+					organization_id: number;
+					status: number;
+				};
+				Update: {
+					created_at?: string;
+					id?: number;
+					invite_code?: string;
+					invitee_email?: string;
+					inviter_id?: string;
+					organization_id?: number;
+					status?: number;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'organization_invites_inviter_id_fkey';
+						columns: ['inviter_id'];
+						referencedRelation: 'profiles';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'organization_invites_organization_id_fkey';
+						columns: ['organization_id'];
+						referencedRelation: 'organizations';
+						referencedColumns: ['id'];
+					}
+				];
+			};
+			organizations: {
+				Row: {
+					created_at: string;
+					id: number;
+					name: string;
+				};
+				Insert: {
+					created_at?: string;
+					id?: number;
+					name: string;
+				};
+				Update: {
+					created_at?: string;
+					id?: number;
+					name?: string;
+				};
+				Relationships: [];
+			};
 			profiles: {
 				Row: {
 					avatar_url: string | null;
+					email: string;
 					full_name: string | null;
 					id: string;
 					updated_at: string | null;
@@ -73,6 +135,7 @@ export interface Database {
 				};
 				Insert: {
 					avatar_url?: string | null;
+					email: string;
 					full_name?: string | null;
 					id: string;
 					updated_at?: string | null;
@@ -81,6 +144,7 @@ export interface Database {
 				};
 				Update: {
 					avatar_url?: string | null;
+					email?: string;
 					full_name?: string | null;
 					id?: string;
 					updated_at?: string | null;
@@ -119,6 +183,37 @@ export interface Database {
 					{
 						foreignKeyName: 'urls_id_fkey';
 						columns: ['id'];
+						referencedRelation: 'profiles';
+						referencedColumns: ['id'];
+					}
+				];
+			};
+			users_organizations: {
+				Row: {
+					created_at: string;
+					organization_id: number;
+					profile_id: string;
+				};
+				Insert: {
+					created_at?: string;
+					organization_id: number;
+					profile_id: string;
+				};
+				Update: {
+					created_at?: string;
+					organization_id?: number;
+					profile_id?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'users_organizations_organization_id_fkey';
+						columns: ['organization_id'];
+						referencedRelation: 'organizations';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'users_organizations_profile_id_fkey';
+						columns: ['profile_id'];
 						referencedRelation: 'profiles';
 						referencedColumns: ['id'];
 					}

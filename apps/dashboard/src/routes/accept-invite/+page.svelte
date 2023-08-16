@@ -7,7 +7,6 @@
 	export let data;
 
 	const supabase = data.supabase;
-	const session = $page.data.session;
 
 	let successMessage: string | null = null;
 	let errorDescription: string | null = null;
@@ -17,11 +16,25 @@
 	});
 
 	async function checkInvite() {
-		console.log('checkInvite() start');
-		if (!session) {
-			errorDescription = 'You must be logged in to accept an invite';
+		const hashParams = new URLSearchParams(window.location.hash.substring(1));
+		const access_token = hashParams.get('access_token');
+		const refresh_token = hashParams.get('refresh_token');
+
+		if (!access_token || !refresh_token) {
+			errorDescription = 'Missing access or refresh token';
 			return;
 		}
+
+		const { data, error } = await supabase.auth.setSession({
+			access_token,
+			refresh_token
+		});
+
+		if (error || !data.session) {
+			errorDescription = 'Error setting session';
+			return;
+		}
+		const session = data.session;
 
 		// Get invite code from URL and validate
 		const inviteCode = $page.url.searchParams.get('inviteCode');
@@ -85,7 +98,7 @@
 			return;
 		}
 
-		goto(`/settings/organizations/${invite.organization_id}`, { replaceState: true });
+		goto(`/organizations/${invite.organization_id}`, { replaceState: true });
 	}
 </script>
 
