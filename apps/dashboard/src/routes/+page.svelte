@@ -5,6 +5,7 @@
 	import {
 		faAdd,
 		faLink,
+		faLinkSlash,
 		faEllipsisV,
 		faPencil,
 		faMinus,
@@ -13,6 +14,7 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
+	import Loading from '$lib/Loading.svelte';
 	import { popup } from '@skeletonlabs/skeleton';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
@@ -28,6 +30,7 @@
 	const scheme = 'https://';
 
 	export let data;
+	let loading = false;
 	let selectedURL: string;
 	let urls: URLInfo[] = [];
 	let links: LinkInfo[] = [];
@@ -39,10 +42,14 @@
 	};
 
 	onMount(async () => {
+		loading = true;
+
 		const { data: urlData, error: urlError } = await data.supabase
 			.from('urls')
 			.select('*')
 			.eq('id', data.session?.user.id);
+
+		loading = false;
 
 		if (urlError) {
 			toastStore.trigger(toastError);
@@ -201,8 +208,10 @@
 	</div>
 
 	<!-- Table -->
-	{#if selectedURL}
-		<div class="py-12">
+	<div class="py-12">
+		{#if loading}
+			<Loading />
+		{:else if selectedURL}
 			<div class="flex justify-between py-4">
 				<button
 					class="btn variant-filled-surface w-64 justify-between"
@@ -336,6 +345,11 @@
 					</tbody>
 				</table>
 			</div>
-		</div>
-	{/if}
+		{:else}
+			<div class="flex flex-col items-center py-24 text-xl text-slate-400">
+				<Fa icon={faLinkSlash} class="text-4xl mb-2" />
+				You do not have any links yet. Create one to get started.
+			</div>
+		{/if}
+	</div>
 </div>
