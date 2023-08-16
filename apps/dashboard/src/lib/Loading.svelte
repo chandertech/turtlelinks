@@ -7,7 +7,6 @@
 <section class="card w-full">
 	<div class="p-4 space-y-{space}">
 		{#each { length: rows } as _, i (i)}
-			// eslint-disable-line no-unused-vars
 			{#if i % 2 === 0}
 				<div class="grid grid-cols-3 gap-8">
 					<div class="placeholder animate-pulse h-{height}" />
