@@ -8,7 +8,6 @@
 
 	const supabase = data.supabase;
 
-	let successMessage: string | null = null;
 	let errorDescription: string | null = null;
 
 	onMount(() => {
@@ -56,7 +55,8 @@
 		}
 
 		// Check if user is already in organization
-		const { data: userOrgs, error: userOrgsError } = await supabase
+		// todo do something with this error
+		const { data: userOrgs, error: _userOrgsError } = await supabase
 			.from('users_organizations')
 			.select('organization_id')
 			.eq('profile_id', session.user.id)
@@ -106,6 +106,6 @@
 	<div class="p-4">
 		<h2 class="py-2">Error</h2>
 		<p class="py-2">{errorDescription}</p>
-		<p>To login with your email, please <a href="/settings/account">click here</a>.</p>
+		<p>To login with your email, please <a href="/login">click here</a>.</p>
 	</div>
 {/if}
