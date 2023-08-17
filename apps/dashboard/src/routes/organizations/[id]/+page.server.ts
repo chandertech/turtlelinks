@@ -1,6 +1,5 @@
 import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import { fail } from '@sveltejs/kit';
-import { randomUUID } from 'crypto';
 import type { Actions } from './$types';
 import { InviteStatusToDb } from '$lib/types/app';
 
@@ -38,7 +37,7 @@ export const actions: Actions = {
 		}
 
 		// Create invite and insert into database
-		const inviteCode = randomUUID();
+		const inviteCode = crypto.randomUUID();
 		const { error: orgInviteError } = await supabaseClient.from('organization_invites').upsert({
 			inviter_id: session.user.id,
 			invitee_email: email,
