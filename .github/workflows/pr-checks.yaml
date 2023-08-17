@@ -11,6 +11,9 @@ jobs:
     env:
       PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
       PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY }}
+      PROJECT_ID_VERCEL: ${{ secrets.PROJECT_ID_VERCEL }}
+      TEAM_ID_VERCEL: ${{ secrets.TEAM_ID_VERCEL }}
+      AUTH_BEARER_TOKEN: ${{ secrets.AUTH_BEARER_TOKEN }}
 
     steps:
       - uses: actions/checkout@v3
@@ -20,5 +23,3 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run lint
-
-
