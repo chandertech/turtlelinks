@@ -1,12 +1,13 @@
+import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ url, locals: { getSession, supabase } }) => {
+export const load: LayoutServerLoad = async ({ url, locals: { getSession } }) => {
 	const isDevelopment = process.env.NODE_ENV === 'development';
-	const link = isDevelopment ? url.searchParams.get('link') : url.hostname + url.pathname;
+	const link = isDevelopment ? url.searchParams.get('link') : url.toString();
 
 	if (link) {
-		const { data: linkData, error: linkError } = await supabase
+		const { data: linkData, error: linkError } = await supabaseAdminClient
 			.from('dynamic_links')
 			.select('deep_link')
 			.eq('link', link)
