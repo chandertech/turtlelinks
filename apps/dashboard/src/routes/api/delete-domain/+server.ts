@@ -2,13 +2,12 @@ import { PROJECT_ID_VERCEL, TEAM_ID_VERCEL, AUTH_BEARER_TOKEN } from '$env/stati
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const DELETE: RequestHandler = async ({ request }) => {
+export const DELETE: RequestHandler = async ({ request, locals: { getSession } }) => {
 	const { url } = await request.json();
+	const session = await getSession();
 
-	// Comment from domains demo... investigate later
-	// not required –> only for this demo to prevent removal of a few restricted domains
-	if (restrictedDomains.includes(url)) {
-		throw error(403);
+	if (!session) {
+		throw error(401);
 	}
 
 	const response = await fetch(
@@ -23,6 +22,3 @@ export const DELETE: RequestHandler = async ({ request }) => {
 
 	return json(await response.json());
 };
-
-// TODO: Might need to stick in our domains in here?
-const restrictedDomains = ['portfolio.steventey.com', 'cat.vercel.pub'];

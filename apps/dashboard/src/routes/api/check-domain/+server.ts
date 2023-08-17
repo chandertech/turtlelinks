@@ -2,8 +2,13 @@ import { PROJECT_ID_VERCEL, TEAM_ID_VERCEL, AUTH_BEARER_TOKEN } from '$env/stati
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ url, request }) => {
+export const GET: RequestHandler = async ({ url, locals: { getSession } }) => {
 	const domain = url.searchParams.get('domain');
+	const session = await getSession();
+
+	if (!session) {
+		throw error(401);
+	}
 
 	const [configResponse, domainResponse] = await Promise.all([
 		fetch(`https://api.vercel.com/v6/domains/${domain}/config?teamId=${TEAM_ID_VERCEL}`, {
