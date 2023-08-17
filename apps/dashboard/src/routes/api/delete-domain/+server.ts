@@ -2,11 +2,21 @@ import { PROJECT_ID_VERCEL, TEAM_ID_VERCEL, AUTH_BEARER_TOKEN } from '$env/stati
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const DELETE: RequestHandler = async ({ request, locals: { getSession } }) => {
+export const DELETE: RequestHandler = async ({ request, locals: { supabase, getSession } }) => {
 	const { url } = await request.json();
 	const session = await getSession();
 
 	if (!session) {
+		throw error(401);
+	}
+
+	const { data: urlData, error: urlError } = await supabase
+		.from('urls')
+		.select('url')
+		.eq('url', url)
+		.single();
+
+	if (urlError || !urlData) {
 		throw error(401);
 	}
 
