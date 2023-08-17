@@ -1,5 +1,5 @@
 import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
-import { redirect } from '@sveltejs/kit';
+import { redirect, error } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ url, locals: { getSession } }) => {
@@ -14,6 +14,7 @@ export const load: LayoutServerLoad = async ({ url, locals: { getSession } }) =>
 			.single();
 
 		if (!linkError && linkData) throw redirect(303, linkData.deep_link);
+		else throw error(404, 'Deep link not found...');
 	}
 
 	return {
