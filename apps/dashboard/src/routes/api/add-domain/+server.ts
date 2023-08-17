@@ -10,6 +10,11 @@ export const POST: RequestHandler = async ({ request, locals: { getSession } }) 
 		throw error(401);
 	}
 
+	// Remove once we have custom domain support.
+	if (typeof url !== 'string' || !url.endsWith('.turt.link')) {
+		throw error(400);
+	}
+
 	const response = await fetch(
 		`https://api.vercel.com/v9/projects/${PROJECT_ID_VERCEL}/domains?teamId=${TEAM_ID_VERCEL}`,
 		{

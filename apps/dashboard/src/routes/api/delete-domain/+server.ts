@@ -10,6 +10,11 @@ export const DELETE: RequestHandler = async ({ request, locals: { supabase, getS
 		throw error(401);
 	}
 
+	// Remove once we have custom domain support.
+	if (typeof url !== 'string' || !url.endsWith('.turt.link')) {
+		throw error(400);
+	}
+
 	const { data: urlData, error: urlError } = await supabase
 		.from('urls')
 		.select('url')
