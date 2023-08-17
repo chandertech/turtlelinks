@@ -7,11 +7,6 @@
 	const scheme = 'https://';
 
 	let link = $modalStore[0].meta as LinkInfo;
-
-	function onFormSubmit(event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response('');
-		modalStore.close();
-	}
 </script>
 
 {#if $modalStore[0]}

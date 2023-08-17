@@ -10,7 +10,7 @@
 	let input = '';
 	$: isDeleteDisabled = input !== url;
 
-	function onFormSubmit(event: Event): void {
+	function onFormSubmit(_event: Event): void {
 		if ($modalStore[0].response) $modalStore[0].response({ success: true });
 	}
 </script>
