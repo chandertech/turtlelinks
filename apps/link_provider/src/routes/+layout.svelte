@@ -6,7 +6,7 @@
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
 
-	import { AppShell, AppBar, Avatar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 
