@@ -36,7 +36,13 @@
 </svelte:head>
 
 <div class="flex flex-col items-center justify-center p-8">
-	<div class="py-24 font-bold text-5xl">Find a plan to power your projects</div>
+	<div class="flex flex-col gap-3 py-24 text-center">
+		<p class="font-bold text-5xl">Find a plan to power your links</p>
+		<p class="text-slate-300 text-xl">
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ullamcorper arcu ut arcu
+			ultricies venenatis. Sed ac nibh vitae eros scelerisque feugiat.
+		</p>
+	</div>
 	<div class="grid gap-4 md:grid-cols-3 lg:px-24 w-full">
 		{#each pricingPlan as plan}
 			<div class="card container p-8">
