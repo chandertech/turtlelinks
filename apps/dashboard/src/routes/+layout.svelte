@@ -10,7 +10,12 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	import { faUser, faRightToBracket, faLink } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faUser,
+		faRightToBracket,
+		faLink,
+		faDollarSign
+	} from '@fortawesome/free-solid-svg-icons';
 	import { faGithub } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
 
@@ -47,13 +52,19 @@
 						<Fa icon={faLink} />
 						<span><span class="text-green-400">Turtle</span> Links</span>
 					</button></a
-				></svelte:fragment
-			>
+				>
+			</svelte:fragment>
 
 			<svelte:fragment slot="trail">
 				<a href="https://github.com/chandertech/turtlelinks"
 					><button type="button" class="btn-icon variant-filled-surface">
 						<Fa icon={faGithub} />
+					</button></a
+				>
+				<a href="/pricing" class="text-xl"
+					><button type="button" class="btn variant-filled-surface">
+						<Fa icon={faDollarSign} />
+						<span>Pricing</span>
 					</button></a
 				>
 				<a href="/login"
