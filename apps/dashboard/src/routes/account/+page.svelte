@@ -1,47 +1,33 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { SubmitFunction } from '@sveltejs/kit';
+	import { toastStore } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
 
-	import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+	import { faRightFromBracket, faUserCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
+	import Organizations from './Organizations.svelte';
+	import { goto } from '$app/navigation';
+
 	export let data;
-	export let form;
 
 	let { session, profile } = data;
 
-	let profileForm: HTMLFormElement;
 	let loading = false;
 	let fullName = profile?.full_name ?? null;
 	let username = profile?.username ?? null;
 	let website = profile?.website ?? null;
 
-	const handleSubmit: SubmitFunction = () => {
-		loading = true;
-		return async () => {
-			loading = false;
-		};
-	};
+	const organizations = data.organizations ?? [];
 
-	const handleSignOut: SubmitFunction = () => {
-		loading = true;
-		return async ({ update }) => {
-			loading = false;
-			update();
-		};
+	const toastError: ToastSettings = {
+		message: 'An unexpected error has occurred.',
+		background: 'variant-filled-error',
+		timeout: 5000
 	};
 </script>
 
 <div class="mx-auto container p-8">
 	<h1 class="mb-4 text-4xl">Account Information</h1>
-	<form
-		id="account-info"
-		method="post"
-		action="?/update"
-		use:enhance={handleSubmit}
-		bind:this={profileForm}
-	/>
-	<form id="sign-out" method="post" action="?/signout" use:enhance={handleSignOut} />
 
 	<label for="email" class="label text-lg pb-2">Email</label>
 	<input
@@ -59,7 +45,7 @@
 		name="fullName"
 		type="text"
 		class="input mb-4"
-		value={form?.fullName ?? fullName}
+		bind:value={fullName}
 	/>
 	<label for="username" class="label text-lg pb-2">Username</label>
 	<input
@@ -68,7 +54,7 @@
 		name="username"
 		type="text"
 		class="input mb-4"
-		value={form?.username ?? username}
+		bind:value={username}
 	/>
 	<label for="website" class="label text-lg pb-2">Website</label>
 	<input
@@ -77,19 +63,46 @@
 		name="website"
 		type="url"
 		class="input mb-4"
-		value={form?.website ?? website}
+		bind:value={website}
 	/>
 	<div>
-		<input
-			type="submit"
-			form="account-info"
-			class="btn variant-filled-primary"
-			value={loading ? 'Loading...' : 'Update'}
-			disabled={loading}
-		/>
+		<button
+			on:click={async () => {
+				const email = session.user.email;
+				// todo display error
+				if (!email) return;
 
-		<button class="btn variant-filled-error ml-1" form="sign-out" disabled={loading}
-			><Fa icon={faRightFromBracket} /><span>Sign Out</span></button
+				loading = true;
+				const { error } = await data.supabase.from('profiles').upsert({
+					id: session?.user.id,
+					full_name: fullName ? fullName : null,
+					username: username ? username : null,
+					website: website ? website : null,
+					updated_at: new Date().toISOString(),
+					email: email
+				});
+
+				if (error) toastStore.trigger(toastError);
+				loading = false;
+			}}
+			class="btn variant-filled-primary"
+			disabled={loading}
+			><Fa icon={loading ? faSpinner : faUserCheck} /><span
+				>{loading ? 'Loading...' : 'Update'}</span
+			></button
+		>
+
+		<button
+			class="btn variant-filled-error ml-1"
+			disabled={loading}
+			on:click={async () => {
+				await data.supabase.auth.signOut();
+				goto('/login');
+			}}><Fa icon={faRightFromBracket} /><span>Sign Out</span></button
 		>
 	</div>
+	{#if organizations.length > 0}
+		<h2 class="pt-8">Organizations</h2>
+		<Organizations {organizations} />
+	{/if}
 </div>
