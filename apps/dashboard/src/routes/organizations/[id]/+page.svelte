@@ -13,7 +13,15 @@
 		type: 'component',
 		component: { ref: InviteMemberModal },
 		response: async (res) => {
+			if (!res) return;
+
 			const { email } = res;
+			const inviteResponse = await fetch('/api/invite-member', {
+				method: 'POST',
+				body: JSON.stringify({ email: email })
+			});
+
+			console.log(inviteResponse);
 
 			modalStore.close();
 		}

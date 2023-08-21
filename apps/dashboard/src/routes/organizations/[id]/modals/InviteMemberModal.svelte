@@ -6,7 +6,7 @@
 
 	let input = '';
 	$: showWarning = input.length > 0 && !isEmailValid;
-	$: isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input);
+	$: isEmailValid = /(.+)@(.+){2,}\.(.+){2,}/.test(input);
 
 	function onFormSubmit(_event: Event): void {
 		if ($modalStore[0].response) $modalStore[0].response({ email: input });
@@ -31,7 +31,7 @@
 				{#if showWarning}
 					<span class="flex text-xs text-red-500"
 						><Fa class="place-self-center pr-1" icon={faExclamationCircle} />The email entered is
-						invalid.</span
+						invalid</span
 					>
 				{/if}
 			</label>
