@@ -87,7 +87,7 @@
 			return;
 		}
 
-		// Update invite status to accepted. TODO figure out why this doesn't work, maybe convert to transaction
+		// Update invite status to accepted.
 		const { error: _updateInviteStatusError } = await supabase
 			.from('organization_invites')
 			.update({ status: InviteStatusToDb('accepted') })
