@@ -151,8 +151,7 @@
 				url: selectedURL,
 				suffix: suffix,
 				deep_link: deepLink,
-				friendly_name: friendlyName,
-				is_archived: false
+				friendly_name: friendlyName
 			};
 			const { error: linkError } = isEditing
 				? await data.supabase.from('dynamic_links').update(newLink).eq('link', link)
@@ -183,8 +182,7 @@
 	async function selectURL(url: string) {
 		const { data: linkData, error: linkError } = await data.supabase
 			.from('dynamic_links')
-			.select('*')
-			.match({ url: url, is_archived: false });
+			.select('*');
 
 		if (linkError) {
 			toastStore.trigger(toastError);
@@ -198,10 +196,7 @@
 	}
 
 	async function deleteLink(link: string) {
-		const { data: linkError } = await data.supabase
-			.from('dynamic_links')
-			.update({ is_archived: true })
-			.eq('link', link);
+		const { data: linkError } = await data.supabase.from('dynamic_links').delete().eq('link', link);
 
 		if (linkError) {
 			toastStore.trigger(toastError);
@@ -357,7 +352,7 @@
 										class="btn variant-soft-surface"
 										on:click={() => {
 											deleteLink(link.link);
-										}}><Fa icon={faMinus} /><span>Archive Link</span></button
+										}}><Fa icon={faMinus} /><span>Delete Link</span></button
 									>
 								</div>
 							</div>
