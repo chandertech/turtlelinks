@@ -32,7 +32,6 @@ export interface Database {
 				Row: {
 					deep_link: string;
 					friendly_name: string;
-					is_archived: boolean;
 					link: string;
 					suffix: string;
 					url: string;
@@ -40,7 +39,6 @@ export interface Database {
 				Insert: {
 					deep_link: string;
 					friendly_name: string;
-					is_archived?: boolean;
 					link: string;
 					suffix: string;
 					url: string;
@@ -48,7 +46,6 @@ export interface Database {
 				Update: {
 					deep_link?: string;
 					friendly_name?: string;
-					is_archived?: boolean;
 					link?: string;
 					suffix?: string;
 					url?: string;
