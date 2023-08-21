@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+	import { toastStore } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
+
+	import { faRightFromBracket, faUserCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import Organizations from './Organizations.svelte';
@@ -15,6 +18,12 @@
 	let website = profile?.website ?? null;
 
 	const organizations = data.organizations ?? [];
+
+	const toastError: ToastSettings = {
+		message: 'An unexpected error has occurred.',
+		background: 'variant-filled-error',
+		timeout: 5000
+	};
 </script>
 
 <div class="mx-auto container p-8">
@@ -63,7 +72,7 @@
 				// todo display error
 				if (!email) return;
 
-				// todo display error
+				loading = true;
 				const { error } = await data.supabase.from('profiles').upsert({
 					id: session?.user.id,
 					full_name: fullName ? fullName : null,
@@ -72,9 +81,15 @@
 					updated_at: new Date().toISOString(),
 					email: email
 				});
+
+				if (error) toastStore.trigger(toastError);
+				loading = false;
 			}}
 			class="btn variant-filled-primary"
-			disabled={loading}>{loading ? 'Loading...' : 'Update'}</button
+			disabled={loading}
+			><Fa icon={loading ? faSpinner : faUserCheck} /><span
+				>{loading ? 'Loading...' : 'Update'}</span
+			></button
 		>
 
 		<button
