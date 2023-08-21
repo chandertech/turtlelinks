@@ -89,11 +89,13 @@
 			};
 			const { error: urlError } = await data.supabase.from('urls').insert(newURL);
 			if (urlError) {
-				var msg =
-					urlError.code == '23505'
-						? `URL Prefix with the domain "${subdomain + domain}" already exists!`
-						: toastError.message;
-				toastStore.trigger({ ...toastError, message: msg });
+				// Attempt to revert the previous add domain call.
+				await fetch('/api/delete-domain', {
+					method: 'DELETE',
+					body: JSON.stringify({ url: newURL.url })
+				});
+
+				toastStore.trigger(toastError);
 				return;
 			}
 
@@ -126,6 +128,12 @@
 
 			const { error: urlError } = await data.supabase.from('urls').delete().eq('url', selectedURL);
 			if (urlError) {
+				// Attempt to revert the previous delete domain call.
+				await fetch('/api/add-domain', {
+					method: 'POST',
+					body: JSON.stringify({ url: selectedURL })
+				});
+
 				toastStore.trigger(toastError);
 				return;
 			}
