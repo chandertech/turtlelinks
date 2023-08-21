@@ -59,6 +59,18 @@ export interface Database {
 					}
 				];
 			};
+			fake_dns_provider: {
+				Row: {
+					url: string;
+				};
+				Insert: {
+					url?: string;
+				};
+				Update: {
+					url?: string;
+				};
+				Relationships: [];
+			};
 			organization_invites: {
 				Row: {
 					created_at: string;
