@@ -209,7 +209,7 @@
 
 <div class="sm:container sm:mx-auto justify-center p-8">
 	<div class="flex justify-between">
-		<div class="flex text-4xl">Dashboard</div>
+		<h1 class="h1 flex">Dashboard</h1>
 		<button
 			type="button"
 			class="btn variant-filled-surface"

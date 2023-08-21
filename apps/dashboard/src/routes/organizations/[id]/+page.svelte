@@ -3,20 +3,21 @@
 	export let form;
 </script>
 
-<div class="p-4">
-	<h1 class="h1 py-2">{data.organization.name}</h1>
-	<h2 class="py-2">Members</h2>
-	<div class="card container content-center my-2 max-w-lg p-2">
+<div class="mx-auto container p-8">
+	<h1 class="h1 capitalize mb-4">{data.organization.name}'s organization</h1>
+	<div class="card container content-center p-8">
+		<h2 class="text-2xl font-medium">User</h2>
+		<hr class="!border-t-8 mt-2 mb-4" />
 		{#each data.members as member}
-			<ul class="list">
-				<li>
-					<span class="flex-auto">{member.name ?? 'No Name'}</span>
-					<span class="flex-auto">{member.email}</span>
-				</li>
-			</ul>
+			<div>
+				{#if member.name}
+					<p class="font-medium">{member.name}</p>
+				{/if}
+				<p class="text-slate-400">{member.email}</p>
+			</div>
+			<hr class="my-4" />
 		{/each}
-		<hr class="my-4" />
-		<form method="POST">
+		<!-- <form method="POST">
 			<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 				<div class="input-group-shim">Add Member</div>
 				<input name="email" type="email" placeholder="Email..." />
@@ -28,6 +29,9 @@
 			{#if form?.error}
 				<p class="p-2">{form?.error}</p>
 			{/if}
-		</form>
+		</form> -->
+		<div>
+			<p>{data.members.length == 1 ? '1 User' : `${data.members.length} Users`}</p>
+		</div>
 	</div>
 </div>

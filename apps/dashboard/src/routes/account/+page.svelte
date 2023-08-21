@@ -27,7 +27,7 @@
 </script>
 
 <div class="mx-auto container p-8">
-	<h1 class="mb-4 text-4xl">Account Information</h1>
+	<h1 class="h1 mb-4">Account Information</h1>
 
 	<label for="email" class="label text-lg pb-2">Email</label>
 	<input
