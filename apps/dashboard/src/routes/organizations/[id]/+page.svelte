@@ -3,11 +3,12 @@
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import InviteMemberModal from './modals/InviteMemberModal.svelte';
 
+	import { toastStore } from '@skeletonlabs/skeleton';
+
 	import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	export let data;
-	export let form;
 
 	const inviteMemberModal: ModalSettings = {
 		type: 'component',
@@ -21,7 +22,20 @@
 				body: JSON.stringify({ id: data.organization.id, email: email })
 			});
 
-			console.log(inviteResponse);
+			if (!inviteResponse.ok) {
+				toastStore.trigger({
+					message: 'An unexpected error has occurred.',
+					background: 'variant-filled-error',
+					timeout: 5000
+				});
+				return;
+			}
+
+			toastStore.trigger({
+				message: `${email} has been invited to the organization.`,
+				background: 'variant-filled-success',
+				timeout: 5000
+			});
 
 			modalStore.close();
 		}
