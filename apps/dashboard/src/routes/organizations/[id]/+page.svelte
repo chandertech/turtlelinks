@@ -18,7 +18,7 @@
 			const { email } = res;
 			const inviteResponse = await fetch('/api/invite-member', {
 				method: 'POST',
-				body: JSON.stringify({ email: email })
+				body: JSON.stringify({ id: data.organization.id, email: email })
 			});
 
 			console.log(inviteResponse);
