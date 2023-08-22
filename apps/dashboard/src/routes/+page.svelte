@@ -2,22 +2,11 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
-	import {
-		faAdd,
-		faLink,
-		faLinkSlash,
-		faEllipsisV,
-		faPencil,
-		faMinus,
-		faTrash,
-		faArrowDown
-	} from '@fortawesome/free-solid-svg-icons';
+	import { faLink, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
-	import Loading from '$lib/Loading.svelte';
-	import { popup } from '@skeletonlabs/skeleton';
 	import { modalStore } from '@skeletonlabs/skeleton';
-	import type { ModalSettings } from '@skeletonlabs/skeleton';
+	import type { ModalSettings, filter } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
 
 	import { toastStore } from '@skeletonlabs/skeleton';
@@ -26,6 +15,7 @@
 
 	export let data;
 	let organizations: OrgInfo[] = [];
+	let links: URLInfo[] = [];
 
 	const toastError: ToastSettings = {
 		message: 'An unexpected error has occurred.',
@@ -47,7 +37,10 @@
 				(userOrgs ?? []).map((org) => org.organization_id)
 			);
 
+		const { data: linkData } = await data.supabase.from('urls').select('*');
+
 		organizations = orgs ?? [];
+		links = linkData ?? [];
 	});
 
 	const createURLModal: ModalSettings = {
@@ -111,5 +104,23 @@
 			<Fa icon={faLink} />
 			<span>New URL Prefix</span>
 		</button>
+	</div>
+
+	<div class="py-12">
+		{#each organizations as organization}
+			<h2 class="h2 capitalize">{organization.name}</h2>
+			<hr class="!border-t-8 mt-2 mb-4" />
+			<div class="grid gap-8 lg:gap-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 mb-4">
+				{#each links.filter((l) => l.organization_id == organization.id) as link}
+					<a
+						href="/"
+						class="flex justify-between place-items-center card card-hover cursor-pointer p-8"
+					>
+						<p>{link.url}</p>
+						<Fa icon={faRightFromBracket} />
+					</a>
+				{/each}
+			</div>
+		{/each}
 	</div>
 </div>

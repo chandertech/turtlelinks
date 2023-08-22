@@ -14,7 +14,7 @@
 	$: isValid = inputDomain.length > 0 && inputDomain.endsWith(domain);
 	$: showWarning = inputDomain.length > 0 && !isValid;
 
-	function onFormSubmit(event: Event): void {
+	function onFormSubmit(_event: Event): void {
 		if ($modalStore[0].response)
 			$modalStore[0].response({
 				subdomain: inputDomain.replaceAll(domain, ''),

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
-	import InviteMemberModal from './modals/InviteMemberModal.svelte';
+	import InviteMemberModal from './InviteMemberModal.svelte';
 
 	import { toastStore } from '@skeletonlabs/skeleton';
 
