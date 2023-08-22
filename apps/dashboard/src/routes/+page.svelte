@@ -15,7 +15,7 @@
 
 	export let data;
 	let organizations: OrgInfo[] = [];
-	let links: URLInfo[] = [];
+	let urls: URLInfo[] = [];
 
 	const toastError: ToastSettings = {
 		message: 'An unexpected error has occurred.',
@@ -37,10 +37,10 @@
 				(userOrgs ?? []).map((org) => org.organization_id)
 			);
 
-		const { data: linkData } = await data.supabase.from('urls').select('*');
+		const { data: urlData } = await data.supabase.from('urls').select('*');
 
 		organizations = orgs ?? [];
-		links = linkData ?? [];
+		urls = urlData ?? [];
 	});
 
 	const createURLModal: ModalSettings = {
@@ -84,6 +84,8 @@
 				background: 'variant-filled-success',
 				timeout: 5000
 			});
+
+			urls = [...urls, newURL];
 		}
 	};
 </script>
@@ -111,12 +113,12 @@
 			<h2 class="h2 capitalize">{organization.name}</h2>
 			<hr class="!border-t-8 mt-2 mb-4" />
 			<div class="grid gap-8 lg:gap-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 mb-4">
-				{#each links.filter((l) => l.organization_id == organization.id) as link}
+				{#each urls.filter((url) => url.organization_id == organization.id) as url}
 					<a
-						href="/"
+						href="/projects/{organization.id}"
 						class="flex justify-between place-items-center card card-hover cursor-pointer p-8"
 					>
-						<p>{link.url}</p>
+						<p>{url.url}</p>
 						<Fa icon={faRightFromBracket} />
 					</a>
 				{/each}

@@ -30,6 +30,7 @@
 	const scheme = 'https://';
 
 	export let data;
+	let organizationId = parseInt(data.orgId);
 	let loading = false;
 	let selectedURL: string;
 	let urls: URLInfo[] = [];
@@ -47,7 +48,7 @@
 		const { data: urlData, error: urlError } = await data.supabase
 			.from('urls')
 			.select('*')
-			.eq('id', data.session?.user.id);
+			.eq('organization_id', organizationId);
 
 		loading = false;
 
@@ -61,52 +62,6 @@
 		urls = urlData;
 		selectURL(urls[0].url);
 	});
-
-	const createURLModal: ModalSettings = {
-		type: 'component',
-		component: { ref: CreateURLPrefixModal },
-		response: async (res) => {
-			if (!res) return;
-
-			if (!data.session) goto('/login');
-
-			const { subdomain, domain } = res;
-			const domainRes = await fetch('/api/add-domain', {
-				method: 'POST',
-				body: JSON.stringify({ url: subdomain + domain })
-			});
-
-			if (!domainRes.ok) {
-				toastStore.trigger(toastError);
-				return;
-			}
-
-			const newURL: URLInfo = {
-				url: subdomain + domain,
-				organization_id: 0, // TODO: Fix up.
-				subdomain: subdomain,
-				domain: domain
-			};
-			const { error: urlError } = await data.supabase.from('urls').insert(newURL);
-			if (urlError) {
-				var msg =
-					urlError.code == '23505'
-						? `URL Prefix with the domain "${subdomain + domain}" already exists!`
-						: toastError.message;
-				toastStore.trigger({ ...toastError, message: msg });
-				return;
-			}
-
-			modalStore.close();
-			toastStore.trigger({
-				message: `"${newURL.url}" has been successfully created.`,
-				background: 'variant-filled-success',
-				timeout: 5000
-			});
-			urls = [...urls, newURL];
-			selectURL(newURL.url);
-		}
-	};
 
 	const deleteURLModal: ModalSettings = {
 		type: 'component',
@@ -132,6 +87,11 @@
 
 			modalStore.close();
 			urls = urls.filter((url) => url.url != selectedURL);
+			if (urls.length == 0) {
+				goto('/');
+				return;
+			}
+
 			selectURL(urls.length > 0 ? urls[0].url : '');
 		}
 	};
@@ -209,17 +169,7 @@
 
 <div class="sm:container sm:mx-auto justify-center p-8">
 	<div class="flex justify-between">
-		<h1 class="h1 flex">Dashboard</h1>
-		<button
-			type="button"
-			class="btn variant-filled-surface"
-			on:click={() => {
-				modalStore.trigger(createURLModal);
-			}}
-		>
-			<Fa icon={faLink} />
-			<span>New URL Prefix</span>
-		</button>
+		<h1 class="h1 flex">{selectedURL ?? ''}</h1>
 	</div>
 
 	<!-- Table -->
@@ -247,13 +197,6 @@
 								}}><Fa icon={faLink} /><span>{urlData.url}</span></button
 							>
 						{/each}
-						<button
-							type="button"
-							class="btn variant-soft-surface"
-							on:click={() => {
-								modalStore.trigger(createURLModal);
-							}}><Fa icon={faLink} /><span>New URL Prefix</span></button
-						>
 					</div>
 					<div class="arrow" />
 				</div>
