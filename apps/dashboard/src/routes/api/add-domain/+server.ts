@@ -18,6 +18,7 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 		throw error(400);
 	}
 
+	// Check if the user has permission to insert into this org.
 	const { data: orgData, error: orgError } = await supabase
 		.from('users_organizations')
 		.select('organization_id')
@@ -25,7 +26,6 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 		.eq('organization_id', orgId)
 		.single();
 
-	// Check if the user has permission to insert into this org.
 	if (!orgData || orgError) {
 		throw error(403);
 	}

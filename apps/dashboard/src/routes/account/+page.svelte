@@ -5,7 +5,6 @@
 	import { faRightFromBracket, faUserCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
-	import Organizations from './Organizations.svelte';
 	import { goto } from '$app/navigation';
 
 	export let data;
@@ -101,8 +100,4 @@
 			}}><Fa icon={faRightFromBracket} /><span>Sign Out</span></button
 		>
 	</div>
-	{#if organizations.length > 0}
-		<h2 class="pt-8">Organizations</h2>
-		<Organizations {organizations} />
-	{/if}
 </div>

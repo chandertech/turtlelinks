@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 
-	import { faLink, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+	import { faLink, faChevronRight, faGear } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import { modalStore } from '@skeletonlabs/skeleton';
-	import type { ModalSettings, filter } from '@skeletonlabs/skeleton';
+	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
 
 	import { toastStore } from '@skeletonlabs/skeleton';
@@ -108,7 +107,14 @@
 			<Loading />
 		{:else}
 			{#each organizations as organization}
-				<h2 class="h3 capitalize">{organization.name}'s Org</h2>
+				<div class="flex justify-between">
+					<h2 class="h3 capitalize">{organization.name}'s Org</h2>
+					<a href="/organizations/{organization.id}"
+						><button type="button" class="btn-icon variant-filled-surface">
+							<Fa icon={faGear} />
+						</button></a
+					>
+				</div>
 				<div class="py-4">
 					{#if urls.filter((url) => url.organization_id == organization.id).length > 0}
 						<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
