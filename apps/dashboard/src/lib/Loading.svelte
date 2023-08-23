@@ -4,7 +4,7 @@
 	export let space = 8;
 </script>
 
-<section class="card w-full">
+<section class="w-full">
 	<div class="p-4 space-y-{space}">
 		{#each { length: rows } as _, i}
 			{#if i % 2 === 0}

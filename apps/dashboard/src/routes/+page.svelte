@@ -12,10 +12,12 @@
 	import { toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import type { URLInfo, OrgInfo } from '$lib/supabase/supabase-types';
+	import Loading from '$lib/Loading.svelte';
 
 	export let data;
 	let organizations: OrgInfo[] = [];
 	let urls: URLInfo[] = [];
+	let loading = false;
 
 	const toastError: ToastSettings = {
 		message: 'An unexpected error has occurred.',
@@ -24,6 +26,8 @@
 	};
 
 	onMount(async () => {
+		loading = true;
+
 		const { data: userOrgs } = await data.supabase
 			.from('users_organizations')
 			.select('profile_id, organization_id')
@@ -41,6 +45,8 @@
 
 		organizations = orgs ?? [];
 		urls = urlData ?? [];
+
+		loading = false;
 	});
 
 	const createURLModal: ModalSettings = {
@@ -98,46 +104,50 @@
 	</div>
 
 	<div class="py-12">
-		{#each organizations as organization}
-			<h2 class="h3 capitalize">{organization.name}'s Org</h2>
-			<div class="py-4">
-				{#if urls.filter((url) => url.organization_id == organization.id).length > 0}
-					<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
-						{#each urls.filter((url) => url.organization_id == organization.id) as url}
-							<a
-								href="/projects/{organization.id}?url={url.url}"
-								class="flex justify-between place-items-center card card-hover cursor-pointer px-8 h-40"
-							>
-								<div class="flex flex-col gap-2">
-									<p class="flex gap-2">{url.url}</p>
-									<p class="flex gap-2 text-slate-400">{organization.name}</p>
-								</div>
-								<Fa icon={faChevronRight} />
-							</a>
-						{/each}
-					</div>
-				{:else}
-					<div
-						class="flex flex-col justify-center place-items-center border-solid border-dashed border-2 border-slate-400 rounded h-40"
-					>
-						<p>No links</p>
-						<p class="text-slate-400 text-sm mb-4">Get started by creating a new link.</p>
-						<button
-							type="button"
-							class="btn variant-ghost"
-							on:click={() => {
-								modalStore.trigger({
-									...createURLModal,
-									meta: { organizations: organizations }
-								});
-							}}
+		{#if loading}
+			<Loading />
+		{:else}
+			{#each organizations as organization}
+				<h2 class="h3 capitalize">{organization.name}'s Org</h2>
+				<div class="py-4">
+					{#if urls.filter((url) => url.organization_id == organization.id).length > 0}
+						<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+							{#each urls.filter((url) => url.organization_id == organization.id) as url}
+								<a
+									href="/projects/{organization.id}?url={url.url}"
+									class="flex justify-between place-items-center card card-hover cursor-pointer px-8 h-40"
+								>
+									<div class="flex flex-col gap-2">
+										<p class="flex gap-2">{url.url}</p>
+										<p class="flex gap-2 text-slate-400">{organization.name}</p>
+									</div>
+									<Fa icon={faChevronRight} />
+								</a>
+							{/each}
+						</div>
+					{:else}
+						<div
+							class="flex flex-col justify-center place-items-center border-solid border-dashed border-2 border-slate-400 rounded h-40"
 						>
-							<Fa icon={faLink} />
-							<span>New URL Prefix</span>
-						</button>
-					</div>
-				{/if}
-			</div>
-		{/each}
+							<p>No links</p>
+							<p class="text-slate-400 text-sm mb-4">Get started by creating a new link.</p>
+							<button
+								type="button"
+								class="btn variant-ghost"
+								on:click={() => {
+									modalStore.trigger({
+										...createURLModal,
+										meta: { organizations: organizations }
+									});
+								}}
+							>
+								<Fa icon={faLink} />
+								<span>New URL Prefix</span>
+							</button>
+						</div>
+					{/if}
+				</div>
+			{/each}
+		{/if}
 	</div>
 </div>
