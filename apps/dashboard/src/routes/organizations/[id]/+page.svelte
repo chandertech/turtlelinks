@@ -44,7 +44,7 @@
 
 <div class="sm:container sm:mx-auto justify-center p-8">
 	<div class="flex justify-between">
-		<h1 class="h1 capitalize">{data.organization.name}'s organization</h1>
+		<h1 class="h2 capitalize">{data.organization.name}'s organization</h1>
 		<button
 			type="button"
 			class="btn variant-filled-surface"
@@ -59,8 +59,8 @@
 
 	<div class="py-12">
 		<div class="card container content-center p-8">
-			<h2 class="text-2xl font-medium">User</h2>
-			<hr class="!border-t-8 mt-2 mb-4" />
+			<h2 class="text-2xl">User</h2>
+			<hr class="my-4" />
 			{#each data.members as member}
 				<div>
 					{#if member.name}

@@ -169,7 +169,7 @@
 
 <div class="sm:container sm:mx-auto justify-center p-8">
 	<div class="flex justify-between">
-		<h1 class="h1 flex">{selectedURL ?? ''}</h1>
+		<h1 class="h2">{selectedURL ?? ''}</h1>
 	</div>
 
 	<!-- Table -->
