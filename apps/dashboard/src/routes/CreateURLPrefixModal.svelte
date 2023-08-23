@@ -27,19 +27,21 @@
 {#if $modalStore[0]}
 	<div class="card p-8 w-modal shadow-xl space-y-4">
 		<Stepper on:complete={onFormSubmit}>
-			<Step locked={!selectedOrgId}>
-				<svelte:fragment slot="header">Select an organization</svelte:fragment>
-				<select
-					class="select"
-					size={organizations.length < 4 ? organizations.length : 4}
-					bind:value={selectedOrgId}
-					on:change={() => {}}
-				>
-					{#each organizations as organization}
-						<option value={organization.id}>{organization.name}</option>
-					{/each}
-				</select>
-			</Step>
+			{#if organizations.length > 1}
+				<Step locked={!selectedOrgId}>
+					<svelte:fragment slot="header">Select an organization</svelte:fragment>
+					<select
+						class="select"
+						size={organizations.length < 4 ? organizations.length : 4}
+						bind:value={selectedOrgId}
+						on:change={() => {}}
+					>
+						{#each organizations as organization}
+							<option value={organization.id}>{organization.name}</option>
+						{/each}
+					</select>
+				</Step>
+			{/if}
 			<Step locked={!isValid}>
 				<svelte:fragment slot="header">Add URL prefix</svelte:fragment>
 				<label class="label">

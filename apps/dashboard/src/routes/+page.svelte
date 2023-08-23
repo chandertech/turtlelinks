@@ -49,12 +49,10 @@
 		response: async (res) => {
 			if (!res) return;
 
-			if (!data.session) goto('/login');
-
 			const { subdomain, domain, orgId } = res;
 			const domainRes = await fetch('/api/add-domain', {
 				method: 'POST',
-				body: JSON.stringify({ url: subdomain + domain })
+				body: JSON.stringify({ subdomain: subdomain, domain: domain, orgId: orgId })
 			});
 
 			if (!domainRes.ok) {
@@ -63,20 +61,11 @@
 			}
 
 			const newURL: URLInfo = {
-				url: subdomain + domain,
+				domain: domain,
 				organization_id: orgId,
 				subdomain: subdomain,
-				domain: domain
+				url: subdomain + domain
 			};
-			const { error: urlError } = await data.supabase.from('urls').insert(newURL);
-			if (urlError) {
-				var msg =
-					urlError.code == '23505'
-						? `URL Prefix with the domain "${subdomain + domain}" already exists!`
-						: toastError.message;
-				toastStore.trigger({ ...toastError, message: msg });
-				return;
-			}
 
 			modalStore.close();
 			toastStore.trigger({

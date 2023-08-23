@@ -1,4 +1,4 @@
-import { redirect } from '@sveltejs/kit';
+import { redirect, error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params, parent }) => {
@@ -8,6 +8,15 @@ export const load: PageLoad = async ({ params, parent }) => {
 		throw redirect(303, '/login');
 	}
 
-	const orgId = params.id;
-	return { supabase, session, orgId };
+	const { data: org, error: err } = await supabase
+		.from('organizations')
+		.select('*')
+		.eq('id', params.id)
+		.single();
+
+	if (err) {
+		throw error(500, '/');
+	}
+
+	return { supabase, session, org };
 };

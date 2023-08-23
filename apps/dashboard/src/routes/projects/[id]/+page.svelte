@@ -18,7 +18,7 @@
 	import { popup } from '@skeletonlabs/skeleton';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
-	import CreateURLPrefixModal from './modals/CreateURLPrefixModal.svelte';
+	import CreateURLPrefixModal from '../../CreateURLPrefixModal.svelte';
 	import DeleteUrlPrefixModal from './modals/DeleteURLPrefixModal.svelte';
 	import CreateLinkModal from './modals/CreateLinkModal.svelte';
 	import LinkDetailModal from './modals/LinkDetailModal.svelte';
@@ -30,7 +30,6 @@
 	const scheme = 'https://';
 
 	export let data;
-	let organizationId = parseInt(data.orgId);
 	let loading = false;
 	let selectedURL: string;
 	let urls: URLInfo[] = [];
@@ -48,7 +47,7 @@
 		const { data: urlData, error: urlError } = await data.supabase
 			.from('urls')
 			.select('*')
-			.eq('organization_id', organizationId);
+			.eq('organization_id', data.org.id);
 
 		loading = false;
 
@@ -65,6 +64,42 @@
 		const paramUrl = urls.find((url) => url.url == urlParams.get('url'))?.url;
 		selectURL(paramUrl ? paramUrl : urls[0].url);
 	});
+
+	const createURLModal: ModalSettings = {
+		type: 'component',
+		component: { ref: CreateURLPrefixModal },
+		response: async (res) => {
+			if (!res) return;
+
+			const { subdomain, domain, orgId } = res;
+			const domainRes = await fetch('/api/add-domain', {
+				method: 'POST',
+				body: JSON.stringify({ subdomain: subdomain, domain: domain, orgId: orgId })
+			});
+
+			if (!domainRes.ok) {
+				toastStore.trigger(toastError);
+				return;
+			}
+
+			const newURL: URLInfo = {
+				url: subdomain + domain,
+				organization_id: orgId,
+				subdomain: subdomain,
+				domain: domain
+			};
+
+			modalStore.close();
+			toastStore.trigger({
+				message: `"${newURL.url}" has been successfully created.`,
+				background: 'variant-filled-success',
+				timeout: 5000
+			});
+
+			urls = [...urls, newURL];
+			selectURL(newURL.url);
+		}
+	};
 
 	const deleteURLModal: ModalSettings = {
 		type: 'component',
@@ -145,7 +180,8 @@
 	async function selectURL(url: string) {
 		const { data: linkData, error: linkError } = await data.supabase
 			.from('dynamic_links')
-			.select('*');
+			.select('*')
+			.eq('url', url);
 
 		if (linkError) {
 			toastStore.trigger(toastError);
@@ -200,6 +236,16 @@
 								}}><Fa icon={faLink} /><span>{urlData.url}</span></button
 							>
 						{/each}
+						<button
+							type="button"
+							class="btn variant-soft-surface"
+							on:click={() => {
+								modalStore.trigger({
+									...createURLModal,
+									meta: { organizations: [data.org] }
+								});
+							}}><Fa icon={faLink} /><span>New URL Prefix</span></button
+						>
 					</div>
 					<div class="arrow" />
 				</div>
