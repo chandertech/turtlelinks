@@ -112,16 +112,40 @@
 		{#each organizations as organization}
 			<h2 class="h2 capitalize">{organization.name}</h2>
 			<hr class="!border-t-8 mt-2 mb-4" />
-			<div class="grid gap-8 lg:gap-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 mb-4">
-				{#each urls.filter((url) => url.organization_id == organization.id) as url}
-					<a
-						href="/projects/{organization.id}"
-						class="flex justify-between place-items-center card card-hover cursor-pointer p-8"
+			<div class="mb-4">
+				{#if urls.filter((url) => url.organization_id == organization.id).length > 0}
+					<div class="grid gap-8 lg:gap-16 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+						{#each urls.filter((url) => url.organization_id == organization.id) as url}
+							<a
+								href="/projects/{organization.id}"
+								class="flex justify-between place-items-center card card-hover cursor-pointer p-8"
+							>
+								<p>{url.url}</p>
+								<Fa icon={faRightFromBracket} />
+							</a>
+						{/each}
+					</div>
+				{:else}
+					<div
+						class="flex flex-col place-items-center border-solid border-dashed border-2 border-slate-400 rounded p-8"
 					>
-						<p>{url.url}</p>
-						<Fa icon={faRightFromBracket} />
-					</a>
-				{/each}
+						<p>No links</p>
+						<p class="text-slate-400 text-sm mb-4">Get started by creating a new link.</p>
+						<button
+							type="button"
+							class="btn variant-ringed-primary"
+							on:click={() => {
+								modalStore.trigger({
+									...createURLModal,
+									meta: { organizations: organizations }
+								});
+							}}
+						>
+							<Fa icon={faLink} />
+							<span>New URL Prefix</span>
+						</button>
+					</div>
+				{/if}
 			</div>
 		{/each}
 	</div>
