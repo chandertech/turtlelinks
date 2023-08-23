@@ -84,7 +84,7 @@
 				if (error) toastStore.trigger(toastError);
 				loading = false;
 			}}
-			class="btn variant-filled-primary"
+			class="btn variant-ghost-primary"
 			disabled={loading}
 			><Fa icon={loading ? faSpinner : faUserCheck} /><span
 				>{loading ? 'Loading...' : 'Update'}</span
@@ -92,7 +92,7 @@
 		>
 
 		<button
-			class="btn variant-filled-error ml-1"
+			class="btn variant-ghost-error ml-1"
 			disabled={loading}
 			on:click={async () => {
 				await data.supabase.auth.signOut();

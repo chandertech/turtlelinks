@@ -5,8 +5,10 @@
 
 	import { toastStore } from '@skeletonlabs/skeleton';
 
-	import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
+	import { faUserPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
+	import DeleteOrgModal from './DeleteOrgModal.svelte';
+	import { goto } from '$app/navigation';
 
 	export let data;
 
@@ -40,21 +42,55 @@
 			modalStore.close();
 		}
 	};
+
+	const deleteOrgModal: ModalSettings = {
+		type: 'component',
+		component: { ref: DeleteOrgModal },
+		response: async (res) => {
+			if (!res) return;
+
+			const { error: orgError } = await data.supabase
+				.from('organizations')
+				.delete()
+				.eq('id', data.organization.id);
+			if (orgError) {
+				return;
+			}
+
+			modalStore.close();
+			goto('/');
+		}
+	};
 </script>
 
 <div class="sm:container sm:mx-auto justify-center p-8">
 	<div class="flex justify-between">
 		<h1 class="h2 capitalize">{data.organization.name}'s org</h1>
-		<button
-			type="button"
-			class="btn variant-filled-surface"
-			on:click={() => {
-				modalStore.trigger(inviteMemberModal);
-			}}
-		>
-			<Fa icon={faUserPlus} />
-			<span>Invite Member</span>
-		</button>
+		<div class="flex gap-2">
+			<button
+				type="button"
+				class="btn variant-ghost-primary"
+				on:click={() => {
+					modalStore.trigger(inviteMemberModal);
+				}}
+			>
+				<Fa icon={faUserPlus} />
+				<span>Invite Member</span>
+			</button>
+			<button
+				type="button"
+				class="btn variant-ghost-error"
+				on:click={() => {
+					modalStore.trigger({
+						...deleteOrgModal,
+						meta: { id: data.organization.id, name: data.organization.name }
+					});
+				}}
+			>
+				<Fa icon={faTrash} />
+				<span>Delete Organization</span>
+			</button>
+		</div>
 	</div>
 
 	<div class="py-12">

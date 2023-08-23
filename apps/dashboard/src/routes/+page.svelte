@@ -118,7 +118,7 @@
 			{#if organizations.length > 0}
 				<button
 					type="button"
-					class="btn variant-filled-surface"
+					class="btn variant-ghost-primary"
 					on:click={() => {
 						modalStore.trigger({
 							...createURLModal,
@@ -132,13 +132,13 @@
 			{/if}
 			<button
 				type="button"
-				class="btn variant-filled-surface"
+				class="btn variant-ghost-secondary"
 				on:click={() => {
 					modalStore.trigger(createOrgModal);
 				}}
 			>
 				<Fa icon={faUsers} />
-				<span>Create Org</span>
+				<span>Create Organization</span>
 			</button>
 		</div>
 	</div>

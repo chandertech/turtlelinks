@@ -19,9 +19,9 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from '../../CreateURLPrefixModal.svelte';
-	import DeleteUrlPrefixModal from './modals/DeleteURLPrefixModal.svelte';
-	import CreateLinkModal from './modals/CreateLinkModal.svelte';
-	import LinkDetailModal from './modals/LinkDetailModal.svelte';
+	import DeleteUrlPrefixModal from './DeleteURLPrefixModal.svelte';
+	import CreateLinkModal from './CreateLinkModal.svelte';
+	import LinkDetailModal from './LinkDetailModal.svelte';
 
 	import { toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -253,7 +253,7 @@
 				<div>
 					<button
 						type="button"
-						class="btn variant-filled-surface mr-1"
+						class="btn variant-ghost-primary mr-1"
 						on:click={() => {
 							modalStore.trigger(createLinkModal);
 						}}
@@ -263,27 +263,17 @@
 					</button>
 					<button
 						type="button"
-						class="btn-icon variant-filled-surface mt-2"
-						use:popup={{ event: 'click', target: `deleteURLPopup` }}
+						class="btn variant-ghost-error"
+						on:click={() => {
+							modalStore.trigger({
+								...deleteURLModal,
+								meta: { url: selectedURL, count: links.length }
+							});
+						}}
 					>
-						<Fa icon={faEllipsisV} />
+						<Fa icon={faTrash} />
+						<span>Delete URL Prefix</span>
 					</button>
-
-					<!-- Popup -->
-					<div class="card shadow-xl" data-popup="deleteURLPopup">
-						<div class="flex flex-col">
-							<button
-								type="button"
-								class="btn variant-soft-surface"
-								on:click={() => {
-									modalStore.trigger({
-										...deleteURLModal,
-										meta: { url: selectedURL, count: links.length }
-									});
-								}}><Fa icon={faTrash} /><span>Delete URL Prefix</span></button
-							>
-						</div>
-					</div>
 				</div>
 			</div>
 			<div class="table-container">
