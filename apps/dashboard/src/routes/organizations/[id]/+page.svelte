@@ -44,7 +44,7 @@
 
 <div class="sm:container sm:mx-auto justify-center p-8">
 	<div class="flex justify-between">
-		<h1 class="h2 capitalize">{data.organization.name}'s organization</h1>
+		<h1 class="h2 capitalize">{data.organization.name}'s org</h1>
 		<button
 			type="button"
 			class="btn variant-filled-surface"

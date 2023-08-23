@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { faLink, faChevronRight, faGear } from '@fortawesome/free-solid-svg-icons';
+	import { faLink, faUsers, faChevronRight, faGear } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import { modalStore } from '@skeletonlabs/skeleton';
@@ -12,6 +12,7 @@
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import type { URLInfo, OrgInfo } from '$lib/supabase/supabase-types';
 	import Loading from '$lib/Loading.svelte';
+	import CreateOrgModal from './CreateOrgModal.svelte';
 
 	export let data;
 	let organizations: OrgInfo[] = [];
@@ -25,6 +26,10 @@
 	};
 
 	onMount(async () => {
+		fetchData();
+	});
+
+	async function fetchData() {
 		loading = true;
 
 		const { data: userOrgs } = await data.supabase
@@ -46,7 +51,7 @@
 		urls = urlData ?? [];
 
 		loading = false;
-	});
+	}
 
 	const createURLModal: ModalSettings = {
 		type: 'component',
@@ -82,24 +87,60 @@
 			urls = [...urls, newURL];
 		}
 	};
+
+	const createOrgModal: ModalSettings = {
+		type: 'component',
+		component: { ref: CreateOrgModal },
+		response: async (res) => {
+			if (!res) return;
+
+			const { name } = res;
+			const orgRes = await fetch('/api/create-org', {
+				method: 'POST',
+				body: JSON.stringify({ name: name })
+			});
+
+			if (!orgRes.ok) {
+				toastStore.trigger(toastError);
+				return;
+			}
+
+			modalStore.close();
+			fetchData();
+		}
+	};
 </script>
 
 <div class="sm:container sm:mx-auto justify-center p-8">
 	<div class="flex justify-between">
 		<h1 class="h2">Dashboard</h1>
-		<button
-			type="button"
-			class="btn variant-filled-surface"
-			on:click={() => {
-				modalStore.trigger({
-					...createURLModal,
-					meta: { organizations: organizations }
-				});
-			}}
-		>
-			<Fa icon={faLink} />
-			<span>New URL Prefix</span>
-		</button>
+		<div class="flex gap-2">
+			{#if organizations.length > 0}
+				<button
+					type="button"
+					class="btn variant-filled-surface"
+					on:click={() => {
+						modalStore.trigger({
+							...createURLModal,
+							meta: { organizations: organizations }
+						});
+					}}
+				>
+					<Fa icon={faLink} />
+					<span>New URL Prefix</span>
+				</button>
+			{/if}
+			<button
+				type="button"
+				class="btn variant-filled-surface"
+				on:click={() => {
+					modalStore.trigger(createOrgModal);
+				}}
+			>
+				<Fa icon={faUsers} />
+				<span>Create Org</span>
+			</button>
+		</div>
 	</div>
 
 	<div class="py-12">
