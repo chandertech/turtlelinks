@@ -60,7 +60,10 @@
 		if (!urlData || !urlData.length) return;
 
 		urls = urlData;
-		selectURL(urls[0].url);
+
+		const urlParams = new URLSearchParams(window.location.search);
+		const paramUrl = urls.find((url) => url.url == urlParams.get('url'))?.url;
+		selectURL(paramUrl ? paramUrl : urls[0].url);
 	});
 
 	const deleteURLModal: ModalSettings = {

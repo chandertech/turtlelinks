@@ -116,7 +116,7 @@
 					<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
 						{#each urls.filter((url) => url.organization_id == organization.id) as url}
 							<a
-								href="/projects/{organization.id}"
+								href="/projects/{organization.id}?url={url.url}"
 								class="flex justify-between place-items-center card card-hover cursor-pointer px-8 h-40"
 							>
 								<div class="flex flex-col gap-2">
