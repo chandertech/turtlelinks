@@ -49,11 +49,17 @@
 		response: async (res) => {
 			if (!res) return;
 
-			const { error: orgError } = await data.supabase
-				.from('organizations')
-				.delete()
-				.eq('id', data.organization.id);
-			if (orgError) {
+			const deleteRes = await fetch('/api/delete-org', {
+				method: 'POST',
+				body: JSON.stringify({ orgId: data.organization.id })
+			});
+
+			if (!deleteRes.ok) {
+				toastStore.trigger({
+					message: 'An unexpected error has occurred.',
+					background: 'variant-filled-error',
+					timeout: 5000
+				});
 				return;
 			}
 
