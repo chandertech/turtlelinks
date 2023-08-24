@@ -1,10 +1,14 @@
 import { toastStore } from '@skeletonlabs/skeleton';
 
+export function DisplaySuccessToast(message: string) {
+	DisplayToast(message, 'variant-filled-success');
+}
+
 export function DisplayErrorToast(message: string = 'An unexpected error has occurred.') {
 	DisplayToast(message, 'variant-filled-error');
 }
 
-export function DisplayToast(message: string, background: string) {
+function DisplayToast(message: string, background: string) {
 	toastStore.trigger({
 		message: message,
 		background: background,

@@ -6,8 +6,7 @@
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 	import type { OrgInfo } from '$lib/supabase/supabase-types';
 
-	let organizations = ($modalStore[0]?.meta?.organizations as OrgInfo[]) ?? [];
-
+	let organizations = $modalStore[0].meta.organizations as OrgInfo[];
 	let selectedOrgId = organizations[0].id;
 	let inputDomain = '';
 	let domain = '.turt.link';

@@ -29,14 +29,14 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 		.eq('organization_id', orgId);
 
 	if (!urls || urlError) {
-		throw error(403);
+		throw error(500);
 	}
 
 	// All urls associated with the org need to go.
 	try {
 		await Promise.all(urls.map((url) => _DeleteDomain(supabaseAdminClient, url.url)));
 	} catch (err) {
-		throw error(403);
+		throw error(500);
 	}
 
 	const { error: deleteError } = await supabaseAdminClient
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 		.eq('id', orgId);
 
 	if (deleteError) {
-		throw error(403);
+		throw error(500);
 	}
 
 	return json({ success: true });

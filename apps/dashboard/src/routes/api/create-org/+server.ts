@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request, locals: { getSession } }) 
 		.single();
 
 	if (orgError) {
-		throw error(400);
+		throw error(500);
 	}
 
 	const { error: inviteError } = await supabaseAdminClient
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request, locals: { getSession } }) 
 		.insert({ profile_id: session.user.id, organization_id: newOrg.id });
 
 	if (inviteError) {
-		throw error(400);
+		throw error(500);
 	}
 
 	return json({ success: true });

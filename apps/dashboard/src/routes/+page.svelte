@@ -11,7 +11,7 @@
 	import type { URLInfo, OrgInfo } from '$lib/supabase/supabase-types';
 	import Loading from '$lib/Loading.svelte';
 	import CreateOrgModal from './CreateOrgModal.svelte';
-	import { DisplayErrorToast, DisplayToast } from '$lib/Toast';
+	import { DisplayErrorToast, DisplaySuccessToast } from '$lib/Toast';
 
 	export let data;
 	let organizations: OrgInfo[] = [];
@@ -71,7 +71,7 @@
 			};
 
 			modalStore.close();
-			DisplayToast(`"${newURL.url}" has been successfully created.`, 'variant-filled-success');
+			DisplaySuccessToast(`"${newURL.url}" has been successfully created.`);
 
 			urls = [...urls, newURL];
 		}

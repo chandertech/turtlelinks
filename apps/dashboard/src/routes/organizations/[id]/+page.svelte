@@ -7,7 +7,7 @@
 	import Fa from 'svelte-fa';
 	import DeleteOrgModal from './DeleteOrgModal.svelte';
 	import { goto } from '$app/navigation';
-	import { DisplayErrorToast, DisplayToast } from '$lib/Toast';
+	import { DisplayErrorToast, DisplaySuccessToast } from '$lib/Toast';
 
 	export let data;
 
@@ -28,7 +28,7 @@
 				return;
 			}
 
-			DisplayToast(`${email} has been invited to the organization.`, 'variant-filled-success');
+			DisplaySuccessToast(`${email} has been invited to the organization.`);
 
 			modalStore.close();
 		}

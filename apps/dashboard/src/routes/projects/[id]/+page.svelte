@@ -24,7 +24,7 @@
 	import LinkDetailModal from './LinkDetailModal.svelte';
 
 	import type { URLInfo, LinkInfo } from '$lib/supabase/supabase-types';
-	import { DisplayErrorToast, DisplayToast } from '$lib/Toast';
+	import { DisplayErrorToast, DisplaySuccessToast } from '$lib/Toast';
 
 	const scheme = 'https://';
 
@@ -83,7 +83,7 @@
 			};
 
 			modalStore.close();
-			DisplayToast(`"${newURL.url}" has been successfully created.`, 'variant-filled-success');
+			DisplaySuccessToast(`"${newURL.url}" has been successfully created.`);
 
 			urls = [...urls, newURL];
 			selectURL(newURL.url);
