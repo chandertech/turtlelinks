@@ -2,7 +2,7 @@ import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({ request, locals: { supabase, getSession } }) => {
+export const POST: RequestHandler = async ({ request, url, locals: { supabase, getSession } }) => {
 	const { orgId } = await request.json();
 	const session = await getSession();
 
@@ -33,10 +33,14 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 
 	try {
 		await Promise.all(
-			urls.map((url) =>
-				fetch('/api/delete-domain', {
+			urls.map((u) =>
+				fetch(`${url.origin}/api/delete-domain`, {
 					method: 'DELETE',
-					body: JSON.stringify({ url: url })
+					body: JSON.stringify({ url: u.url }),
+					headers: {
+						'content-type': 'application/json',
+						Authorization: `Bearer ${session.access_token}`
+					}
 				})
 			)
 		);
