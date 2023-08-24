@@ -2,14 +2,16 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import InviteMemberModal from './InviteMemberModal.svelte';
+	import RemoveMemberModal from './RemoveMemberModal.svelte';
 
-	import { faUserPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+	import { faUserPlus, faTrash, faUserSlash } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 	import DeleteOrgModal from './DeleteOrgModal.svelte';
 	import { goto } from '$app/navigation';
 	import { DisplayErrorToast, DisplaySuccessToast } from '$lib/Toast';
 
 	export let data;
+	let members = data.members ?? [];
 
 	const inviteMemberModal: ModalSettings = {
 		type: 'component',
@@ -31,6 +33,28 @@
 			DisplaySuccessToast(`${email} has been invited to the organization.`);
 
 			modalStore.close();
+		}
+	};
+
+	const removeMemberModal: ModalSettings = {
+		type: 'component',
+		component: { ref: RemoveMemberModal },
+		response: async (res) => {
+			if (!res) return;
+
+			const { userId } = res;
+
+			const { error: deleteError } = await data.supabase
+				.from('users_organizations')
+				.delete()
+				.eq('profile_id', userId);
+
+			if (deleteError) {
+				DisplayErrorToast();
+			}
+
+			modalStore.close();
+			members = members.filter((member) => member.id != userId);
 		}
 	};
 
@@ -90,17 +114,38 @@
 		<div class="card container content-center p-8">
 			<h2 class="text-2xl">User</h2>
 			<hr class="my-4" />
-			{#each data.members as member}
-				<div>
-					{#if member.name}
-						<p class="font-medium">{member.name}</p>
+			{#each members as member}
+				<div class="flex place-items-center justify-between">
+					<div>
+						{#if member.name}
+							<p class="font-medium">{member.name}</p>
+						{/if}
+						<p class="text-slate-400">{member.email}</p>
+					</div>
+					{#if member.id != data.session?.user.id}
+						<button
+							type="button"
+							class="btn variant-ghost-error"
+							on:click={() => {
+								modalStore.trigger({
+									...removeMemberModal,
+									meta: {
+										orgName: data.organization.name,
+										userId: member.id,
+										userName: member.name ?? member.email
+									}
+								});
+							}}
+						>
+							<Fa icon={faUserSlash} />
+							<span>Remove</span>
+						</button>
 					{/if}
-					<p class="text-slate-400">{member.email}</p>
 				</div>
 				<hr class="my-4" />
 			{/each}
 			<div>
-				<p>{data.members.length == 1 ? '1 User' : `${data.members.length} Users`}</p>
+				<p>{members.length == 1 ? '1 User' : `${members.length} Users`}</p>
 			</div>
 		</div>
 	</div>
