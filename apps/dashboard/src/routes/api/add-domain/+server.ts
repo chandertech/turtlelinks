@@ -1,4 +1,8 @@
-import { PROJECT_ID_VERCEL, TEAM_ID_VERCEL, AUTH_BEARER_TOKEN } from '$env/static/private';
+import {
+	DASHBOARD_PROJECT_ID_VERCEL,
+	TEAM_ID_VERCEL,
+	AUTH_BEARER_TOKEN
+} from '$env/static/private';
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -54,7 +58,7 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 
 const VercelAPI = async (url: string) => {
 	const response = await fetch(
-		`https://api.vercel.com/v9/projects/${PROJECT_ID_VERCEL}/domains?teamId=${TEAM_ID_VERCEL}`,
+		`https://api.vercel.com/v9/projects/${DASHBOARD_PROJECT_ID_VERCEL}/domains?teamId=${TEAM_ID_VERCEL}`,
 		{
 			body: `{\n  "name": "${url}"\n}`,
 			headers: {

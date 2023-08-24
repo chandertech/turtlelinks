@@ -1,4 +1,8 @@
-import { PROJECT_ID_VERCEL, TEAM_ID_VERCEL, AUTH_BEARER_TOKEN } from '$env/static/private';
+import {
+	DASHBOARD_PROJECT_ID_VERCEL,
+	TEAM_ID_VERCEL,
+	AUTH_BEARER_TOKEN
+} from '$env/static/private';
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
@@ -19,7 +23,7 @@ export const GET: RequestHandler = async ({ url, locals: { getSession } }) => {
 			}
 		}),
 		fetch(
-			`https://api.vercel.com/v9/projects/${PROJECT_ID_VERCEL}/domains/${domain}?teamId=${TEAM_ID_VERCEL}`,
+			`https://api.vercel.com/v9/projects/${DASHBOARD_PROJECT_ID_VERCEL}/domains/${domain}?teamId=${TEAM_ID_VERCEL}`,
 			{
 				method: 'GET',
 				headers: {
@@ -42,7 +46,7 @@ export const GET: RequestHandler = async ({ url, locals: { getSession } }) => {
 	let verificationResponse = null;
 	if (!domainJson.verified) {
 		const verificationRes = await fetch(
-			`https://api.vercel.com/v9/projects/${process.env.PROJECT_ID_VERCEL}/domains/${domain}/verify?teamId=${process.env.TEAM_ID_VERCEL}`,
+			`https://api.vercel.com/v9/projects/${process.env.DASHBOARD_PROJECT_ID_VERCEL}/domains/${domain}/verify?teamId=${process.env.TEAM_ID_VERCEL}`,
 			{
 				method: 'POST',
 				headers: {
