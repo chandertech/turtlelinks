@@ -15,6 +15,10 @@ export const DELETE: RequestHandler = async ({ request, locals: { supabase, getS
 		throw error(401);
 	}
 
+	return await _DeleteDomain(supabase, url);
+};
+
+export async function _DeleteDomain(supabase: SupabaseClient, url: string) {
 	// Remove once we have custom domain support.
 	if (typeof url !== 'string' || !url.endsWith('.turt.link')) {
 		throw error(400);
@@ -33,7 +37,7 @@ export const DELETE: RequestHandler = async ({ request, locals: { supabase, getS
 	return process.env.NODE_ENV === 'development'
 		? await MockAPI(supabase, url)
 		: await VercelAPI(url);
-};
+}
 
 const VercelAPI = async (url: string) => {
 	const response = await fetch(

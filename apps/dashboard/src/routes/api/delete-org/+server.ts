@@ -1,8 +1,9 @@
 import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { _DeleteDomain } from '../delete-domain/+server';
 
-export const POST: RequestHandler = async ({ request, url, locals: { supabase, getSession } }) => {
+export const POST: RequestHandler = async ({ request, locals: { supabase, getSession } }) => {
 	const { orgId } = await request.json();
 	const session = await getSession();
 
@@ -31,19 +32,9 @@ export const POST: RequestHandler = async ({ request, url, locals: { supabase, g
 		throw error(403);
 	}
 
+	// All urls associated with the org need to go.
 	try {
-		await Promise.all(
-			urls.map((u) =>
-				fetch(`${url.origin}/api/delete-domain`, {
-					method: 'DELETE',
-					body: JSON.stringify({ url: u.url }),
-					headers: {
-						'content-type': 'application/json',
-						Authorization: `Bearer ${session.access_token}`
-					}
-				})
-			)
-		);
+		await Promise.all(urls.map((url) => _DeleteDomain(supabaseAdminClient, url.url)));
 	} catch (err) {
 		throw error(403);
 	}
