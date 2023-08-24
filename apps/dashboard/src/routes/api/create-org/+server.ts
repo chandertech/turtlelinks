@@ -2,7 +2,7 @@ import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({ request, locals: { supabase, getSession } }) => {
+export const POST: RequestHandler = async ({ request, locals: { getSession } }) => {
 	const { name } = await request.json();
 	const session = await getSession();
 

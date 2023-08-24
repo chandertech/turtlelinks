@@ -4,7 +4,6 @@
 
 	import { modalStore } from '@skeletonlabs/skeleton';
 
-	const id = $modalStore[0].meta.id as number;
 	const name = $modalStore[0].meta.name as string;
 
 	let input = '';

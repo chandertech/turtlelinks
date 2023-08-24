@@ -70,17 +70,13 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 			}
 		});
 
-		if (inviteError) {
-			throw error(400);
-		}
+		if (inviteError) throw error(400);
 	} else {
 		const { error: inviteError } = await supabaseAdminClient.auth.admin.inviteUserByEmail(email, {
 			redirectTo: url.toString()
 		});
 
-		if (inviteError) {
-			throw error(400);
-		}
+		if (inviteError) throw error(400);
 	}
 
 	return json({ success: true });

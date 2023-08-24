@@ -76,7 +76,7 @@
 				on:click={() => {
 					modalStore.trigger({
 						...deleteOrgModal,
-						meta: { id: data.organization.id, name: data.organization.name }
+						meta: { name: data.organization.name }
 					});
 				}}
 			>

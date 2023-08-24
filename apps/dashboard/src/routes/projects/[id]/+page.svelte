@@ -23,7 +23,6 @@
 	import CreateLinkModal from './CreateLinkModal.svelte';
 	import LinkDetailModal from './LinkDetailModal.svelte';
 
-	import { toastStore } from '@skeletonlabs/skeleton';
 	import type { URLInfo, LinkInfo } from '$lib/supabase/supabase-types';
 	import { DisplayErrorToast, DisplayToast } from '$lib/Toast';
 
