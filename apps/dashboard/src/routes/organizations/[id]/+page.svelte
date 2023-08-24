@@ -120,7 +120,7 @@
 						{#if member.name}
 							<p class="font-medium">{member.name}</p>
 						{/if}
-						<p class="text-slate-400">{member.email}</p>
+						<p class="text-gray-400">{member.email}</p>
 					</div>
 					{#if member.id != data.session?.user.id}
 						<button

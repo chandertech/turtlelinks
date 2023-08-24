@@ -155,7 +155,7 @@
 								>
 									<div class="flex flex-col gap-2">
 										<p class="flex gap-2">{url.url}</p>
-										<p class="flex gap-2 text-slate-400">{organization.name}</p>
+										<p class="flex gap-2 text-gray-400">{organization.name}</p>
 									</div>
 									<Fa icon={faChevronRight} />
 								</a>
@@ -163,10 +163,10 @@
 						</div>
 					{:else}
 						<div
-							class="flex flex-col justify-center place-items-center border-solid border-dashed border-2 border-slate-400 rounded h-40"
+							class="flex flex-col justify-center place-items-center border-solid border-dashed border-2 border-gray-400 rounded h-40"
 						>
 							<p>No links</p>
-							<p class="text-slate-400 text-sm mb-4">Get started by creating a new link.</p>
+							<p class="text-gray-400 text-sm mb-4">Get started by creating a new link.</p>
 							<button
 								type="button"
 								class="btn variant-ghost"

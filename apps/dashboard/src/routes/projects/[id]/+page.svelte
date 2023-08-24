@@ -328,7 +328,7 @@
 				</table>
 			</div>
 		{:else}
-			<div class="flex flex-col items-center py-24 text-xl text-slate-400">
+			<div class="flex flex-col items-center py-24 text-xl text-gray-400">
 				<Fa icon={faLinkSlash} class="text-4xl mb-2" />
 				You do not have any links yet. Create one to get started.
 			</div>
