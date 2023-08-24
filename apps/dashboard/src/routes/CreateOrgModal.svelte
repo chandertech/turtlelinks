@@ -3,11 +3,27 @@
 
 	import { faUsers } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
+	import { DisplayErrorToast } from '$lib/Toast';
+	import LoadingButton from '$lib/LoadingButton.svelte';
 
 	let input = '';
+	let loading = false;
 
-	function onFormSubmit(_event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response({ name: input });
+	async function onFormSubmit(_event: Event) {
+		loading = true;
+		const orgRes = await fetch('/api/create-org', {
+			method: 'POST',
+			body: JSON.stringify({ name: input })
+		});
+		loading = false;
+
+		if (!orgRes.ok) {
+			DisplayErrorToast();
+			return;
+		}
+
+		if ($modalStore[0].response) $modalStore[0].response({ success: true });
+		modalStore.close();
 	}
 </script>
 
@@ -24,11 +40,11 @@
 			</label>
 		</section>
 		<footer class="flex justify-end">
-			<button
-				type="button"
+			<LoadingButton
 				class="btn variant-filled-primary"
 				disabled={!input}
-				on:click={onFormSubmit}>Create organization</button
+				{loading}
+				onclick={onFormSubmit}>Create organization</LoadingButton
 			>
 		</footer>
 	</div>

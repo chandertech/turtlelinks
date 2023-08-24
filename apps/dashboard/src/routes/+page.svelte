@@ -82,19 +82,6 @@
 		component: { ref: CreateOrgModal },
 		response: async (res) => {
 			if (!res) return;
-
-			const { name } = res;
-			const orgRes = await fetch('/api/create-org', {
-				method: 'POST',
-				body: JSON.stringify({ name: name })
-			});
-
-			if (!orgRes.ok) {
-				DisplayErrorToast();
-				return;
-			}
-
-			modalStore.close();
 			fetchData();
 		}
 	};
