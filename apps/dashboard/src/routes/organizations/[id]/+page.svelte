@@ -3,12 +3,11 @@
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import InviteMemberModal from './InviteMemberModal.svelte';
 
-	import { toastStore } from '@skeletonlabs/skeleton';
-
 	import { faUserPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 	import DeleteOrgModal from './DeleteOrgModal.svelte';
 	import { goto } from '$app/navigation';
+	import { DisplayErrorToast, DisplayToast } from '$lib/Toast';
 
 	export let data;
 
@@ -25,19 +24,11 @@
 			});
 
 			if (!inviteResponse.ok) {
-				toastStore.trigger({
-					message: 'An unexpected error has occurred.',
-					background: 'variant-filled-error',
-					timeout: 5000
-				});
+				DisplayErrorToast();
 				return;
 			}
 
-			toastStore.trigger({
-				message: `${email} has been invited to the organization.`,
-				background: 'variant-filled-success',
-				timeout: 5000
-			});
+			DisplayToast(`${email} has been invited to the organization.`, 'variant-filled-success');
 
 			modalStore.close();
 		}
@@ -55,11 +46,7 @@
 			});
 
 			if (!deleteRes.ok) {
-				toastStore.trigger({
-					message: 'An unexpected error has occurred.',
-					background: 'variant-filled-error',
-					timeout: 5000
-				});
+				DisplayErrorToast();
 				return;
 			}
 

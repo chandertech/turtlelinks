@@ -24,8 +24,8 @@
 	import LinkDetailModal from './LinkDetailModal.svelte';
 
 	import { toastStore } from '@skeletonlabs/skeleton';
-	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import type { URLInfo, LinkInfo } from '$lib/supabase/supabase-types';
+	import { DisplayErrorToast, DisplayToast } from '$lib/Toast';
 
 	const scheme = 'https://';
 
@@ -34,12 +34,6 @@
 	let selectedURL: string;
 	let urls: URLInfo[] = [];
 	let links: LinkInfo[] = [];
-
-	const toastError: ToastSettings = {
-		message: 'An unexpected error has occurred.',
-		background: 'variant-filled-error',
-		timeout: 5000
-	};
 
 	onMount(async () => {
 		loading = true;
@@ -52,7 +46,7 @@
 		loading = false;
 
 		if (urlError) {
-			toastStore.trigger(toastError);
+			DisplayErrorToast();
 			return;
 		}
 
@@ -78,7 +72,7 @@
 			});
 
 			if (!domainRes.ok) {
-				toastStore.trigger(toastError);
+				DisplayErrorToast();
 				return;
 			}
 
@@ -90,11 +84,7 @@
 			};
 
 			modalStore.close();
-			toastStore.trigger({
-				message: `"${newURL.url}" has been successfully created.`,
-				background: 'variant-filled-success',
-				timeout: 5000
-			});
+			DisplayToast(`"${newURL.url}" has been successfully created.`, 'variant-filled-success');
 
 			urls = [...urls, newURL];
 			selectURL(newURL.url);
@@ -113,13 +103,13 @@
 			});
 
 			if (!domainRes.ok) {
-				toastStore.trigger(toastError);
+				DisplayErrorToast();
 				return;
 			}
 
 			const { error: urlError } = await data.supabase.from('urls').delete().eq('url', selectedURL);
 			if (urlError) {
-				toastStore.trigger(toastError);
+				DisplayErrorToast();
 				return;
 			}
 
@@ -156,11 +146,7 @@
 				: await data.supabase.from('dynamic_links').insert(newLink);
 
 			if (linkError) {
-				var msg =
-					linkError.code == '23505'
-						? `Link with the suffix "${suffix}" already exists!`
-						: toastError.message;
-				toastStore.trigger({ ...toastError, message: msg });
+				DisplayErrorToast();
 				return;
 			}
 
@@ -184,7 +170,7 @@
 			.eq('url', url);
 
 		if (linkError) {
-			toastStore.trigger(toastError);
+			DisplayErrorToast();
 			return;
 		}
 
@@ -198,7 +184,7 @@
 		const { data: linkError } = await data.supabase.from('dynamic_links').delete().eq('link', link);
 
 		if (linkError) {
-			toastStore.trigger(toastError);
+			DisplayErrorToast();
 			return;
 		}
 

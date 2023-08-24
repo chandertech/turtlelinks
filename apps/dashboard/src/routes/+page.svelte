@@ -8,22 +8,15 @@
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import CreateURLPrefixModal from './CreateURLPrefixModal.svelte';
 
-	import { toastStore } from '@skeletonlabs/skeleton';
-	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import type { URLInfo, OrgInfo } from '$lib/supabase/supabase-types';
 	import Loading from '$lib/Loading.svelte';
 	import CreateOrgModal from './CreateOrgModal.svelte';
+	import { DisplayErrorToast, DisplayToast } from '$lib/Toast';
 
 	export let data;
 	let organizations: OrgInfo[] = [];
 	let urls: URLInfo[] = [];
 	let loading = false;
-
-	const toastError: ToastSettings = {
-		message: 'An unexpected error has occurred.',
-		background: 'variant-filled-error',
-		timeout: 5000
-	};
 
 	onMount(async () => {
 		fetchData();
@@ -66,7 +59,7 @@
 			});
 
 			if (!domainRes.ok) {
-				toastStore.trigger(toastError);
+				DisplayErrorToast();
 				return;
 			}
 
@@ -78,11 +71,7 @@
 			};
 
 			modalStore.close();
-			toastStore.trigger({
-				message: `"${newURL.url}" has been successfully created.`,
-				background: 'variant-filled-success',
-				timeout: 5000
-			});
+			DisplayToast(`"${newURL.url}" has been successfully created.`, 'variant-filled-success');
 
 			urls = [...urls, newURL];
 		}
@@ -101,7 +90,7 @@
 			});
 
 			if (!orgRes.ok) {
-				toastStore.trigger(toastError);
+				DisplayErrorToast();
 				return;
 			}
 

@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { toastStore } from '@skeletonlabs/skeleton';
-	import type { ToastSettings } from '@skeletonlabs/skeleton';
-
 	import { faRightFromBracket, faUserCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import { goto } from '$app/navigation';
+	import { DisplayErrorToast } from '$lib/Toast.js';
 
 	export let data;
 
@@ -15,14 +13,6 @@
 	let fullName = profile?.full_name ?? null;
 	let username = profile?.username ?? null;
 	let website = profile?.website ?? null;
-
-	const organizations = data.organizations ?? [];
-
-	const toastError: ToastSettings = {
-		message: 'An unexpected error has occurred.',
-		background: 'variant-filled-error',
-		timeout: 5000
-	};
 </script>
 
 <div class="mx-auto container p-8">
@@ -81,7 +71,7 @@
 					email: email
 				});
 
-				if (error) toastStore.trigger(toastError);
+				if (error) DisplayErrorToast();
 				loading = false;
 			}}
 			class="btn variant-ghost-primary"
