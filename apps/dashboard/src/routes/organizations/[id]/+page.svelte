@@ -63,18 +63,6 @@
 		component: { ref: DeleteOrgModal },
 		response: async (res) => {
 			if (!res) return;
-
-			const deleteRes = await fetch('/api/delete-org', {
-				method: 'POST',
-				body: JSON.stringify({ orgId: data.organization.id })
-			});
-
-			if (!deleteRes.ok) {
-				DisplayErrorToast();
-				return;
-			}
-
-			modalStore.close();
 			goto('/');
 		}
 	};
@@ -100,7 +88,7 @@
 				on:click={() => {
 					modalStore.trigger({
 						...deleteOrgModal,
-						meta: { name: data.organization.name }
+						meta: { name: data.organization.name, orgId: data.organization.id }
 					});
 				}}
 			>
