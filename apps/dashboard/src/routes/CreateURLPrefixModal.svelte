@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { faCheck, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+	import { faCheck } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import { modalStore } from '@skeletonlabs/skeleton';
