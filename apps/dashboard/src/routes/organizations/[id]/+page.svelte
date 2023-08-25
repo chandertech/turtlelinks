@@ -20,10 +20,13 @@
 			if (!res) return;
 
 			const { email } = res;
+
+			res.isRequesting(true);
 			const inviteResponse = await fetch('/api/invite-member', {
 				method: 'POST',
 				body: JSON.stringify({ id: data.organization.id, email: email })
 			});
+			res.isRequesting(false);
 
 			if (!inviteResponse.ok) {
 				DisplayErrorToast();
