@@ -29,6 +29,8 @@ create table "public"."users_organizations" (
 
 alter table "public"."users_organizations" enable row level security;
 
+alter table "public"."profiles" add column "email" character;
+
 CREATE UNIQUE INDEX organization_invites_pkey ON public.organization_invites USING btree (id);
 
 CREATE UNIQUE INDEX organizations_pkey ON public.organizations USING btree (id);
