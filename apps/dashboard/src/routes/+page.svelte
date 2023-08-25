@@ -53,10 +53,13 @@
 			if (!res) return;
 
 			const { subdomain, domain, orgId } = res;
+
+			res.isRequesting(true);
 			const domainRes = await fetch('/api/add-domain', {
 				method: 'POST',
 				body: JSON.stringify({ subdomain: subdomain, domain: domain, orgId: orgId })
 			});
+			res.isRequesting(false);
 
 			if (!domainRes.ok) {
 				DisplayErrorToast();
