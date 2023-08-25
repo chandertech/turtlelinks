@@ -47,10 +47,12 @@
 
 			const { userId } = res;
 
+			res.isRequesting(true);
 			const { error: deleteError } = await data.supabase
 				.from('users_organizations')
 				.delete()
 				.eq('profile_id', userId);
+			res.isRequesting(false);
 
 			if (deleteError) {
 				DisplayErrorToast();

@@ -3,13 +3,17 @@
 	import Fa from 'svelte-fa';
 
 	import { modalStore } from '@skeletonlabs/skeleton';
+	import LoadingButton from '$lib/LoadingButton.svelte';
 
 	const orgName = $modalStore[0].meta.orgName as string;
 	const userId = $modalStore[0].meta.userId as string;
 	const userName = $modalStore[0].meta.userName as string;
 
+	let loading = false;
+
 	function onFormSubmit(_event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response({ userId: userId });
+		if ($modalStore[0].response)
+			$modalStore[0].response({ userId: userId, isRequesting: (req: boolean) => (loading = req) });
 	}
 </script>
 
@@ -27,7 +31,9 @@
 			</div>
 		</section>
 		<footer class="card-footer flex justify-end pb-4 px-8">
-			<button type="button" class="btn variant-filled-error" on:click={onFormSubmit}>Remove</button>
+			<LoadingButton class="btn variant-filled-error" {loading} onclick={onFormSubmit}
+				>Remove</LoadingButton
+			>
 		</footer>
 	</div>
 {/if}
