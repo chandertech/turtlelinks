@@ -140,9 +140,12 @@
 				deep_link: deepLink,
 				friendly_name: friendlyName
 			};
+
+			res.isRequesting(true);
 			const { error: linkError } = isEditing
 				? await data.supabase.from('dynamic_links').update(newLink).eq('link', link)
 				: await data.supabase.from('dynamic_links').insert(newLink);
+			res.isRequesting(false);
 
 			if (linkError) {
 				DisplayErrorToast();
@@ -297,7 +300,7 @@
 										on:click={() => {
 											modalStore.trigger({
 												...createLinkModal,
-												meta: { link: link, isEditing: true }
+												meta: { link: link }
 											});
 										}}><Fa icon={faPencil} /><span>Edit</span></button
 									>
