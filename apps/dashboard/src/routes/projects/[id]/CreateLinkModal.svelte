@@ -4,7 +4,9 @@
 	import type { LinkInfo } from '$lib/supabase/supabase-types';
 
 	const link = $modalStore[0]?.meta?.link as LinkInfo;
-	const isEditing = $modalStore[0]?.meta?.isEditing ?? false;
+	const isEditing = !!link;
+
+	let loading = false;
 
 	let suffix = link?.suffix ?? '';
 	$: isSuffixValid = suffix.length != 0; // TODO: Validate more.
@@ -15,9 +17,15 @@
 	let friendlyName = link?.friendly_name ?? '';
 	$: isFriendlyLinkValid = friendlyName.length != 0;
 
-	function onFormSubmit(event: Event): void {
+	function onFormSubmit(_event: Event): void {
 		if ($modalStore[0].response)
-			$modalStore[0].response({ suffix, deepLink, friendlyName, isEditing });
+			$modalStore[0].response({
+				suffix,
+				deepLink,
+				friendlyName,
+				isEditing,
+				isRequesting: (req: boolean) => (loading = req)
+			});
 	}
 </script>
 
@@ -50,7 +58,10 @@
 					</label>
 				</div>
 			</Step>
-			<Step locked={!isDeepLinkValid || !isFriendlyLinkValid}>
+			<Step
+				locked={!isDeepLinkValid || !isFriendlyLinkValid || loading}
+				buttonCompleteLabel={loading ? 'Creating Link...' : 'Create Link'}
+			>
 				<svelte:fragment slot="header">Setup your dynamic link</svelte:fragment>
 				<label class="label">
 					<span>Deep link URL</span>
@@ -73,15 +84,6 @@
 					/>
 				</label>
 			</Step>
-			<!-- <Step>
-				<svelte:fragment slot="header">Define link behaviour for Apple</svelte:fragment>
-			</Step>
-			<Step>
-				<svelte:fragment slot="header">Define link behaviour for Android</svelte:fragment>
-			</Step>
-			<Step>
-				<svelte:fragment slot="header">Advanced options (optional)</svelte:fragment>
-			</Step> -->
 		</Stepper>
 	</div>
 {/if}

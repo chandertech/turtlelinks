@@ -65,10 +65,13 @@
 			if (!res) return;
 
 			const { subdomain, domain, orgId } = res;
+
+			res.isRequesting(true);
 			const domainRes = await fetch('/api/add-domain', {
 				method: 'POST',
 				body: JSON.stringify({ subdomain: subdomain, domain: domain, orgId: orgId })
 			});
+			res.isRequesting(false);
 
 			if (!domainRes.ok) {
 				DisplayErrorToast();
@@ -96,6 +99,7 @@
 		response: async (res) => {
 			if (!res) return;
 
+			res.isRequesting(true);
 			const domainRes = await fetch('/api/delete-domain', {
 				method: 'DELETE',
 				body: JSON.stringify({ url: selectedURL })
@@ -103,14 +107,18 @@
 
 			if (!domainRes.ok) {
 				DisplayErrorToast();
+				res.isRequesting(false);
 				return;
 			}
 
 			const { error: urlError } = await data.supabase.from('urls').delete().eq('url', selectedURL);
 			if (urlError) {
 				DisplayErrorToast();
+				res.isRequesting(false);
 				return;
 			}
+
+			res.isRequesting(false);
 
 			modalStore.close();
 			urls = urls.filter((url) => url.url != selectedURL);
@@ -140,9 +148,12 @@
 				deep_link: deepLink,
 				friendly_name: friendlyName
 			};
+
+			res.isRequesting(true);
 			const { error: linkError } = isEditing
 				? await data.supabase.from('dynamic_links').update(newLink).eq('link', link)
 				: await data.supabase.from('dynamic_links').insert(newLink);
+			res.isRequesting(false);
 
 			if (linkError) {
 				DisplayErrorToast();
@@ -297,7 +308,7 @@
 										on:click={() => {
 											modalStore.trigger({
 												...createLinkModal,
-												meta: { link: link, isEditing: true }
+												meta: { link: link }
 											});
 										}}><Fa icon={faPencil} /><span>Edit</span></button
 									>

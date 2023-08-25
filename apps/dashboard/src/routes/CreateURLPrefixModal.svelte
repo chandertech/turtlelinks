@@ -8,6 +8,7 @@
 
 	let organizations = $modalStore[0].meta.organizations as OrgInfo[];
 	let selectedOrgId = organizations[0].id;
+	let loading = false;
 	let inputDomain = '';
 	let domain = '.turt.link';
 	$: isValid = inputDomain.length > 0 && inputDomain.endsWith(domain);
@@ -18,7 +19,8 @@
 			$modalStore[0].response({
 				subdomain: inputDomain.replaceAll(domain, ''),
 				domain: domain,
-				orgId: selectedOrgId
+				orgId: selectedOrgId,
+				isRequesting: (req: boolean) => (loading = req)
 			});
 	}
 </script>
@@ -53,7 +55,7 @@
 					{/if}
 				</label>
 			</Step>
-			<Step>
+			<Step locked={loading} buttonCompleteLabel={loading ? 'Adding Prefix...' : 'Add Prefix'}>
 				<svelte:fragment slot="header">Finished!</svelte:fragment>
 				<div class="card flex flex-row variant-filled-success p-2 px-4">
 					<span class="flex"

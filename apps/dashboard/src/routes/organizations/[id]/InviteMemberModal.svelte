@@ -3,13 +3,16 @@
 
 	import { faEnvelope, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
+	import LoadingButton from '$lib/LoadingButton.svelte';
 
+	let loading = false;
 	let input = '';
 	$: showWarning = input.length > 0 && !isEmailValid;
 	$: isEmailValid = /(.+)@(.+){2,}\.(.+){2,}/.test(input);
 
 	function onFormSubmit(_event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response({ email: input });
+		if ($modalStore[0].response)
+			$modalStore[0].response({ email: input, isRequesting: (req: boolean) => (loading = req) });
 	}
 </script>
 
@@ -37,11 +40,11 @@
 			</label>
 		</section>
 		<footer class="flex justify-end">
-			<button
-				type="button"
+			<LoadingButton
 				class="btn variant-filled-primary"
 				disabled={!isEmailValid}
-				on:click={onFormSubmit}>Invite member</button
+				{loading}
+				onclick={onFormSubmit}>Invite member</LoadingButton
 			>
 		</footer>
 	</div>

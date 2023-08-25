@@ -3,15 +3,18 @@
 	import Fa from 'svelte-fa';
 
 	import { modalStore } from '@skeletonlabs/skeleton';
+	import LoadingButton from '$lib/LoadingButton.svelte';
 
 	const url = $modalStore[0].meta.url as string;
 	const count = $modalStore[0].meta.count as number;
 
+	let loading = false;
 	let input = '';
 	$: isDeleteDisabled = input !== url;
 
 	function onFormSubmit(_event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response({ success: true });
+		if ($modalStore[0].response)
+			$modalStore[0].response({ success: true, isRequesting: (req: boolean) => (loading = req) });
 	}
 </script>
 
@@ -57,11 +60,11 @@
 			</label>
 		</section>
 		<footer class="card-footer flex justify-end pb-4 px-8">
-			<button
-				type="button"
+			<LoadingButton
 				class="btn variant-filled-error"
-				on:click={onFormSubmit}
-				disabled={isDeleteDisabled}>Delete URL Prefix</button
+				onclick={onFormSubmit}
+				{loading}
+				disabled={isDeleteDisabled}>Delete URL Prefix</LoadingButton
 			>
 		</footer>
 	</div>

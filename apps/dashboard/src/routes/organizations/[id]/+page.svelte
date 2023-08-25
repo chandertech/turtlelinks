@@ -20,10 +20,13 @@
 			if (!res) return;
 
 			const { email } = res;
+
+			res.isRequesting(true);
 			const inviteResponse = await fetch('/api/invite-member', {
 				method: 'POST',
 				body: JSON.stringify({ id: data.organization.id, email: email })
 			});
+			res.isRequesting(false);
 
 			if (!inviteResponse.ok) {
 				DisplayErrorToast();
@@ -44,10 +47,12 @@
 
 			const { userId } = res;
 
+			res.isRequesting(true);
 			const { error: deleteError } = await data.supabase
 				.from('users_organizations')
 				.delete()
 				.eq('profile_id', userId);
+			res.isRequesting(false);
 
 			if (deleteError) {
 				DisplayErrorToast();
@@ -64,10 +69,12 @@
 		response: async (res) => {
 			if (!res) return;
 
+			res.isRequesting(true);
 			const deleteRes = await fetch('/api/delete-org', {
 				method: 'POST',
 				body: JSON.stringify({ orgId: data.organization.id })
 			});
+			res.isRequesting(false);
 
 			if (!deleteRes.ok) {
 				DisplayErrorToast();
