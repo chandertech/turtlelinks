@@ -9,7 +9,7 @@
 	let loading = false;
 	let input = '';
 	$: showWarning = input.length > 0 && !isEmailValid;
-	$: isEmailValid = /(.+)@(.+){2,}\.(.+){2,}/.test(input);
+	$: isEmailValid = /(.+)@(.+){2,}[.](.+){2,}/.test(input);
 
 	function onFormSubmit(_event: Event): void {
 		if ($modalStore[0].response)
