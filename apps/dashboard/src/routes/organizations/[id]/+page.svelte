@@ -8,33 +8,10 @@
 	import Fa from 'svelte-fa';
 	import DeleteOrgModal from './DeleteOrgModal.svelte';
 	import { goto } from '$app/navigation';
-	import { DisplayErrorToast, DisplaySuccessToast } from '$lib/Toast';
+	import { DisplayErrorToast } from '$lib/Toast';
 
 	export let data;
 	let members = data.members ?? [];
-
-	const inviteMemberModal: ModalSettings = {
-		type: 'component',
-		component: { ref: InviteMemberModal },
-		response: async (res) => {
-			if (!res) return;
-
-			const { email } = res;
-			const inviteResponse = await fetch('/api/invite-member', {
-				method: 'POST',
-				body: JSON.stringify({ id: data.organization.id, email: email })
-			});
-
-			if (!inviteResponse.ok) {
-				DisplayErrorToast();
-				return;
-			}
-
-			DisplaySuccessToast(`${email} has been invited to the organization.`);
-
-			modalStore.close();
-		}
-	};
 
 	const removeMemberModal: ModalSettings = {
 		type: 'component',
@@ -76,7 +53,11 @@
 				type="button"
 				class="btn variant-ghost-primary"
 				on:click={() => {
-					modalStore.trigger(inviteMemberModal);
+					modalStore.trigger({
+						type: 'component',
+						component: { ref: InviteMemberModal },
+						meta: { orgId: data.organization.id }
+					});
 				}}
 			>
 				<Fa icon={faUserPlus} />

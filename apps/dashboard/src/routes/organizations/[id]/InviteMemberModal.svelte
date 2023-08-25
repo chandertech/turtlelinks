@@ -3,13 +3,32 @@
 
 	import { faEnvelope, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
+	import LoadingButton from '$lib/LoadingButton.svelte';
+	import { DisplayErrorToast, DisplaySuccessToast } from '$lib/Toast';
 
+	const orgId = $modalStore[0].meta.orgId;
+
+	let loading = false;
 	let input = '';
 	$: showWarning = input.length > 0 && !isEmailValid;
 	$: isEmailValid = /(.+)@(.+){2,}\.(.+){2,}/.test(input);
 
-	function onFormSubmit(_event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response({ email: input });
+	async function onFormSubmit(_event: Event) {
+		loading = true;
+		const inviteResponse = await fetch('/api/invite-member', {
+			method: 'POST',
+			body: JSON.stringify({ id: orgId, email: input })
+		});
+		loading = false;
+
+		if (!inviteResponse.ok) {
+			DisplayErrorToast();
+			return;
+		}
+
+		if ($modalStore[0].response) $modalStore[0].response({ success: true });
+		modalStore.close();
+		DisplaySuccessToast(`${input} has been invited to the organization.`);
 	}
 </script>
 
@@ -37,11 +56,11 @@
 			</label>
 		</section>
 		<footer class="flex justify-end">
-			<button
-				type="button"
+			<LoadingButton
 				class="btn variant-filled-primary"
 				disabled={!isEmailValid}
-				on:click={onFormSubmit}>Invite member</button
+				{loading}
+				onclick={onFormSubmit}>Invite member</LoadingButton
 			>
 		</footer>
 	</div>
