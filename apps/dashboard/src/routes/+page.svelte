@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { faLink, faUsers, faChevronRight, faGear } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faLink,
+		faUsers,
+		faChevronRight,
+		faGear,
+		faUsersSlash
+	} from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import { modalStore } from '@skeletonlabs/skeleton';
@@ -141,7 +147,7 @@
 	<div class="py-12">
 		{#if loading}
 			<Loading />
-		{:else}
+		{:else if organizations.length > 0}
 			{#each organizations as organization}
 				<div class="flex place-items-center justify-between">
 					<h2 class="h3 capitalize">{organization.name}'s Org</h2>
@@ -190,6 +196,20 @@
 					{/if}
 				</div>
 			{/each}
-		{/if}
+		{:else}
+			<div class="flex flex-col gap-4 items-center py-24 text-xl text-gray-400">
+				<Fa icon={faUsersSlash} class="text-4xl" />
+				<p>You do not have any orgs yet. Create one to get started.</p>
+				<button
+					type="button"
+					class="btn variant-ghost-secondary"
+					on:click={() => {
+						modalStore.trigger(createOrgModal);
+					}}
+				>
+					<Fa icon={faUsers} />
+					<span>Create Organization</span>
+				</button>
+			</div>{/if}
 	</div>
 </div>
