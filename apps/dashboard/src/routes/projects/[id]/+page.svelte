@@ -35,6 +35,10 @@
 	let links: LinkInfo[] = [];
 
 	onMount(async () => {
+		fetchData();
+	});
+
+	async function fetchData() {
 		loading = true;
 
 		const { data: urlData, error: urlError } = await data.supabase
@@ -56,7 +60,7 @@
 		const urlParams = new URLSearchParams(window.location.search);
 		const paramUrl = urls.find((url) => url.url == urlParams.get('url'))?.url;
 		selectURL(paramUrl ? paramUrl : urls[0].url);
-	});
+	}
 
 	const createURLModal: ModalSettings = {
 		type: 'component',
@@ -130,35 +134,7 @@
 		},
 		response: async (res) => {
 			if (!res) return;
-			const { suffix, deepLink, friendlyName, isEditing } = res;
-			const link = selectedURL + '/' + suffix;
-
-			const newLink: LinkInfo = {
-				link: link,
-				url: selectedURL,
-				suffix: suffix,
-				deep_link: deepLink,
-				friendly_name: friendlyName
-			};
-			const { error: linkError } = isEditing
-				? await data.supabase.from('dynamic_links').update(newLink).eq('link', link)
-				: await data.supabase.from('dynamic_links').insert(newLink);
-
-			if (linkError) {
-				DisplayErrorToast();
-				return;
-			}
-
-			modalStore.close();
-
-			// If we are editing an existing link, we just need to update the entry.
-			// Otherwise, add to the link array.
-			if (isEditing) {
-				var existingLinkIndex = links.findIndex((l) => l.link == link);
-				links[existingLinkIndex] = newLink;
-			} else {
-				links = [...links, newLink];
-			}
+			fetchData();
 		}
 	};
 
@@ -240,7 +216,10 @@
 						type="button"
 						class="btn variant-ghost-primary mr-1"
 						on:click={() => {
-							modalStore.trigger(createLinkModal);
+							modalStore.trigger({
+								...createLinkModal,
+								meta: { supabase: data.supabase, url: selectedURL }
+							});
 						}}
 					>
 						<Fa icon={faAdd} />
@@ -297,7 +276,7 @@
 										on:click={() => {
 											modalStore.trigger({
 												...createLinkModal,
-												meta: { link: link, isEditing: true }
+												meta: { supabase: data.supabase, url: selectedURL, link: link }
 											});
 										}}><Fa icon={faPencil} /><span>Edit</span></button
 									>

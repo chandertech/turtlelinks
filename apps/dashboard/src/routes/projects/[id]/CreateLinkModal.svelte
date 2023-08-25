@@ -2,9 +2,13 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 	import type { LinkInfo } from '$lib/supabase/supabase-types';
+	import { DisplayErrorToast } from '$lib/Toast';
 
+	const supabase = $modalStore[0].meta.supabase;
+	const url = $modalStore[0].meta.url as string;
 	const link = $modalStore[0]?.meta?.link as LinkInfo;
-	const isEditing = $modalStore[0]?.meta?.isEditing ?? false;
+
+	const isEditing = !!link;
 
 	let suffix = link?.suffix ?? '';
 	$: isSuffixValid = suffix.length != 0; // TODO: Validate more.
@@ -15,9 +19,28 @@
 	let friendlyName = link?.friendly_name ?? '';
 	$: isFriendlyLinkValid = friendlyName.length != 0;
 
-	function onFormSubmit(event: Event): void {
-		if ($modalStore[0].response)
-			$modalStore[0].response({ suffix, deepLink, friendlyName, isEditing });
+	let loading = false;
+
+	async function onFormSubmit(_: Event) {
+		const newLink: LinkInfo = {
+			link: url + '/' + suffix,
+			url: url,
+			suffix: suffix,
+			deep_link: deepLink,
+			friendly_name: friendlyName
+		};
+
+		loading = true;
+		const { error: linkError } = await supabase.from('dynamic_links').upsert(newLink);
+		loading = false;
+
+		if (linkError) {
+			DisplayErrorToast();
+			return;
+		}
+
+		if ($modalStore[0].response) $modalStore[0].response({ success: true });
+		modalStore.close();
 	}
 </script>
 
@@ -50,7 +73,10 @@
 					</label>
 				</div>
 			</Step>
-			<Step locked={!isDeepLinkValid || !isFriendlyLinkValid}>
+			<Step
+				locked={!isDeepLinkValid || !isFriendlyLinkValid || loading}
+				buttonCompleteLabel={loading ? 'Setting up...' : 'Add Link'}
+			>
 				<svelte:fragment slot="header">Setup your dynamic link</svelte:fragment>
 				<label class="label">
 					<span>Deep link URL</span>
@@ -73,15 +99,6 @@
 					/>
 				</label>
 			</Step>
-			<!-- <Step>
-				<svelte:fragment slot="header">Define link behaviour for Apple</svelte:fragment>
-			</Step>
-			<Step>
-				<svelte:fragment slot="header">Define link behaviour for Android</svelte:fragment>
-			</Step>
-			<Step>
-				<svelte:fragment slot="header">Advanced options (optional)</svelte:fragment>
-			</Step> -->
 		</Stepper>
 	</div>
 {/if}
