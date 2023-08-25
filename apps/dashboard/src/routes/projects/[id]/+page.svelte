@@ -10,7 +10,8 @@
 		faPencil,
 		faMinus,
 		faTrash,
-		faArrowDown
+		faArrowDown,
+		faHome
 	} from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
@@ -339,9 +340,15 @@
 				</table>
 			</div>
 		{:else}
-			<div class="flex flex-col items-center py-24 text-xl text-gray-400">
-				<Fa icon={faLinkSlash} class="text-4xl mb-2" />
-				You do not have any links yet. Create one to get started.
+			<div class="flex flex-col gap-4 items-center py-24 text-xl text-gray-400">
+				<Fa icon={faLinkSlash} class="text-4xl" />
+				<p>You do not have any links yet. Create one to get started.</p>
+				<a href="/">
+					<button type="button" class="btn variant-ghost">
+						<Fa icon={faHome} />
+						<span>Dashboard</span>
+					</button>
+				</a>
 			</div>
 		{/if}
 	</div>
