@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { modalStore } from '@skeletonlabs/skeleton';
 
-	import { faEnvelope, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+	import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 	import LoadingButton from '$lib/LoadingButton.svelte';
 	import InputWarning from '$lib/InputWarning.svelte';
