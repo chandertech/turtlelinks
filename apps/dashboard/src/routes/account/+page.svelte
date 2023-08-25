@@ -1,12 +1,9 @@
 <script lang="ts">
-	import { toastStore } from '@skeletonlabs/skeleton';
-	import type { ToastSettings } from '@skeletonlabs/skeleton';
-
 	import { faRightFromBracket, faUserCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
-	import Organizations from './Organizations.svelte';
 	import { goto } from '$app/navigation';
+	import { DisplayErrorToast } from '$lib/Toast.js';
 
 	export let data;
 
@@ -16,18 +13,10 @@
 	let fullName = profile?.full_name ?? null;
 	let username = profile?.username ?? null;
 	let website = profile?.website ?? null;
-
-	const organizations = data.organizations ?? [];
-
-	const toastError: ToastSettings = {
-		message: 'An unexpected error has occurred.',
-		background: 'variant-filled-error',
-		timeout: 5000
-	};
 </script>
 
 <div class="mx-auto container p-8">
-	<h1 class="mb-4 text-4xl">Account Information</h1>
+	<h1 class="h2 mb-4">Account Information</h1>
 
 	<label for="email" class="label text-lg pb-2">Email</label>
 	<input
@@ -82,10 +71,10 @@
 					email: email
 				});
 
-				if (error) toastStore.trigger(toastError);
+				if (error) DisplayErrorToast();
 				loading = false;
 			}}
-			class="btn variant-filled-primary"
+			class="btn variant-ghost-primary"
 			disabled={loading}
 			><Fa icon={loading ? faSpinner : faUserCheck} /><span
 				>{loading ? 'Loading...' : 'Update'}</span
@@ -93,7 +82,7 @@
 		>
 
 		<button
-			class="btn variant-filled-error ml-1"
+			class="btn variant-ghost-error ml-1"
 			disabled={loading}
 			on:click={async () => {
 				await data.supabase.auth.signOut();
@@ -101,8 +90,4 @@
 			}}><Fa icon={faRightFromBracket} /><span>Sign Out</span></button
 		>
 	</div>
-	{#if organizations.length > 0}
-		<h2 class="pt-8">Organizations</h2>
-		<Organizations {organizations} />
-	{/if}
 </div>

@@ -172,27 +172,27 @@ export interface Database {
 			urls: {
 				Row: {
 					domain: string;
-					id: string;
+					organization_id: number;
 					subdomain: string;
 					url: string;
 				};
 				Insert: {
 					domain: string;
-					id: string;
+					organization_id: number;
 					subdomain: string;
 					url: string;
 				};
 				Update: {
 					domain?: string;
-					id?: string;
+					organization_id?: number;
 					subdomain?: string;
 					url?: string;
 				};
 				Relationships: [
 					{
-						foreignKeyName: 'urls_id_fkey';
-						columns: ['id'];
-						referencedRelation: 'profiles';
+						foreignKeyName: 'urls_organization_id_fkey';
+						columns: ['organization_id'];
+						referencedRelation: 'organizations';
 						referencedColumns: ['id'];
 					}
 				];

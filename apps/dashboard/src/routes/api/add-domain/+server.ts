@@ -1,10 +1,16 @@
-import { PROJECT_ID_VERCEL, TEAM_ID_VERCEL, AUTH_BEARER_TOKEN } from '$env/static/private';
+import {
+	DASHBOARD_PROJECT_ID_VERCEL,
+	TEAM_ID_VERCEL,
+	AUTH_BEARER_TOKEN
+} from '$env/static/private';
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { URLInfo } from '$lib/supabase/supabase-types';
 
 export const POST: RequestHandler = async ({ request, locals: { supabase, getSession } }) => {
-	const { url } = await request.json();
+	const { subdomain, domain, orgId } = await request.json();
+	const url = subdomain + domain;
 	const session = await getSession();
 
 	if (!session) {
@@ -16,14 +22,43 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 		throw error(400);
 	}
 
-	return process.env.NODE_ENV === 'development'
-		? await MockAPI(supabase, url)
-		: await VercelAPI(url);
+	// Check if the user has permission to insert into this org.
+	const { data: orgData, error: orgError } = await supabase
+		.from('users_organizations')
+		.select('organization_id')
+		.eq('profile_id', session.user.id)
+		.eq('organization_id', orgId)
+		.single();
+
+	if (!orgData || orgError) {
+		throw error(403);
+	}
+
+	const res =
+		process.env.NODE_ENV === 'development' ? await MockAPI(supabase, url) : await VercelAPI(url);
+
+	if (!res.ok) {
+		throw error(400);
+	}
+
+	const newURL: URLInfo = {
+		url: url,
+		organization_id: orgId,
+		subdomain: subdomain,
+		domain: domain
+	};
+
+	const { error: urlError } = await supabase.from('urls').insert(newURL);
+	if (urlError) {
+		throw error(400);
+	}
+
+	return json({ success: true });
 };
 
 const VercelAPI = async (url: string) => {
 	const response = await fetch(
-		`https://api.vercel.com/v9/projects/${PROJECT_ID_VERCEL}/domains?teamId=${TEAM_ID_VERCEL}`,
+		`https://api.vercel.com/v9/projects/${DASHBOARD_PROJECT_ID_VERCEL}/domains?teamId=${TEAM_ID_VERCEL}`,
 		{
 			body: `{\n  "name": "${url}"\n}`,
 			headers: {

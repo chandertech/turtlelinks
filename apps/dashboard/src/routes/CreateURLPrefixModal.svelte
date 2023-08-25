@@ -4,21 +4,43 @@
 
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
+	import type { OrgInfo } from '$lib/supabase/supabase-types';
 
+	let organizations = $modalStore[0].meta.organizations as OrgInfo[];
+	let selectedOrgId = organizations[0].id;
 	let inputDomain = '';
 	let domain = '.turt.link';
 	$: isValid = inputDomain.length > 0 && inputDomain.endsWith(domain);
 	$: showWarning = inputDomain.length > 0 && !isValid;
 
-	function onFormSubmit(event: Event): void {
+	function onFormSubmit(_event: Event): void {
 		if ($modalStore[0].response)
-			$modalStore[0].response({ subdomain: inputDomain.replaceAll(domain, ''), domain: domain });
+			$modalStore[0].response({
+				subdomain: inputDomain.replaceAll(domain, ''),
+				domain: domain,
+				orgId: selectedOrgId
+			});
 	}
 </script>
 
 {#if $modalStore[0]}
 	<div class="card p-8 w-modal shadow-xl space-y-4">
 		<Stepper on:complete={onFormSubmit}>
+			{#if organizations.length > 1}
+				<Step locked={!selectedOrgId}>
+					<svelte:fragment slot="header">Select an organization</svelte:fragment>
+					<select
+						class="select"
+						size={organizations.length < 4 ? organizations.length : 4}
+						bind:value={selectedOrgId}
+						on:change={() => {}}
+					>
+						{#each organizations as organization}
+							<option value={organization.id}>{organization.name}</option>
+						{/each}
+					</select>
+				</Step>
+			{/if}
 			<Step locked={!isValid}>
 				<svelte:fragment slot="header">Add URL prefix</svelte:fragment>
 				<label class="label">
