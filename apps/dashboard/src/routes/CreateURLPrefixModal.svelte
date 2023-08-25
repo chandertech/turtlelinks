@@ -5,19 +5,28 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 	import type { OrgInfo } from '$lib/supabase/supabase-types';
+	import InputWarning from '$lib/InputWarning.svelte';
 
 	let organizations = $modalStore[0].meta.organizations as OrgInfo[];
 	let selectedOrgId = organizations[0].id;
 	let loading = false;
-	let inputDomain = '';
+	let domainInput = '';
 	let domain = '.turt.link';
-	$: isValid = inputDomain.length > 0 && inputDomain.endsWith(domain);
-	$: showWarning = inputDomain.length > 0 && !isValid;
+
+	// 1. Domain cannot start with hyphen
+	// 2. 1 to 63 characters in length
+	// 3. Doesn't end with a hyphen
+	// 4. Must end with "".turt.link"
+	$: isDomainValid =
+		/^(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.turt\.link$/.test(domainInput) &&
+		domainInput.length > 0 &&
+		domainInput.endsWith(domain);
+	$: showWarning = domainInput.length > 0 && !isDomainValid;
 
 	function onFormSubmit(_event: Event): void {
 		if ($modalStore[0].response)
 			$modalStore[0].response({
-				subdomain: inputDomain.replaceAll(domain, ''),
+				subdomain: domainInput.replaceAll(domain, ''),
 				domain: domain,
 				orgId: selectedOrgId,
 				isRequesting: (req: boolean) => (loading = req)
@@ -43,16 +52,12 @@
 					</select>
 				</Step>
 			{/if}
-			<Step locked={!isValid}>
+			<Step locked={!isDomainValid}>
 				<svelte:fragment slot="header">Add URL prefix</svelte:fragment>
 				<label class="label">
 					<span>Domain</span>
-					<input bind:value={inputDomain} class="input" title="domain" type="text" placeholder="" />
-					{#if showWarning}
-						<span class="flex text-xs text-red-500"
-							><Fa class="place-self-center pr-1" icon={faExclamationCircle} />Domain must end with {domain}</span
-						>
-					{/if}
+					<input bind:value={domainInput} class="input" title="domain" type="text" placeholder="" />
+					<InputWarning {showWarning} text={`Must be a valid domain ending with ${domain}`} />
 				</label>
 			</Step>
 			<Step locked={loading} buttonCompleteLabel={loading ? 'Adding Prefix...' : 'Add Prefix'}>
@@ -60,7 +65,7 @@
 				<div class="card flex flex-row variant-filled-success p-2 px-4">
 					<span class="flex"
 						><Fa class="place-self-center pr-3" icon={faCheck} />
-						{inputDomain} has been verified and approved for use</span
+						{domainInput} has been verified and approved for use</span
 					>
 				</div>
 			</Step>

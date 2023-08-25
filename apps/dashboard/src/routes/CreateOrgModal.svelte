@@ -4,9 +4,11 @@
 	import { faUsers } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 	import LoadingButton from '$lib/LoadingButton.svelte';
+	import InputWarning from '$lib/InputWarning.svelte';
 
 	let input = '';
 	let loading = false;
+	$: showWarning = input.length >= 20;
 
 	function onFormSubmit(_event: Event): void {
 		if ($modalStore[0].response)
@@ -24,12 +26,13 @@
 					<div class="input-group-shim"><Fa icon={faUsers} /></div>
 					<input name="orgname" placeholder="Enter a name..." bind:value={input} />
 				</div>
+				<InputWarning {showWarning} text={'Organization name is too long!'} />
 			</label>
 		</section>
 		<footer class="flex justify-end">
 			<LoadingButton
 				class="btn variant-filled-primary"
-				disabled={!input}
+				disabled={!input || showWarning}
 				{loading}
 				onclick={onFormSubmit}>Create organization</LoadingButton
 			>

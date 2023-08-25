@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 	}
 
 	// Remove once we have custom domain support.
-	if (typeof url !== 'string' || !url.endsWith('.turt.link')) {
+	if (typeof url !== 'string' || !/^(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.turt\.link$/.test(url)) {
 		throw error(400);
 	}
 
