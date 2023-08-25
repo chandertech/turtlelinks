@@ -8,7 +8,6 @@
 	import Fa from 'svelte-fa';
 	import DeleteOrgModal from './DeleteOrgModal.svelte';
 	import { goto } from '$app/navigation';
-	import { DisplayErrorToast } from '$lib/Toast';
 
 	export let data;
 	let members = data.members ?? [];
@@ -18,20 +17,7 @@
 		component: { ref: RemoveMemberModal },
 		response: async (res) => {
 			if (!res) return;
-
-			const { userId } = res;
-
-			const { error: deleteError } = await data.supabase
-				.from('users_organizations')
-				.delete()
-				.eq('profile_id', userId);
-
-			if (deleteError) {
-				DisplayErrorToast();
-			}
-
-			modalStore.close();
-			members = members.filter((member) => member.id != userId);
+			members = members.filter((member) => member.id != res.userId);
 		}
 	};
 
@@ -99,6 +85,7 @@
 								modalStore.trigger({
 									...removeMemberModal,
 									meta: {
+										supabase: data.supabase,
 										orgName: data.organization.name,
 										userId: member.id,
 										userName: member.name ?? member.email

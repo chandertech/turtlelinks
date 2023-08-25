@@ -3,13 +3,31 @@
 	import Fa from 'svelte-fa';
 
 	import { modalStore } from '@skeletonlabs/skeleton';
+	import { DisplayErrorToast } from '$lib/Toast';
+	import LoadingButton from '$lib/LoadingButton.svelte';
 
+	let loading = false;
+
+	const supabase = $modalStore[0].meta.supabase;
 	const orgName = $modalStore[0].meta.orgName as string;
 	const userId = $modalStore[0].meta.userId as string;
 	const userName = $modalStore[0].meta.userName as string;
 
-	function onFormSubmit(_event: Event): void {
+	async function onFormSubmit(_event: Event) {
+		loading = true;
+		const { error: deleteError } = await supabase
+			.from('users_organizations')
+			.delete()
+			.eq('profile_id', userId);
+		loading = false;
+
+		if (deleteError) {
+			DisplayErrorToast();
+			return;
+		}
+
 		if ($modalStore[0].response) $modalStore[0].response({ userId: userId });
+		modalStore.close();
 	}
 </script>
 
@@ -27,7 +45,9 @@
 			</div>
 		</section>
 		<footer class="card-footer flex justify-end pb-4 px-8">
-			<button type="button" class="btn variant-filled-error" on:click={onFormSubmit}>Remove</button>
+			<LoadingButton class="btn variant-filled-error" {loading} onclick={onFormSubmit}
+				>Remove</LoadingButton
+			>
 		</footer>
 	</div>
 {/if}
