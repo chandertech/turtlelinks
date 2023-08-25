@@ -143,10 +143,10 @@
 			<Loading />
 		{:else}
 			{#each organizations as organization}
-				<div class="flex justify-between">
+				<div class="flex place-items-center justify-between">
 					<h2 class="h3 capitalize">{organization.name}'s Org</h2>
 					<a href="/organizations/{organization.id}"
-						><button type="button" class="btn-icon variant-filled-surface">
+						><button type="button" class="btn-icon btn-icon-sm variant-filled-surface">
 							<Fa icon={faGear} />
 						</button></a
 					>
