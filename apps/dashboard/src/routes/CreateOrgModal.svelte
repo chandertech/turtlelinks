@@ -3,11 +3,14 @@
 
 	import { faUsers } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
+	import LoadingButton from '$lib/LoadingButton.svelte';
 
 	let input = '';
+	let loading = false;
 
 	function onFormSubmit(_event: Event): void {
-		if ($modalStore[0].response) $modalStore[0].response({ name: input });
+		if ($modalStore[0].response)
+			$modalStore[0].response({ name: input, isRequesting: (req: boolean) => (loading = req) });
 	}
 </script>
 
@@ -24,11 +27,11 @@
 			</label>
 		</section>
 		<footer class="flex justify-end">
-			<button
-				type="button"
+			<LoadingButton
 				class="btn variant-filled-primary"
 				disabled={!input}
-				on:click={onFormSubmit}>Create organization</button
+				{loading}
+				onclick={onFormSubmit}>Create organization</LoadingButton
 			>
 		</footer>
 	</div>

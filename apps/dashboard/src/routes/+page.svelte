@@ -83,11 +83,14 @@
 		response: async (res) => {
 			if (!res) return;
 
-			const { name } = res;
+			const { name, isRequesting } = res;
+
+			isRequesting(true);
 			const orgRes = await fetch('/api/create-org', {
 				method: 'POST',
 				body: JSON.stringify({ name: name })
 			});
+			isRequesting(false);
 
 			if (!orgRes.ok) {
 				DisplayErrorToast();

@@ -64,10 +64,12 @@
 		response: async (res) => {
 			if (!res) return;
 
+			res.isRequesting(true);
 			const deleteRes = await fetch('/api/delete-org', {
 				method: 'POST',
 				body: JSON.stringify({ orgId: data.organization.id })
 			});
+			res.isRequesting(false);
 
 			if (!deleteRes.ok) {
 				DisplayErrorToast();
