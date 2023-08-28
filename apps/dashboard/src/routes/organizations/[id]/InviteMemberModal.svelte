@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { modalStore } from '@skeletonlabs/skeleton';
 
-	import { faEnvelope, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+	import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 	import LoadingButton from '$lib/LoadingButton.svelte';
+	import InputWarning from '$lib/InputWarning.svelte';
 
 	let loading = false;
 	let input = '';
 	$: showWarning = input.length > 0 && !isEmailValid;
-	$: isEmailValid = /(.+)@(.+){2,}\.(.+){2,}/.test(input);
+	$: isEmailValid = /(.+)@(.+){2,}[.](.+){2,}/.test(input);
 
 	function onFormSubmit(_event: Event): void {
 		if ($modalStore[0].response)
@@ -31,12 +32,7 @@
 						bind:value={input}
 					/>
 				</div>
-				{#if showWarning}
-					<span class="flex text-xs text-red-500"
-						><Fa class="place-self-center pr-1" icon={faExclamationCircle} />The email entered is
-						invalid</span
-					>
-				{/if}
+				<InputWarning {showWarning} text="The email entered is invalid" />
 			</label>
 		</section>
 		<footer class="flex justify-end">

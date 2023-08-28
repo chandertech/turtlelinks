@@ -2,14 +2,18 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 	import type { LinkInfo } from '$lib/supabase/supabase-types';
+	import InputWarning from '$lib/InputWarning.svelte';
 
 	const link = $modalStore[0]?.meta?.link as LinkInfo;
 	const isEditing = !!link;
 
 	let loading = false;
 
+	// Valid characters for a suffix
+	// a-z A-Z 0-9 . - _ ~ ! $ & ' ( ) * + , ; = : @ /
 	let suffix = link?.suffix ?? '';
-	$: isSuffixValid = suffix.length != 0; // TODO: Validate more.
+	$: isSuffixValid = /^[a-zA-Z0-9.\-_!$&'()*+,;=:@/]*$/.test(suffix) && suffix.length > 0;
+	$: showSuffixWarning = !isSuffixValid && suffix.length != 0;
 
 	let deepLink = link?.deep_link ?? '';
 	$: isDeepLinkValid = deepLink.length != 0;
@@ -55,6 +59,7 @@
 							bind:value={suffix}
 							disabled={isEditing}
 						/>
+						<InputWarning showWarning={showSuffixWarning} text={'Invalid suffix'} />
 					</label>
 				</div>
 			</Step>
