@@ -12,7 +12,7 @@
 	// Valid characters for a suffix
 	// a-z A-Z 0-9 . - _ ~ ! $ & ' ( ) * + , ; = : @ /
 	let suffix = link?.suffix ?? '';
-	$: isSuffixValid = /^[a-zA-Z0-9.\-_\~!$&'()*+,;=:@/]*$/.test(suffix) && suffix.length > 0;
+	$: isSuffixValid = /^[a-zA-Z0-9.\-_!$&'()*+,;=:@/]*$/.test(suffix) && suffix.length > 0;
 	$: showSuffixWarning = !isSuffixValid && suffix.length != 0;
 
 	let deepLink = link?.deep_link ?? '';
