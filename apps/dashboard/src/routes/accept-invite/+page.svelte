@@ -4,17 +4,7 @@
 	import { InviteStatusFromDb, InviteStatusToDb } from '$lib/types/app';
 	import { goto } from '$app/navigation';
 
-	import {
-		faAdd,
-		faLink,
-		faLinkSlash,
-		faEllipsisV,
-		faPencil,
-		faMinus,
-		faTrash,
-		faArrowDown,
-		faHome
-	} from '@fortawesome/free-solid-svg-icons';
+	import { faLinkSlash, faHome } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	export let data;
