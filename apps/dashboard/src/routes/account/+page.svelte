@@ -4,6 +4,7 @@
 
 	import { goto } from '$app/navigation';
 	import { DisplayErrorToast } from '$lib/Toast.js';
+	import LoadingButton from '$lib/LoadingButton.svelte';
 
 	export let data;
 
@@ -55,8 +56,9 @@
 		bind:value={website}
 	/>
 	<div>
-		<button
-			on:click={async () => {
+		<LoadingButton
+			{loading}
+			onclick={async () => {
 				const email = session.user.email;
 				// todo display error
 				if (!email) return;
@@ -75,10 +77,7 @@
 				loading = false;
 			}}
 			class="btn variant-ghost-primary"
-			disabled={loading}
-			><Fa icon={loading ? faSpinner : faUserCheck} /><span
-				>{loading ? 'Loading...' : 'Update'}</span
-			></button
+			disabled={loading}>Update</LoadingButton
 		>
 
 		<button
