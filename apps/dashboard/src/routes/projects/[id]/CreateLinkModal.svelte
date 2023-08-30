@@ -65,7 +65,7 @@
 			</Step>
 			<Step
 				locked={!isDeepLinkValid || !isFriendlyLinkValid || loading}
-				buttonCompleteLabel={loading ? 'Creating Link...' : 'Create Link'}
+				buttonCompleteLabel={loading ? (isEditing ? 'Updating...' : 'Creating...') : 'Create Link'}
 			>
 				<svelte:fragment slot="header">Setup your dynamic link</svelte:fragment>
 				<label class="label">
