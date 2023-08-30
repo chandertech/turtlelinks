@@ -5,7 +5,7 @@ import {
 } from '$env/static/private';
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import type { URLInfo } from '$lib/supabase/supabase-types';
 
 export const POST: RequestHandler = async ({ request, locals: { supabase, getSession } }) => {
@@ -34,8 +34,7 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 		throw error(403);
 	}
 
-	const res =
-		process.env.NODE_ENV === 'development' ? await MockAPI(supabase, url) : await VercelAPI(url);
+	const res = process.env.NODE_ENV === 'development' ? await MockAPI(url) : await VercelAPI(url);
 
 	if (!res.ok) {
 		throw error(400);
@@ -80,8 +79,8 @@ const VercelAPI = async (url: string) => {
 	return json({ success: true });
 };
 
-async function MockAPI(supabase: SupabaseClient, url: string) {
-	const { error: err } = await supabase.from('fake_dns_provider').insert({ url: url });
+async function MockAPI(url: string) {
+	const { error: err } = await supabaseAdminClient.from('fake_dns_provider').insert({ url: url });
 	if (err) throw error(500);
 	return json({ success: true });
 }
