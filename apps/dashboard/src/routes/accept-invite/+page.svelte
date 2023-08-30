@@ -4,6 +4,19 @@
 	import { InviteStatusFromDb, InviteStatusToDb } from '$lib/types/app';
 	import { goto } from '$app/navigation';
 
+	import {
+		faAdd,
+		faLink,
+		faLinkSlash,
+		faEllipsisV,
+		faPencil,
+		faMinus,
+		faTrash,
+		faArrowDown,
+		faHome
+	} from '@fortawesome/free-solid-svg-icons';
+	import Fa from 'svelte-fa';
+
 	export let data;
 
 	const supabase = data.supabase;
@@ -103,9 +116,14 @@
 </script>
 
 {#if errorDescription}
-	<div class="p-4">
-		<h2 class="py-2">Error</h2>
-		<p class="py-2">{errorDescription}</p>
-		<p>To login with your email, please <a href="/login">click here</a>.</p>
+	<div class="flex flex-col gap-4 items-center py-24 text-xl text-gray-400">
+		<Fa icon={faLinkSlash} class="text-4xl" />
+		<p>This organization invite is no longer valid.</p>
+		<a href="/">
+			<button type="button" class="btn variant-ghost">
+				<Fa icon={faHome} />
+				<span>Dashboard</span>
+			</button>
+		</a>
 	</div>
 {/if}
