@@ -6,10 +6,8 @@
 			method: 'POST'
 		});
 
-		if (res.ok) {
-			const { url } = await res.json();
-			goto(url);
-		}
+		const { url } = await res.json();
+		goto(url);
 	}
 </script>
 
