@@ -1,0 +1,27 @@
+{
+    "folders": [
+      {
+        "name": "project-root",
+        "path": "./"
+      },
+      {
+        "name": "dashboard",
+        "path": "apps/dashboard"
+      },
+      {
+        "name": "link_provider",
+        "path": "apps/link_provider"
+      },
+      {
+        "name": "supabase-functions",
+        "path": "supabase/functions"
+      }
+    ],
+    "settings": {
+      "files.exclude": {
+        "node_modules/": true,
+        "app/": true,
+        "supabase/functions/": true
+      },
+    }
+  }
