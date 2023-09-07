@@ -18,7 +18,8 @@
 
 #### Payments
 * Login into the [Stripe CLI](https://stripe.com/docs/webhooks/quickstart?lang=node)
-* Run `stripe listen --forward-to localhost:5173/api/stripe-webhook`
+* Run `stripe listen --forward-to localhost:5173/api/stripe/webhook`
+* Use the secret provided by the previous command for `STRIPE_WEBHOOK_SECRET`
 
 You can also visit the [Supabase dashboard](http://localhost:54323/project/default) and the [local mail server](http://localhost:54324/monitor).
 
