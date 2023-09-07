@@ -65,7 +65,7 @@
 
 				loading = true;
 				const { error } = await data.supabase.from('profiles').upsert({
-					id: session?.user.id,
+					id: session.user.id,
 					full_name: fullName ? fullName : null,
 					username: username ? username : null,
 					website: website ? website : null,

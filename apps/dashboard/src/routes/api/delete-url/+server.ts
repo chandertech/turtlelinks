@@ -20,13 +20,9 @@ export const DELETE: RequestHandler = async ({ request, locals: { supabase, getS
 };
 
 export async function _DeleteDomain(supabase: SupabaseClient, url: string) {
-	const { data: urlData, error: urlError } = await supabase
-		.from('urls')
-		.select('url')
-		.eq('url', url)
-		.single();
+	const { error: urlError } = await supabase.from('urls').delete().eq('url', url);
 
-	if (urlError || !urlData) {
+	if (urlError) {
 		throw error(401);
 	}
 
