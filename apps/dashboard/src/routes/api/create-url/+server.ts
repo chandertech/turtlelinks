@@ -17,11 +17,6 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 		throw error(401);
 	}
 
-	// Remove once we have custom domain support.
-	if (typeof url !== 'string' || !/^(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.turt\.link$/.test(url)) {
-		throw error(400);
-	}
-
 	const newURL: URLInfo = {
 		url: url,
 		organization_id: orgId,

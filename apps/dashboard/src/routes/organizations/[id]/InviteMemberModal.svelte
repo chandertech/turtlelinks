@@ -9,6 +9,7 @@
 	let loading = false;
 	let input = '';
 	$: showWarning = input.length > 0 && !isEmailValid;
+	// This same regex is applied to the 'invitee_email' field in 'organization_invites' on supabase.
 	$: isEmailValid = /(.+)@(.+){2,}[.](.+){2,}/.test(input);
 
 	function onFormSubmit(_event: Event): void {

@@ -13,6 +13,7 @@
 	let domainInput = '';
 	let domain = '.turt.link';
 
+	// This same regex is applied to the 'url' field in 'urls' on supabase.
 	// 1. Domain cannot start with hyphen
 	// 2. 1 to 63 characters in length
 	// 3. Doesn't end with a hyphen
