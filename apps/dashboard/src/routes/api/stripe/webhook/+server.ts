@@ -2,6 +2,8 @@ import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { STRIPE_WEBHOOK_SECRET } from '$env/static/private';
 import { stripeAdminClient } from '$lib/stripe/stripe-admin-client';
+import { upsertCustomerRecord } from '$lib/stripe/stripe-billing-helpers';
+import type Stripe from 'stripe';
 
 function toBuffer(ab: ArrayBuffer): Buffer {
 	const buf = Buffer.alloc(ab.byteLength);
@@ -55,6 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				case 'customer.subscription.created':
 				case 'customer.subscription.updated':
 				case 'customer.subscription.deleted':
+					upsertCustomerRecord(stripeEvent.data.object as Stripe.Customer);
 					break;
 			}
 		} catch (err) {
