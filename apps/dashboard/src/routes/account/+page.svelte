@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { faRightFromBracket, faUserCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
+	import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import { goto } from '$app/navigation';
