@@ -22,7 +22,7 @@
 			const { email } = res;
 
 			res.isRequesting(true);
-			const inviteResponse = await fetch('/api/invite-member', {
+			const inviteResponse = await fetch('/api/org/invite', {
 				method: 'POST',
 				body: JSON.stringify({ id: data.organization.id, email: email })
 			});
@@ -70,7 +70,7 @@
 			if (!res) return;
 
 			res.isRequesting(true);
-			const deleteRes = await fetch('/api/delete-org', {
+			const deleteRes = await fetch('/api/org/delete', {
 				method: 'POST',
 				body: JSON.stringify({ orgId: data.organization.id })
 			});

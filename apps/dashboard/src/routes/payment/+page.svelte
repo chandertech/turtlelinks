@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	async function subscribe() {
-		const res = await fetch('/api/stripe-checkout', {
+		const res = await fetch('/api/stripe/checkout', {
 			method: 'POST'
 		});
 		const { url } = await res.json();
