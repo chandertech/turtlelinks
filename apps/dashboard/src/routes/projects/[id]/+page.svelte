@@ -68,7 +68,7 @@
 			const { subdomain, domain, orgId } = res;
 
 			res.isRequesting(true);
-			const domainRes = await fetch('/api/add-domain', {
+			const domainRes = await fetch('/api/create-domain', {
 				method: 'POST',
 				body: JSON.stringify({ subdomain: subdomain, domain: domain, orgId: orgId })
 			});
