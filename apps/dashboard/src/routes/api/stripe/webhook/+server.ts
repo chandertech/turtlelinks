@@ -12,6 +12,20 @@ function toBuffer(ab: ArrayBuffer): Buffer {
 	return buf;
 }
 
+const relevantEvents = new Set([
+	'product.created',
+	'product.updated',
+	'price.created',
+	'price.updated',
+	'checkout.session.completed',
+	'customer.subscription.created',
+	'customer.subscription.updated',
+	'customer.subscription.deleted',
+	'customer.created',
+	'customer.updated',
+	'customer.deleted'
+]);
+
 export const POST: RequestHandler = async ({ request }) => {
 	let stripeEvent;
 
@@ -34,6 +48,19 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	if (!stripeEvent) throw error(500);
+
+	if (relevantEvents.has(stripeEvent.type)) {
+		try {
+			switch (stripeEvent.type) {
+				case 'customer.subscription.created':
+				case 'customer.subscription.updated':
+				case 'customer.subscription.deleted':
+					break;
+			}
+		} catch (err) {
+			throw error(500);
+		}
+	}
 
 	return json({ success: true });
 };
