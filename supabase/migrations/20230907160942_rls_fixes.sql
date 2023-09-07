@@ -109,6 +109,14 @@ using ((id IN ( SELECT uo.profile_id
           WHERE (users_organizations.profile_id = auth.uid()))))));
 
 
+create policy "User can read their own profile."
+on "public"."profiles"
+as permissive
+for select
+to authenticated
+using ((auth.uid() = id));
+
+
 create policy "Users can delete URLs in their organizations."
 on "public"."urls"
 as permissive
@@ -206,7 +214,8 @@ on "public"."profiles"
 as permissive
 for update
 to authenticated
-using ((auth.uid() = id));
+using ((auth.uid() = id))
+with check ((auth.uid() = id));
 
 
 
