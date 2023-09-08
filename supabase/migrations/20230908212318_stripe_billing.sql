@@ -134,6 +134,14 @@ AS $function$
 $function$
 ;
 
+create policy "User can view their own billing data."
+on "public"."billing_customers"
+as permissive
+for select
+to authenticated
+using ((profile_id = auth.uid()));
+
+
 create policy "Allow public read-only access."
 on "public"."billing_prices"
 as permissive
@@ -148,6 +156,14 @@ as permissive
 for select
 to public
 using (true);
+
+
+create policy "User can view their own  subscriptions."
+on "public"."billing_subscriptions"
+as permissive
+for select
+to authenticated
+using ((profile_id = auth.uid()));
 
 
 
