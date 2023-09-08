@@ -2,7 +2,12 @@ import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { STRIPE_WEBHOOK_SECRET } from '$env/static/private';
 import { stripeAdminClient } from '$lib/stripe/stripe-admin-client';
-import { upsertCustomerRecord } from '$lib/stripe/stripe-billing-helpers';
+import {
+	manageSubscriptionStatusChange,
+	upsertCustomerRecord,
+	upsertPriceRecord,
+	upsertProductRecord
+} from '$lib/stripe/stripe-billing-helpers';
 import type Stripe from 'stripe';
 
 function toBuffer(ab: ArrayBuffer): Buffer {
@@ -56,9 +61,38 @@ export const POST: RequestHandler = async ({ request }) => {
 			switch (stripeEvent.type) {
 				case 'customer.created':
 				case 'customer.updated':
-				case 'customer.deleted':
+				case 'customer.deleted': {
 					await upsertCustomerRecord(stripeEvent.data.object as Stripe.Customer);
 					break;
+				}
+				case 'product.created':
+				case 'product.updated': {
+					await upsertProductRecord(stripeEvent.data.object as Stripe.Product);
+					break;
+				}
+				case 'price.created':
+				case 'price.updated': {
+					await upsertPriceRecord(stripeEvent.data.object as Stripe.Price);
+					break;
+				}
+				case 'customer.subscription.created':
+				case 'customer.subscription.updated':
+				case 'customer.subscription.deleted': {
+					const subscription = stripeEvent.data.object as Stripe.Subscription;
+					await manageSubscriptionStatusChange(subscription.id, subscription.customer as string);
+					break;
+				}
+				case 'checkout.session.completed': {
+					const checkoutSession = stripeEvent.data.object as Stripe.Checkout.Session;
+					if (checkoutSession.mode === 'subscription') {
+						const subscriptionId = checkoutSession.subscription;
+						await manageSubscriptionStatusChange(
+							subscriptionId as string,
+							checkoutSession.customer as string
+						);
+					}
+					break;
+				}
 			}
 		} catch (err) {
 			throw error(500);
