@@ -2,6 +2,7 @@ import type Stripe from 'stripe';
 import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import { stripeAdminClient } from './stripe-admin-client';
 import fromUnixTime from 'date-fns/fromUnixTime';
+import type { BillingSubscriptionStatus } from '$lib/supabase/supabase-types';
 
 enum BILLING_PROVIDERS {
 	stripe = 'stripe'
@@ -140,14 +141,14 @@ export const manageSubscriptionStatusChange = async (
 /**
  * Takes a stripe subscription object and upserts it into our database
  * @param subscription Stripe.Subscription
- * @param accountId string
+ * @param profileId string
  */
-const upsertSubscriptionRecord = async (subscription: Stripe.Subscription, accountId: string) => {
+const upsertSubscriptionRecord = async (subscription: Stripe.Subscription, profileId: string) => {
 	const subscriptionData = {
 		id: subscription.id,
-		account_id: accountId,
+		profile_id: profileId,
 		metadata: subscription.metadata,
-		status: subscription.status,
+		status: subscription.status as BillingSubscriptionStatus,
 		price_id: subscription.items.data[0].price.id,
 		quantity: subscription.items.data[0].quantity,
 		cancel_at_period_end: subscription.cancel_at_period_end,
@@ -170,5 +171,5 @@ const upsertSubscriptionRecord = async (subscription: Stripe.Subscription, accou
 		.from('billing_subscriptions')
 		.upsert(subscriptionData);
 	if (error) throw error;
-	console.log(`Inserted/updated subscription [${subscription.id}] for account [${accountId}]`);
+	console.log(`Inserted/updated subscription [${subscription.id}] for account [${profileId}]`);
 };
