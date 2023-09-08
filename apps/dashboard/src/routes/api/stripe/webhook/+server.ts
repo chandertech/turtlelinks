@@ -54,9 +54,9 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (relevantEvents.has(stripeEvent.type)) {
 		try {
 			switch (stripeEvent.type) {
-				case 'customer.subscription.created':
-				case 'customer.subscription.updated':
-				case 'customer.subscription.deleted':
+				case 'customer.created':
+				case 'customer.updated':
+				case 'customer.deleted':
 					await upsertCustomerRecord(stripeEvent.data.object as Stripe.Customer);
 					break;
 			}

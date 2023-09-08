@@ -3,7 +3,7 @@ create type "public"."billing_providers" as enum ('stripe');
 alter table "public"."dynamic_links" drop constraint "dynamic_links_url_fkey";
 
 create table "public"."billing_customers" (
-    "id" uuid not null,
+    "profile_id" uuid not null,
     "customer_id" text,
     "email" text,
     "active" boolean,
@@ -13,13 +13,13 @@ create table "public"."billing_customers" (
 
 alter table "public"."billing_customers" enable row level security;
 
-CREATE UNIQUE INDEX billing_customers_pkey ON public.billing_customers USING btree (id);
+CREATE UNIQUE INDEX billing_customers_pkey ON public.billing_customers USING btree (profile_id);
 
 alter table "public"."billing_customers" add constraint "billing_customers_pkey" PRIMARY KEY using index "billing_customers_pkey";
 
-alter table "public"."billing_customers" add constraint "billing_customers_id_fkey" FOREIGN KEY (id) REFERENCES profiles(id) ON DELETE CASCADE not valid;
+alter table "public"."billing_customers" add constraint "billing_customers_profile_id_fkey" FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE not valid;
 
-alter table "public"."billing_customers" validate constraint "billing_customers_id_fkey";
+alter table "public"."billing_customers" validate constraint "billing_customers_profile_id_fkey";
 
 alter table "public"."dynamic_links" add constraint "dynamic_links_suffix_check" CHECK ((suffix ~* '^[-\w]+$'::text)) not valid;
 
