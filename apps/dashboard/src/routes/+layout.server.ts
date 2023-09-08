@@ -3,6 +3,7 @@ import { building } from '$app/environment';
 import { stripeAdminClient } from '$lib/stripe/stripe-admin-client';
 import { upsertPriceRecord, upsertProductRecord } from '$lib/stripe/stripe-billing-helpers';
 
+// TODO: Maybe we should move this somewhere else?
 if (!building) {
 	stripeAdminClient.products
 		.list()
