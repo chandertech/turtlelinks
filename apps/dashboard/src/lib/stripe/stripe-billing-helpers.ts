@@ -101,7 +101,7 @@ export const createOrRetrieveCustomer = async ({
  */
 export const upsertCustomerRecord = async (customer: Stripe.Customer, profileId?: string) => {
 	const customerData = {
-		profile_id: profileId || customer.metadata.account_id,
+		profile_id: profileId || customer.metadata.profile_id,
 		customer_id: customer.id,
 		email: customer.email,
 		provider: BILLING_PROVIDERS.stripe
