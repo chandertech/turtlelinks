@@ -1,19 +1,33 @@
-import { json } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { stripeAdminClient } from '$lib/stripe/stripe-admin-client';
+import { createOrRetrieveCustomer } from '$lib/stripe/stripe-billing-helpers';
 
-export const POST: RequestHandler = async ({ url }) => {
-	const session = await stripeAdminClient.checkout.sessions.create({
-		mode: 'subscription',
-		success_url: `${url.origin}/payment`,
-		cancel_url: `${url.origin}/fail`,
-		line_items: [
-			{
-				quantity: 1,
-				price: 'price_1NlFXaDYh43AXwRboHsILqAp'
-			}
-		]
+export const POST: RequestHandler = async ({ url, request, locals: { getSession } }) => {
+	const { priceId } = await request.json();
+	const session = await getSession();
+
+	if (!session || !session.user.email) {
+		throw error(401);
+	}
+
+	const customerId = await createOrRetrieveCustomer({
+		profileId: session.user.id,
+		email: session.user.email
 	});
 
-	return json({ url: session.url });
+	if (!customerId) {
+		throw error(500);
+	}
+
+	const stripeSession = await stripeAdminClient.checkout.sessions.create({
+		payment_method_types: ['card'],
+		customer: customerId,
+		line_items: [{ price: priceId, quantity: 1 }],
+		mode: 'subscription',
+		success_url: `${url.origin}/payment`,
+		cancel_url: `${url.origin}/fail`
+	});
+
+	return json({ url: stripeSession.url });
 };

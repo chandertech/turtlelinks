@@ -2,7 +2,8 @@
 	import { goto } from '$app/navigation';
 	async function subscribe() {
 		const res = await fetch('/api/stripe/checkout', {
-			method: 'POST'
+			method: 'POST',
+			body: JSON.stringify({ priceId: 'price_1NoABbDYh43AXwRbyDKtRDA1' })
 		});
 		const { url } = await res.json();
 		goto(url);
