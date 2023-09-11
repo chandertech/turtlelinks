@@ -1,7 +1,7 @@
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ params, parent }) => {
-	const { session, supabase } = await parent();
+export const load: PageLoad = async ({ parent }) => {
+	const { supabase } = await parent();
 
 	const { data: subscriptionPlans } = await supabase.from('billing_prices').select(
 		`
@@ -17,6 +17,7 @@ export const load: PageLoad = async ({ params, parent }) => {
 	const { data: activeSubscription } = await supabase
 		.from('billing_subscriptions')
 		.select('*')
+		.eq('status', true)
 		.single();
 
 	return { activeSubscription: activeSubscription, subscriptionPlans: subscriptionPlans ?? [] };

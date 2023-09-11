@@ -3,6 +3,17 @@
 
 	export let data;
 
+	function activeSubscriptionDetails() {
+		if (!data.activeSubscription) return '';
+
+		var product = data.subscriptionPlans.find(
+			(plan) => plan.id == data.activeSubscription?.price_id
+		);
+
+		if (!product || !product.billing_products) return '';
+		return product.billing_products.name;
+	}
+
 	async function subscribe(priceId: string) {
 		const res = await fetch('/api/stripe/subscribe', {
 			method: 'POST',
@@ -43,7 +54,7 @@
 				if (data.activeSubscription) manage(data.activeSubscription.id);
 			}}
 		>
-			<span>Modify active subscription - {data.activeSubscription.id}</span>
+			<span>Modify active subscription - {activeSubscriptionDetails()}</span>
 		</button>
 	{/if}
 </div>
