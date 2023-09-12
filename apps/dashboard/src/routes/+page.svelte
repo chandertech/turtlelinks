@@ -22,6 +22,7 @@
 	export let data;
 	let organizations: OrgInfo[] = [];
 	let urls: URLInfo[] = [];
+	let subscriptions: any[] = [];
 	let loading = false;
 
 	onMount(async () => {
@@ -44,10 +45,18 @@
 				(userOrgs ?? []).map((org) => org.organization_id)
 			);
 
+		const { data: subs } = await data.supabase.from('billing_subscriptions').select(
+			`
+				organization_id,
+				billing_prices(billing_products(name))
+			`
+		);
+
 		const { data: urlData } = await data.supabase.from('urls').select('*');
 
 		organizations = orgs ?? [];
 		urls = urlData ?? [];
+		subscriptions = subs ?? [];
 
 		loading = false;
 	}
@@ -110,6 +119,13 @@
 			fetchData();
 		}
 	};
+
+	function getPlanName(orgId: number) {
+		return (
+			subscriptions.find((sub) => sub.organization_id == orgId)?.billing_prices?.billing_products
+				.name ?? 'Free'
+		);
+	}
 </script>
 
 <div class="sm:container sm:mx-auto justify-center p-8">
@@ -150,7 +166,12 @@
 		{:else if organizations.length > 0}
 			{#each organizations as organization}
 				<div class="flex place-items-center justify-between">
-					<h2 class="h3 capitalize">{organization.name}'s Org</h2>
+					<div class="flex gap-2">
+						<h1 class="h2 capitalize">{organization.name}'s org</h1>
+						<span class="badge variant-filled-secondary self-center rounded-full"
+							>{getPlanName(organization.id)}</span
+						>
+					</div>
 					<a href="/organizations/{organization.id}"
 						><button type="button" class="btn-icon btn-icon-sm variant-filled-surface">
 							<Fa icon={faGear} />
