@@ -26,7 +26,12 @@ export const POST: RequestHandler = async ({ url, request, locals: { getSession 
 		line_items: [{ price: priceId, quantity: 1 }],
 		mode: 'subscription',
 		success_url: `${url.origin}/payment`,
-		cancel_url: `${url.origin}/fail`
+		cancel_url: `${url.origin}/fail`,
+		subscription_data: {
+			metadata: {
+				organizationId: 1
+			}
+		}
 	});
 
 	return json({ url: stripeSession.url });

@@ -5,11 +5,11 @@ import { upsertPriceRecord, upsertProductRecord } from '$lib/stripe/stripe-billi
 
 // TODO: Might need to move this somewhere else before merge...
 if (!building) {
-	stripeAdminClient.products
+	stripeAdminClient.prices
 		.list()
-		.then(async (products) => {
-			const promises = products.data.map(async (product) => {
-				await upsertProductRecord(product);
+		.then(async (prices) => {
+			const promises = prices.data.map(async (price) => {
+				await upsertPriceRecord(price);
 			});
 			await Promise.all(promises);
 		})
@@ -17,11 +17,11 @@ if (!building) {
 			console.log(e);
 		});
 
-	stripeAdminClient.prices
+	stripeAdminClient.products
 		.list()
-		.then(async (prices) => {
-			const promises = prices.data.map(async (price) => {
-				await upsertPriceRecord(price);
+		.then(async (products) => {
+			const promises = products.data.map(async (product) => {
+				await upsertProductRecord(product);
 			});
 			await Promise.all(promises);
 		})
