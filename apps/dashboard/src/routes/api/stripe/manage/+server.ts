@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { stripeAdminClient } from '$lib/stripe/stripe-admin-client';
 import { createOrRetrieveCustomer } from '$lib/stripe/stripe-billing-helpers';
 
-export const POST: RequestHandler = async ({ url, request, locals: { getSession } }) => {
+export const POST: RequestHandler = async ({ request, locals: { getSession } }) => {
 	const { subscriptionId } = await request.json();
 	const session = await getSession();
 
