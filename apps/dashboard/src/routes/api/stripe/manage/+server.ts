@@ -3,8 +3,8 @@ import type { RequestHandler } from './$types';
 import { stripeAdminClient } from '$lib/stripe/stripe-admin-client';
 import { createOrRetrieveCustomer } from '$lib/stripe/stripe-billing-helpers';
 
-export const POST: RequestHandler = async ({ request, locals: { getSession } }) => {
-	const { subscriptionId } = await request.json();
+export const POST: RequestHandler = async ({ url, request, locals: { getSession } }) => {
+	const { organizationId, subscriptionId } = await request.json();
 	const session = await getSession();
 
 	if (!session || !session.user.email) {
@@ -27,7 +27,8 @@ export const POST: RequestHandler = async ({ request, locals: { getSession } }) 
 			subscription_update: {
 				subscription: subscriptionId
 			}
-		}
+		},
+		return_url: `${url.origin}/organizations/${organizationId}`
 	});
 
 	return json({ url: stripeSession.url });

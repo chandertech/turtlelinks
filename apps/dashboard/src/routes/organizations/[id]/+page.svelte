@@ -98,10 +98,10 @@
 		goto(url);
 	}
 
-	async function manage(subscriptionId: string) {
+	async function manage(organizationId: number, subscriptionId: string) {
 		const res = await fetch('/api/stripe/manage', {
 			method: 'POST',
-			body: JSON.stringify({ subscriptionId: subscriptionId })
+			body: JSON.stringify({ organizationId: organizationId, subscriptionId: subscriptionId })
 		});
 		const { url } = await res.json();
 		goto(url);
@@ -141,7 +141,7 @@
 		</div>
 	</div>
 
-	<div class="py-12">
+	<div class="py-4">
 		<div class="card container content-center p-8">
 			<h2 class="text-2xl">User</h2>
 			<hr class="my-4" />
@@ -181,28 +181,31 @@
 		</div>
 	</div>
 
-	<!-- WIP -->
-	{#if !data.activeSubscription}
-		{#each data.subscriptionPlans as subscription}
-			<button
-				type="button"
-				class="btn variant-ghost-primary"
-				on:click={() => {
-					subscribe(data.organization.id, subscription.id);
-				}}
-			>
-				<span>{subscription.billing_products?.name}</span>
-			</button>
-		{/each}
-	{:else}
-		<button
-			type="button"
-			class="btn variant-ghost-primary"
-			on:click={() => {
-				if (data.activeSubscription) manage(data.activeSubscription.id);
-			}}
-		>
-			<span>Modify active subscription</span>
-		</button>
-	{/if}
+	<div class="py-4">
+		<h1 class="h2 capitalize">Billing</h1>
+		<div class="flex py-4 gap-4">
+			{#each data.subscriptionPlans as plan}
+				{#if plan.billing_products}
+					<div class="card container flex flex-col content-center p-8 gap-4">
+						<div>
+							<p class="text-xl font-medium uppercase text-green-400">
+								{plan.billing_products.name}
+							</p>
+							<p class="text-gray-400">{plan.billing_products.description}</p>
+						</div>
+						<button
+							type="button"
+							class="btn variant-ghost-secondary"
+							disabled={activePlan == plan.billing_products.name}
+							on:click={() => {
+								subscribe(data.organization.id, plan.id);
+							}}
+						>
+							<span>Upgrade to {plan.billing_products.name}</span>
+						</button>
+					</div>
+				{/if}
+			{/each}
+		</div>
+	</div>
 </div>

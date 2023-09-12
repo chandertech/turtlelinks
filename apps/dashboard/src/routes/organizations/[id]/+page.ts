@@ -49,7 +49,8 @@ export const load: PageLoad = async ({ params, parent }) => {
 			id,
 			billing_products!inner (
 				id,
-				name
+				name,
+				description
 			)
 		`
 	);
