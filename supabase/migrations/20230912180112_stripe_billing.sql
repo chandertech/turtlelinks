@@ -148,12 +148,14 @@ to public
 using (true);
 
 
-create policy "User can view their own  subscriptions."
+create policy "Users can view subscriptions if they are a member of the org."
 on "public"."billing_subscriptions"
 as permissive
 for select
 to authenticated
-using ((profile_id = auth.uid()));
+using ((organization_id IN ( SELECT uo.organization_id
+   FROM users_organizations uo
+  WHERE (uo.profile_id = auth.uid()))));
 
 
 
