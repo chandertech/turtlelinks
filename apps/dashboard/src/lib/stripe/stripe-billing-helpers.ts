@@ -147,7 +147,7 @@ const upsertSubscriptionRecord = async (subscription: Stripe.Subscription, profi
 	const subscriptionData = {
 		id: subscription.id,
 		profile_id: profileId,
-		organization_id: subscription.metadata.organizationId,
+		organization_id: Number(subscription.metadata.organizationId),
 		status: subscription.status as BillingSubscriptionStatus,
 		price_id: subscription.items.data[0].price.id,
 		quantity: subscription.items.data[0].quantity,
