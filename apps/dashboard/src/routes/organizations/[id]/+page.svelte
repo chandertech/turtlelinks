@@ -12,6 +12,9 @@
 
 	export let data;
 	let members = data.members ?? [];
+	$: activePlan =
+		data.subscriptionPlans.find((plan) => plan.id == data.activeSubscription?.price_id)
+			?.billing_products?.name ?? 'Free';
 
 	const inviteMemberModal: ModalSettings = {
 		type: 'component',
@@ -107,7 +110,10 @@
 
 <div class="sm:container sm:mx-auto justify-center p-8">
 	<div class="flex justify-between">
-		<h1 class="h2 capitalize">{data.organization.name}'s org</h1>
+		<div class="flex gap-2">
+			<h1 class="h2 capitalize">{data.organization.name}'s org</h1>
+			<span class="badge variant-filled-secondary self-center rounded-full">{activePlan}</span>
+		</div>
 		<div class="flex gap-2">
 			<button
 				type="button"
