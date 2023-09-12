@@ -68,7 +68,7 @@
 			const { subdomain, domain, orgId } = res;
 
 			res.isRequesting(true);
-			const domainRes = await fetch('/api/add-domain', {
+			const domainRes = await fetch('/api/create-url', {
 				method: 'POST',
 				body: JSON.stringify({ subdomain: subdomain, domain: domain, orgId: orgId })
 			});
@@ -101,25 +101,16 @@
 			if (!res) return;
 
 			res.isRequesting(true);
-			const domainRes = await fetch('/api/delete-domain', {
+			const domainRes = await fetch('/api/delete-url', {
 				method: 'DELETE',
 				body: JSON.stringify({ url: selectedURL })
 			});
+			res.isRequesting(false);
 
 			if (!domainRes.ok) {
 				DisplayErrorToast();
-				res.isRequesting(false);
 				return;
 			}
-
-			const { error: urlError } = await data.supabase.from('urls').delete().eq('url', selectedURL);
-			if (urlError) {
-				DisplayErrorToast();
-				res.isRequesting(false);
-				return;
-			}
-
-			res.isRequesting(false);
 
 			modalStore.close();
 			urls = urls.filter((url) => url.url != selectedURL);

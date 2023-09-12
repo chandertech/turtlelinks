@@ -2,6 +2,8 @@ import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
+// We use the admin client here since all of our RLS policies depend on being inside an org.
+// Since nobody is apart of this freshly created org, we need to manually add them.
 export const POST: RequestHandler = async ({ request, locals: { getSession } }) => {
 	const { name } = await request.json();
 	const session = await getSession();

@@ -1,7 +1,7 @@
 import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { _DeleteDomain } from '../delete-domain/+server';
+import { _DeleteDomain } from '../delete-url/+server';
 
 export const POST: RequestHandler = async ({ request, locals: { supabase, getSession } }) => {
 	const { orgId } = await request.json();

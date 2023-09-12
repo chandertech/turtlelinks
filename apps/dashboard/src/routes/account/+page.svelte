@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { faRightFromBracket, faUserCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
+	import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	import { goto } from '$app/navigation';
@@ -65,7 +65,7 @@
 
 				loading = true;
 				const { error } = await data.supabase.from('profiles').upsert({
-					id: session?.user.id,
+					id: session.user.id,
 					full_name: fullName ? fullName : null,
 					username: username ? username : null,
 					website: website ? website : null,

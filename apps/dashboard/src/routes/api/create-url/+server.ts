@@ -22,24 +22,6 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 		throw error(400);
 	}
 
-	// Check if the user has permission to insert into this org.
-	const { data: orgData, error: orgError } = await supabase
-		.from('users_organizations')
-		.select('organization_id')
-		.eq('profile_id', session.user.id)
-		.eq('organization_id', orgId)
-		.single();
-
-	if (!orgData || orgError) {
-		throw error(403);
-	}
-
-	const res = process.env.NODE_ENV === 'development' ? await MockAPI(url) : await VercelAPI(url);
-
-	if (!res.ok) {
-		throw error(400);
-	}
-
 	const newURL: URLInfo = {
 		url: url,
 		organization_id: orgId,
@@ -49,6 +31,11 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 
 	const { error: urlError } = await supabase.from('urls').insert(newURL);
 	if (urlError) {
+		throw error(400);
+	}
+
+	const res = process.env.NODE_ENV === 'development' ? await MockAPI(url) : await VercelAPI(url);
+	if (!res.ok) {
 		throw error(400);
 	}
 
