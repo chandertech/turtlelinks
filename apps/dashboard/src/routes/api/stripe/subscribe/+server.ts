@@ -4,7 +4,7 @@ import { stripeAdminClient } from '$lib/stripe/stripe-admin-client';
 import { createOrRetrieveCustomer } from '$lib/stripe/stripe-billing-helpers';
 
 export const POST: RequestHandler = async ({ url, request, locals: { getSession } }) => {
-	const { priceId } = await request.json();
+	const { organizationId, priceId } = await request.json();
 	const session = await getSession();
 
 	if (!session || !session.user.email) {
@@ -25,11 +25,11 @@ export const POST: RequestHandler = async ({ url, request, locals: { getSession 
 		customer: customerId,
 		line_items: [{ price: priceId, quantity: 1 }],
 		mode: 'subscription',
-		success_url: `${url.origin}/payment`,
-		cancel_url: `${url.origin}/fail`,
+		success_url: `${url.origin}/organizations/${organizationId}`,
+		cancel_url: `${url.origin}/organizations/${organizationId}`,
 		subscription_data: {
 			metadata: {
-				organizationId: 1
+				organizationId: organizationId
 			}
 		}
 	});

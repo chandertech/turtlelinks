@@ -86,10 +86,10 @@
 		}
 	};
 
-	async function subscribe(priceId: string) {
+	async function subscribe(organizationId: number, priceId: string) {
 		const res = await fetch('/api/stripe/subscribe', {
 			method: 'POST',
-			body: JSON.stringify({ priceId: priceId })
+			body: JSON.stringify({ organizationId: organizationId, priceId: priceId })
 		});
 		const { url } = await res.json();
 		goto(url);
@@ -182,7 +182,7 @@
 				type="button"
 				class="btn variant-ghost-primary"
 				on:click={() => {
-					subscribe(subscription.id);
+					subscribe(data.organization.id, subscription.id);
 				}}
 			>
 				<span>{subscription.billing_products?.name}</span>
