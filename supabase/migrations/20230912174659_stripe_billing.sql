@@ -54,7 +54,6 @@ create table "public"."billing_subscriptions" (
     "id" text not null,
     "profile_id" uuid not null,
     "status" subscription_status,
-    "metadata" jsonb,
     "price_id" text,
     "quantity" integer,
     "cancel_at_period_end" boolean,
@@ -66,7 +65,8 @@ create table "public"."billing_subscriptions" (
     "canceled_at" timestamp with time zone default timezone('utc'::text, now()),
     "trial_start" timestamp with time zone default timezone('utc'::text, now()),
     "trial_end" timestamp with time zone default timezone('utc'::text, now()),
-    "provider" billing_providers
+    "provider" billing_providers,
+    "organization_id" bigint not null
 );
 
 
@@ -100,6 +100,10 @@ alter table "public"."billing_prices" add constraint "billing_prices_currency_ch
 
 alter table "public"."billing_prices" validate constraint "billing_prices_currency_check";
 
+alter table "public"."billing_subscriptions" add constraint "billing_subscriptions_organization_id_fkey" FOREIGN KEY (organization_id) REFERENCES organizations(id) not valid;
+
+alter table "public"."billing_subscriptions" validate constraint "billing_subscriptions_organization_id_fkey";
+
 alter table "public"."billing_subscriptions" add constraint "billing_subscriptions_price_id_fkey" FOREIGN KEY (price_id) REFERENCES billing_prices(id) not valid;
 
 alter table "public"."billing_subscriptions" validate constraint "billing_subscriptions_price_id_fkey";
@@ -119,20 +123,6 @@ alter table "public"."organization_invites" validate constraint "organization_in
 alter table "public"."urls" add constraint "urls_url_check" CHECK ((url ~* '^(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.turt\.link$'::text)) not valid;
 
 alter table "public"."urls" validate constraint "urls_url_check";
-
-set check_function_bodies = off;
-
-CREATE OR REPLACE FUNCTION public.get_orgs_for_authenticated_user()
- RETURNS SETOF bigint
- LANGUAGE sql
- STABLE SECURITY DEFINER
- SET search_path TO 'public'
-AS $function$
-  select organization_id
-  from users_organizations
-  where profile_id = auth.uid()
-$function$
-;
 
 create policy "User can view their own billing data."
 on "public"."billing_customers"

@@ -151,7 +151,7 @@ export interface Database {
 					current_period_start: string;
 					ended_at: string | null;
 					id: string;
-					metadata: Json | null;
+					organization_id: number;
 					price_id: string | null;
 					profile_id: string;
 					provider: Database['public']['Enums']['billing_providers'] | null;
@@ -169,7 +169,7 @@ export interface Database {
 					current_period_start?: string;
 					ended_at?: string | null;
 					id: string;
-					metadata?: Json | null;
+					organization_id: number;
 					price_id?: string | null;
 					profile_id: string;
 					provider?: Database['public']['Enums']['billing_providers'] | null;
@@ -187,7 +187,7 @@ export interface Database {
 					current_period_start?: string;
 					ended_at?: string | null;
 					id?: string;
-					metadata?: Json | null;
+					organization_id?: number;
 					price_id?: string | null;
 					profile_id?: string;
 					provider?: Database['public']['Enums']['billing_providers'] | null;
@@ -197,6 +197,12 @@ export interface Database {
 					trial_start?: string | null;
 				};
 				Relationships: [
+					{
+						foreignKeyName: 'billing_subscriptions_organization_id_fkey';
+						columns: ['organization_id'];
+						referencedRelation: 'organizations';
+						referencedColumns: ['id'];
+					},
 					{
 						foreignKeyName: 'billing_subscriptions_price_id_fkey';
 						columns: ['price_id'];
