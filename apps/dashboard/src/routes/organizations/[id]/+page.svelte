@@ -12,7 +12,7 @@
 
 	export let data;
 	let members = data.members ?? [];
-	$: activePlan =
+	$: activePlanName =
 		data.subscriptionPlans.find((plan) => plan.id == data.activeSubscription?.price_id)
 			?.billing_products?.name ?? 'Free';
 
@@ -98,6 +98,15 @@
 		goto(url);
 	}
 
+	async function unsubscribe(organizationId: number, subscriptionId: string) {
+		const res = await fetch('/api/stripe/unsubscribe', {
+			method: 'POST',
+			body: JSON.stringify({ organizationId: organizationId, subscriptionId: subscriptionId })
+		});
+		const { url } = await res.json();
+		goto(url);
+	}
+
 	async function manage(organizationId: number, subscriptionId: string) {
 		const res = await fetch('/api/stripe/manage', {
 			method: 'POST',
@@ -112,7 +121,7 @@
 	<div class="flex justify-between">
 		<div class="flex gap-2">
 			<h1 class="h2 capitalize">{data.organization.name}'s org</h1>
-			<span class="badge variant-filled-secondary self-center rounded-full">{activePlan}</span>
+			<span class="badge variant-filled-secondary self-center rounded-full">{activePlanName}</span>
 		</div>
 		<div class="flex gap-2">
 			<button
@@ -196,9 +205,10 @@
 						<button
 							type="button"
 							class="btn variant-ghost-secondary"
-							disabled={activePlan == plan.billing_products.name}
+							disabled={activePlanName == plan.billing_products.name}
 							on:click={() => {
-								subscribe(data.organization.id, plan.id);
+								if (!data.activeSubscription) subscribe(data.organization.id, plan.id);
+								else manage(data.organization.id, data.activeSubscription.id);
 							}}
 						>
 							<span>Upgrade to {plan.billing_products.name}</span>
@@ -206,6 +216,18 @@
 					</div>
 				{/if}
 			{/each}
+		</div>
+		<div class="flex justify-end">
+			{#if data.activeSubscription}
+				<button
+					type="button"
+					class="btn variant-ghost-error"
+					on:click={() => {
+						if (data.activeSubscription)
+							unsubscribe(data.organization.id, data.activeSubscription.id);
+					}}>Cancel subscription</button
+				>
+			{/if}
 		</div>
 	</div>
 </div>
