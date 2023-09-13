@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { modalStore } from '@skeletonlabs/skeleton';
+	import { ProgressBar, modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import InviteMemberModal from './InviteMemberModal.svelte';
 	import RemoveMemberModal from './RemoveMemberModal.svelte';
@@ -98,15 +98,6 @@
 		goto(url);
 	}
 
-	async function unsubscribe(organizationId: number, subscriptionId: string) {
-		const res = await fetch('/api/stripe/unsubscribe', {
-			method: 'POST',
-			body: JSON.stringify({ organizationId: organizationId, subscriptionId: subscriptionId })
-		});
-		const { url } = await res.json();
-		goto(url);
-	}
-
 	async function manage(organizationId: number, subscriptionId: string) {
 		const res = await fetch('/api/stripe/manage', {
 			method: 'POST',
@@ -190,12 +181,19 @@
 		</div>
 	</div>
 
-	<div class="py-4">
-		<h1 class="h2 capitalize">Billing</h1>
-		<div class="flex py-4 gap-4">
+	<h2 class="h2 capitalize mb-4">Billing</h2>
+	<div class="flex gap-2">
+		<div class="card container flex flex-col content-center p-8 gap-4 w-1/2">
+			<h3 class="h3 capitalize">Active Plan</h3>
+			<div class="py-4">
+				<p class="text-gray-400">This organization is currently on the plan:</p>
+				<p class="text-xl font-medium uppercase text-green-400">{activePlanName}</p>
+			</div>
+		</div>
+		{#if !data.activeSubscription}
 			{#each data.subscriptionPlans as plan}
 				{#if plan.billing_products}
-					<div class="card container flex flex-col content-center p-8 gap-4">
+					<div class="card container flex flex-col content-center p-8 gap-4 w-1/2">
 						<div>
 							<p class="text-xl font-medium uppercase text-green-400">
 								{plan.billing_products.name}
@@ -207,8 +205,7 @@
 							class="btn variant-ghost-secondary"
 							disabled={activePlanName == plan.billing_products.name}
 							on:click={() => {
-								if (!data.activeSubscription) subscribe(data.organization.id, plan.id);
-								else manage(data.organization.id, data.activeSubscription.id);
+								subscribe(data.organization.id, plan.id);
 							}}
 						>
 							<span>Upgrade to {plan.billing_products.name}</span>
@@ -216,18 +213,24 @@
 					</div>
 				{/if}
 			{/each}
-		</div>
-		<div class="flex justify-end">
-			{#if data.activeSubscription}
-				<button
-					type="button"
-					class="btn variant-ghost-error"
-					on:click={() => {
-						if (data.activeSubscription)
-							unsubscribe(data.organization.id, data.activeSubscription.id);
-					}}>Cancel subscription</button
-				>
-			{/if}
-		</div>
+		{:else}
+			<div class="card container flex flex-col content-center p-8 justify-center">
+				<div class="flex flex-col gap-2">
+					<p class="text-gray-400">Current billing cycle</p>
+					<ProgressBar label="Progress Bar" value={30} max={100} />
+				</div>
+				<div class="flex justify-end mt-4">
+					<button
+						type="button"
+						class="btn variant-ghost-secondary"
+						on:click={() => {
+							if (data.activeSubscription) manage(data.organization.id, data.activeSubscription.id);
+						}}
+					>
+						<span>Manage subscription</span>
+					</button>
+				</div>
+			</div>
+		{/if}
 	</div>
 </div>

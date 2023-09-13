@@ -22,12 +22,6 @@ export const POST: RequestHandler = async ({ url, request, locals: { getSession 
 
 	const stripeSession = await stripeAdminClient.billingPortal.sessions.create({
 		customer: customerId,
-		flow_data: {
-			type: 'subscription_update',
-			subscription_update: {
-				subscription: subscriptionId
-			}
-		},
 		return_url: `${url.origin}/organizations/${organizationId}`
 	});
 
