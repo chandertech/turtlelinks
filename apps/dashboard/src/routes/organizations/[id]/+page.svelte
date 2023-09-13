@@ -183,7 +183,7 @@
 
 	<h2 class="h2 capitalize mb-4">Billing</h2>
 	<div class="flex gap-2">
-		<div class="card container flex flex-col content-center p-8 gap-4 w-1/2">
+		<div class="card container flex flex-col content-center p-8 w-1/2">
 			<h3 class="h3 capitalize">Active Plan</h3>
 			<div class="py-4">
 				<p class="text-gray-400">This organization is currently on the plan:</p>
@@ -216,7 +216,16 @@
 		{:else}
 			<div class="card container flex flex-col content-center p-8 justify-center">
 				<div class="flex flex-col gap-2">
-					<p class="text-gray-400">Current billing cycle</p>
+					<div class="flex justify-between">
+						<div>
+							<p class="text-gray-200">
+								Current billing cycle - ({data.activeSubscription.current_period_start} - {data
+									.activeSubscription.current_period_end})
+							</p>
+							<p class="text-gray-400 uppercase">{data.activeSubscription.status}</p>
+						</div>
+						<p class="text-gray-400 self-center">20 days remaining</p>
+					</div>
 					<ProgressBar label="Progress Bar" value={30} max={100} />
 				</div>
 				<div class="flex justify-end mt-4">
