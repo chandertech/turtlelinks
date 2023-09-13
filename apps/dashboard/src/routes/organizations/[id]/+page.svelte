@@ -9,6 +9,7 @@
 	import DeleteOrgModal from './DeleteOrgModal.svelte';
 	import { goto } from '$app/navigation';
 	import { DisplayErrorToast, DisplaySuccessToast } from '$lib/Toast';
+	import moment from 'moment';
 
 	export let data;
 	let members = data.members ?? [];
@@ -105,6 +106,17 @@
 		});
 		const { url } = await res.json();
 		goto(url);
+	}
+
+	function formatDate(dateString: string) {
+		return moment(dateString).format('MMM Do');
+	}
+
+	function remainingDays() {
+		if (!data.activeSubscription) return -1;
+		var start = moment(data.activeSubscription.current_period_start);
+		var end = moment(data.activeSubscription.current_period_end);
+		return end.diff(start, 'days');
 	}
 </script>
 
@@ -219,14 +231,14 @@
 					<div class="flex justify-between">
 						<div>
 							<p class="text-gray-200">
-								Current billing cycle - ({data.activeSubscription.current_period_start} - {data
-									.activeSubscription.current_period_end})
+								Current billing cycle - ({formatDate(data.activeSubscription.current_period_start)} -
+								{formatDate(data.activeSubscription.current_period_end)})
 							</p>
 							<p class="text-gray-400 uppercase">{data.activeSubscription.status}</p>
 						</div>
-						<p class="text-gray-400 self-center">20 days remaining</p>
+						<p class="text-gray-400 self-center">{remainingDays()} days remaining</p>
 					</div>
-					<ProgressBar label="Progress Bar" value={30} max={100} />
+					<ProgressBar label="Progress Bar" value={remainingDays()} max={30} />
 				</div>
 				<div class="flex justify-end mt-4">
 					<button
@@ -236,7 +248,7 @@
 							if (data.activeSubscription) manage(data.organization.id, data.activeSubscription.id);
 						}}
 					>
-						<span>Manage subscription</span>
+						<span>Manage subscription plan</span>
 					</button>
 				</div>
 			</div>
