@@ -112,11 +112,18 @@
 		return moment(dateString).format('MMM Do');
 	}
 
-	function remainingDays() {
-		if (!data.activeSubscription) return -1;
+	function remainingSubscriptionDays() {
+		if (!data.activeSubscription) return 0;
 		var start = moment(data.activeSubscription.current_period_start);
 		var end = moment(data.activeSubscription.current_period_end);
-		return end.diff(start, 'days');
+		return Math.max(end.diff(start, 'days'), 0);
+	}
+
+	function subscriptionStatus() {
+		if (!data.activeSubscription) return '';
+		return data.activeSubscription.cancel_at_period_end
+			? `Subscription ending on ${formatDate(data.activeSubscription.current_period_end)}`
+			: 'Active';
 	}
 </script>
 
@@ -234,11 +241,11 @@
 								Current billing cycle - ({formatDate(data.activeSubscription.current_period_start)} -
 								{formatDate(data.activeSubscription.current_period_end)})
 							</p>
-							<p class="text-gray-400 uppercase">{data.activeSubscription.status}</p>
+							<p class="text-gray-400">{subscriptionStatus()}</p>
 						</div>
-						<p class="text-gray-400 self-center">{remainingDays()} days remaining</p>
+						<p class="text-gray-400 self-center">{remainingSubscriptionDays()} days remaining</p>
 					</div>
-					<ProgressBar label="Progress Bar" value={remainingDays()} max={30} />
+					<ProgressBar label="Progress Bar" value={remainingSubscriptionDays()} max={30} />
 				</div>
 				<div class="flex justify-end mt-4">
 					<button
