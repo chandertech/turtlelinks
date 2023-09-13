@@ -247,7 +247,16 @@
 					</div>
 					<ProgressBar label="Progress Bar" value={remainingSubscriptionDays()} max={30} />
 				</div>
-				<div class="flex justify-end mt-4">
+				<div class="flex justify-end mt-4 gap-2">
+					<button
+						type="button"
+						class="btn variant-ghost-primary"
+						on:click={() => {
+							if (data.activeSubscription) manage(data.organization.id, data.activeSubscription.id);
+						}}
+					>
+						<span>Upgrade plan</span>
+					</button>
 					<button
 						type="button"
 						class="btn variant-ghost-secondary"
