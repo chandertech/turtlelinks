@@ -10,9 +10,10 @@
 	let loading = false;
 
 	// Valid characters for a suffix
-	// a-z A-Z 0-9 . - _ ~ ! $ & ' ( ) * + , ; = : @ /
+	// Alphanumerics, hyphens, or underscores.
+	// This same regex is applied to the 'suffix' field in 'dynamic_links' on supabase.
 	let suffix = link?.suffix ?? '';
-	$: isSuffixValid = /^[a-zA-Z0-9.\-_!$&'()*+,;=:@/]*$/.test(suffix) && suffix.length > 0;
+	$: isSuffixValid = /^[-\w]+$/.test(suffix) && suffix.length > 0;
 	$: showSuffixWarning = !isSuffixValid && suffix.length != 0;
 
 	let deepLink = link?.deep_link ?? '';

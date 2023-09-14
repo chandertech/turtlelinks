@@ -13,8 +13,6 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 
 	if (!email) {
 		throw error(400);
-	} else if (!/(.+)@(.+){2,}\.(.+){2,}/.test(email)) {
-		throw error(400);
 	}
 
 	// Get organization_id from URL and validate
