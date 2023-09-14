@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 
 	// Remove once we have custom domain support.
 	if (typeof url !== 'string' || !/^(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.turt\.link$/.test(url)) {
-		throw error(400);
+		throw error(400, { message: 'Prefix URL provided is invalid.' });
 	}
 
 	const newURL: URLInfo = {
@@ -32,12 +32,12 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 
 	const { error: urlError } = await supabase.from('urls').insert(newURL);
 	if (urlError) {
-		throw error(400);
+		throw error(400, { message: 'Failed to insert Prefix URL.' });
 	}
 
 	const res = env.NODE_ENV === 'development' ? await MockAPI(url) : await VercelAPI(url);
 	if (!res.ok) {
-		throw error(400);
+		throw error(400, { message: 'Failed to post Prefix URL.' });
 	}
 
 	return json({ success: true });
