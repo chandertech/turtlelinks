@@ -148,7 +148,7 @@
 		{#if loading}
 			<Loading />
 		{:else if organizations.length > 0}
-			{#each organizations as organization}
+			{#each organizations as organization, i}
 				<div class="flex place-items-center justify-between">
 					<h2 class="h3 capitalize">{organization.name}'s Org</h2>
 					<a href="/organizations/{organization.id}"
@@ -185,7 +185,7 @@
 								on:click={() => {
 									modalStore.trigger({
 										...createURLModal,
-										meta: { organizations: organizations }
+										meta: { organizations: organizations, selectedOrgId: i + 1 }
 									});
 								}}
 							>
