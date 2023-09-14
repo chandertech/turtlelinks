@@ -5,7 +5,9 @@ import { env } from '$env/dynamic/private';
 
 export const load: LayoutServerLoad = async ({ url }) => {
 	const isDevelopment = env.NODE_ENV === 'development';
-	const link = isDevelopment ? url.searchParams.get('link') : url.toString();
+	const link = isDevelopment
+		? url.searchParams.get('link')
+		: url.toString().replace(/^https?:\/\//, '');
 
 	if (link) {
 		const { data: linkData, error: linkError } = await supabaseAdminClient
