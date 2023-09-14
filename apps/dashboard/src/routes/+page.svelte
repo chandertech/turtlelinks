@@ -185,7 +185,7 @@
 								on:click={() => {
 									modalStore.trigger({
 										...createURLModal,
-										meta: { organizations: organizations, selectedOrgId: i + 1 }
+										meta: { organizations: organizations, selectedOrgId: organization.id }
 									});
 								}}
 							>
