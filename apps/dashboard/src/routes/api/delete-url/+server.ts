@@ -7,6 +7,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { env } from '$env/dynamic/private';
 
 export const DELETE: RequestHandler = async ({ request, locals: { supabase, getSession } }) => {
 	const { url } = await request.json();
@@ -26,7 +27,7 @@ export async function _DeleteDomain(supabase: SupabaseClient, url: string) {
 		throw error(401);
 	}
 
-	return process.env.NODE_ENV === 'development' ? await MockAPI(url) : await VercelAPI(url);
+	return env.NODE_ENV === 'development' ? await MockAPI(url) : await VercelAPI(url);
 }
 
 const VercelAPI = async (url: string) => {
