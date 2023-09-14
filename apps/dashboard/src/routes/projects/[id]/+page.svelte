@@ -37,12 +37,10 @@
 
 	onMount(async () => {
 		loading = true;
-
 		const { data: urlData, error: urlError } = await data.supabase
 			.from('urls')
 			.select('*')
 			.eq('organization_id', data.org.id);
-
 		loading = false;
 
 		if (urlError) {
@@ -166,10 +164,12 @@
 	};
 
 	async function selectURL(url: string) {
+		loading = true;
 		const { data: linkData, error: linkError } = await data.supabase
 			.from('dynamic_links')
 			.select('*')
 			.eq('url', url);
+		loading = false;
 
 		if (linkError) {
 			DisplayErrorToast();
