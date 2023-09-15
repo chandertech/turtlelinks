@@ -21,13 +21,27 @@ export const DELETE: RequestHandler = async ({ request, locals: { supabase, getS
 };
 
 export async function _DeleteDomain(supabase: SupabaseClient, url: string) {
-	const { error: urlError } = await supabase.from('urls').delete().eq('url', url);
+	const { data: deletedURL, error: urlError } = await supabase
+		.from('urls')
+		.delete()
+		.eq('url', url)
+		.select('*')
+		.single();
 
 	if (urlError) {
 		throw error(401);
 	}
 
-	return env.NODE_ENV === 'development' ? await MockAPI(url) : await VercelAPI(url);
+	const res = env.NODE_ENV === 'development' ? await MockAPI(url) : await VercelAPI(url);
+	if (!res.ok) {
+		// If we fail to post to the Vercel domain, let's revert the supabase call
+		// so both of them remain in sync.
+		await supabaseAdminClient.from('urls').insert(deletedURL);
+
+		throw error(500);
+	}
+
+	return json({ success: true });
 }
 
 const VercelAPI = async (url: string) => {

@@ -8,6 +8,7 @@ import type { RequestHandler } from './$types';
 import { supabaseAdminClient } from '$lib/supabase/supabase-admin-client';
 import type { URLInfo } from '$lib/supabase/supabase-types';
 import { env } from '$env/dynamic/private';
+import { _DeleteDomain } from '../delete-url/+server';
 
 export const POST: RequestHandler = async ({ request, locals: { supabase, getSession } }) => {
 	const { subdomain, domain, orgId } = await request.json();
@@ -37,6 +38,10 @@ export const POST: RequestHandler = async ({ request, locals: { supabase, getSes
 
 	const res = env.NODE_ENV === 'development' ? await MockAPI(url) : await VercelAPI(url);
 	if (!res.ok) {
+		// If we fail to post to the Vercel domain, let's revert the supabase call
+		// so both of them remain in sync.
+		await supabaseAdminClient.from('urls').delete().eq('url', url);
+
 		throw error(400, { message: 'Failed to post Prefix URL.' });
 	}
 
