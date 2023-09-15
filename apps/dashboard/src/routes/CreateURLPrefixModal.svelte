@@ -8,7 +8,7 @@
 	import InputWarning from '$lib/InputWarning.svelte';
 
 	let organizations = $modalStore[0].meta.organizations as OrgInfo[];
-	let selectedOrgId = organizations[0].id;
+	let selectedOrgId = $modalStore[0].meta.selectedOrgId ?? organizations[0].id;
 	let loading = false;
 	let domainInput = '';
 	let domain = '.turt.link';
