@@ -66,7 +66,7 @@
 			const { subdomain, domain, orgId } = res;
 
 			res.isRequesting(true);
-			const domainRes = await fetch('/api/create-url', {
+			const domainRes = await fetch('/api/url/create', {
 				method: 'POST',
 				body: JSON.stringify({ subdomain: subdomain, domain: domain, orgId: orgId })
 			});
@@ -99,7 +99,7 @@
 			if (!res) return;
 
 			res.isRequesting(true);
-			const domainRes = await fetch('/api/delete-url', {
+			const domainRes = await fetch('/api/url/delete', {
 				method: 'DELETE',
 				body: JSON.stringify({ url: selectedURL })
 			});

@@ -7,7 +7,7 @@ export const load: PageLoad = async ({ params, parent }) => {
 		throw redirect(303, '/');
 	}
 
-	const { data: organization, error: orgsError } = await supabase
+	const { data: organization } = await supabase
 		.from('organizations')
 		.select('id, name')
 		.eq('id', params.id)
@@ -18,7 +18,7 @@ export const load: PageLoad = async ({ params, parent }) => {
 		throw redirect(303, '/');
 	}
 
-	const { data, error: membersError } = await supabase
+	const { data } = await supabase
 		.from('profiles')
 		.select(
 			`
@@ -44,10 +44,27 @@ export const load: PageLoad = async ({ params, parent }) => {
 		email: member.email
 	}));
 
+	const { data: subscriptionPlans } = await supabase.from('billing_prices').select(
+		`
+			id,
+			billing_products!inner (
+				id,
+				name,
+				description
+			)
+		`
+	);
+
+	const { data: activeSubscription } = await supabase
+		.from('billing_subscriptions')
+		.select('*')
+		.match({ organization_id: params.id, status: 'active' })
+		.single();
+
 	return {
 		organization: organization,
 		members: members ?? [],
-		orgsError,
-		membersError
+		subscriptionPlans: subscriptionPlans ?? [],
+		activeSubscription: activeSubscription
 	};
 };

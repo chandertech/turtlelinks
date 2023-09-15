@@ -28,6 +28,195 @@ export interface Database {
 	};
 	public: {
 		Tables: {
+			billing_customers: {
+				Row: {
+					active: boolean | null;
+					customer_id: string | null;
+					email: string | null;
+					profile_id: string;
+					provider: Database['public']['Enums']['billing_providers'] | null;
+				};
+				Insert: {
+					active?: boolean | null;
+					customer_id?: string | null;
+					email?: string | null;
+					profile_id: string;
+					provider?: Database['public']['Enums']['billing_providers'] | null;
+				};
+				Update: {
+					active?: boolean | null;
+					customer_id?: string | null;
+					email?: string | null;
+					profile_id?: string;
+					provider?: Database['public']['Enums']['billing_providers'] | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'billing_customers_profile_id_fkey';
+						columns: ['profile_id'];
+						referencedRelation: 'profiles';
+						referencedColumns: ['id'];
+					}
+				];
+			};
+			billing_prices: {
+				Row: {
+					active: boolean | null;
+					billing_product_id: string | null;
+					currency: string | null;
+					description: string | null;
+					id: string;
+					interval: Database['public']['Enums']['pricing_plan_interval'] | null;
+					interval_count: number | null;
+					metadata: Json | null;
+					provider: Database['public']['Enums']['billing_providers'] | null;
+					trial_period_days: number | null;
+					type: Database['public']['Enums']['pricing_type'] | null;
+					unit_amount: number | null;
+				};
+				Insert: {
+					active?: boolean | null;
+					billing_product_id?: string | null;
+					currency?: string | null;
+					description?: string | null;
+					id: string;
+					interval?: Database['public']['Enums']['pricing_plan_interval'] | null;
+					interval_count?: number | null;
+					metadata?: Json | null;
+					provider?: Database['public']['Enums']['billing_providers'] | null;
+					trial_period_days?: number | null;
+					type?: Database['public']['Enums']['pricing_type'] | null;
+					unit_amount?: number | null;
+				};
+				Update: {
+					active?: boolean | null;
+					billing_product_id?: string | null;
+					currency?: string | null;
+					description?: string | null;
+					id?: string;
+					interval?: Database['public']['Enums']['pricing_plan_interval'] | null;
+					interval_count?: number | null;
+					metadata?: Json | null;
+					provider?: Database['public']['Enums']['billing_providers'] | null;
+					trial_period_days?: number | null;
+					type?: Database['public']['Enums']['pricing_type'] | null;
+					unit_amount?: number | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'billing_prices_billing_product_id_fkey';
+						columns: ['billing_product_id'];
+						referencedRelation: 'billing_products';
+						referencedColumns: ['id'];
+					}
+				];
+			};
+			billing_products: {
+				Row: {
+					active: boolean | null;
+					description: string | null;
+					id: string;
+					image: string | null;
+					metadata: Json | null;
+					name: string | null;
+					provider: Database['public']['Enums']['billing_providers'] | null;
+				};
+				Insert: {
+					active?: boolean | null;
+					description?: string | null;
+					id: string;
+					image?: string | null;
+					metadata?: Json | null;
+					name?: string | null;
+					provider?: Database['public']['Enums']['billing_providers'] | null;
+				};
+				Update: {
+					active?: boolean | null;
+					description?: string | null;
+					id?: string;
+					image?: string | null;
+					metadata?: Json | null;
+					name?: string | null;
+					provider?: Database['public']['Enums']['billing_providers'] | null;
+				};
+				Relationships: [];
+			};
+			billing_subscriptions: {
+				Row: {
+					cancel_at: string | null;
+					cancel_at_period_end: boolean | null;
+					canceled_at: string | null;
+					created: string;
+					current_period_end: string;
+					current_period_start: string;
+					ended_at: string | null;
+					id: string;
+					organization_id: number;
+					price_id: string | null;
+					profile_id: string;
+					provider: Database['public']['Enums']['billing_providers'] | null;
+					quantity: number | null;
+					status: Database['public']['Enums']['subscription_status'] | null;
+					trial_end: string | null;
+					trial_start: string | null;
+				};
+				Insert: {
+					cancel_at?: string | null;
+					cancel_at_period_end?: boolean | null;
+					canceled_at?: string | null;
+					created?: string;
+					current_period_end?: string;
+					current_period_start?: string;
+					ended_at?: string | null;
+					id: string;
+					organization_id: number;
+					price_id?: string | null;
+					profile_id: string;
+					provider?: Database['public']['Enums']['billing_providers'] | null;
+					quantity?: number | null;
+					status?: Database['public']['Enums']['subscription_status'] | null;
+					trial_end?: string | null;
+					trial_start?: string | null;
+				};
+				Update: {
+					cancel_at?: string | null;
+					cancel_at_period_end?: boolean | null;
+					canceled_at?: string | null;
+					created?: string;
+					current_period_end?: string;
+					current_period_start?: string;
+					ended_at?: string | null;
+					id?: string;
+					organization_id?: number;
+					price_id?: string | null;
+					profile_id?: string;
+					provider?: Database['public']['Enums']['billing_providers'] | null;
+					quantity?: number | null;
+					status?: Database['public']['Enums']['subscription_status'] | null;
+					trial_end?: string | null;
+					trial_start?: string | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'billing_subscriptions_organization_id_fkey';
+						columns: ['organization_id'];
+						referencedRelation: 'organizations';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'billing_subscriptions_price_id_fkey';
+						columns: ['price_id'];
+						referencedRelation: 'billing_prices';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'billing_subscriptions_profile_id_fkey';
+						columns: ['profile_id'];
+						referencedRelation: 'profiles';
+						referencedColumns: ['id'];
+					}
+				];
+			};
 			dynamic_links: {
 				Row: {
 					deep_link: string;
@@ -50,14 +239,7 @@ export interface Database {
 					suffix?: string;
 					url?: string;
 				};
-				Relationships: [
-					{
-						foreignKeyName: 'dynamic_links_url_fkey';
-						columns: ['url'];
-						referencedRelation: 'urls';
-						referencedColumns: ['url'];
-					}
-				];
+				Relationships: [];
 			};
 			fake_dns_provider: {
 				Row: {
@@ -233,10 +415,23 @@ export interface Database {
 			[_ in never]: never;
 		};
 		Functions: {
-			[_ in never]: never;
+			get_orgs_for_authenticated_user: {
+				Args: Record<PropertyKey, never>;
+				Returns: number[];
+			};
 		};
 		Enums: {
-			[_ in never]: never;
+			billing_providers: 'stripe';
+			pricing_plan_interval: 'day' | 'week' | 'month' | 'year';
+			pricing_type: 'one_time' | 'recurring';
+			subscription_status:
+				| 'trialing'
+				| 'active'
+				| 'canceled'
+				| 'incomplete'
+				| 'incomplete_expired'
+				| 'past_due'
+				| 'unpaid';
 		};
 		CompositeTypes: {
 			[_ in never]: never;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { modalStore } from '@skeletonlabs/skeleton';
+	import { ProgressBar, modalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings } from '@skeletonlabs/skeleton';
 	import InviteMemberModal from './InviteMemberModal.svelte';
 	import RemoveMemberModal from './RemoveMemberModal.svelte';
@@ -9,9 +9,13 @@
 	import DeleteOrgModal from './DeleteOrgModal.svelte';
 	import { goto } from '$app/navigation';
 	import { DisplayErrorToast, DisplaySuccessToast } from '$lib/Toast';
+	import moment from 'moment';
 
 	export let data;
 	let members = data.members ?? [];
+	$: activePlanName =
+		data.subscriptionPlans.find((plan) => plan.id == data.activeSubscription?.price_id)
+			?.billing_products?.name ?? 'Free';
 
 	const inviteMemberModal: ModalSettings = {
 		type: 'component',
@@ -22,7 +26,7 @@
 			const { email } = res;
 
 			res.isRequesting(true);
-			const inviteResponse = await fetch('/api/invite-member', {
+			const inviteResponse = await fetch('/api/org/invite', {
 				method: 'POST',
 				body: JSON.stringify({ id: data.organization.id, email: email })
 			});
@@ -70,7 +74,7 @@
 			if (!res) return;
 
 			res.isRequesting(true);
-			const deleteRes = await fetch('/api/delete-org', {
+			const deleteRes = await fetch('/api/org/delete', {
 				method: 'POST',
 				body: JSON.stringify({ orgId: data.organization.id })
 			});
@@ -85,11 +89,50 @@
 			goto('/');
 		}
 	};
+
+	async function subscribe(organizationId: number, priceId: string) {
+		const res = await fetch('/api/stripe/subscribe', {
+			method: 'POST',
+			body: JSON.stringify({ organizationId: organizationId, priceId: priceId })
+		});
+		const { url } = await res.json();
+		goto(url);
+	}
+
+	async function manage(organizationId: number, subscriptionId: string) {
+		const res = await fetch('/api/stripe/manage', {
+			method: 'POST',
+			body: JSON.stringify({ organizationId: organizationId, subscriptionId: subscriptionId })
+		});
+		const { url } = await res.json();
+		goto(url);
+	}
+
+	function formatDate(dateString: string) {
+		return moment(dateString).format('MMM Do');
+	}
+
+	function remainingSubscriptionDays() {
+		if (!data.activeSubscription) return 0;
+		var start = moment(data.activeSubscription.current_period_start);
+		var end = moment(data.activeSubscription.current_period_end);
+		return Math.max(end.diff(start, 'days'), 0);
+	}
+
+	function subscriptionStatus() {
+		if (!data.activeSubscription) return '';
+		return data.activeSubscription.cancel_at_period_end
+			? `Subscription ending on ${formatDate(data.activeSubscription.current_period_end)}`
+			: 'Active';
+	}
 </script>
 
 <div class="sm:container sm:mx-auto justify-center p-8">
 	<div class="flex justify-between">
-		<h1 class="h2 capitalize">{data.organization.name}'s org</h1>
+		<div class="flex gap-2">
+			<h1 class="h2 capitalize">{data.organization.name}'s org</h1>
+			<span class="badge variant-filled-secondary self-center rounded-full">{activePlanName}</span>
+		</div>
 		<div class="flex gap-2">
 			<button
 				type="button"
@@ -117,7 +160,7 @@
 		</div>
 	</div>
 
-	<div class="py-12">
+	<div class="py-4">
 		<div class="card container content-center p-8">
 			<h2 class="text-2xl">User</h2>
 			<hr class="my-4" />
@@ -155,5 +198,76 @@
 				<p>{members.length == 1 ? '1 User' : `${members.length} Users`}</p>
 			</div>
 		</div>
+	</div>
+
+	<h2 class="h2 capitalize mb-4">Billing</h2>
+	<div class="flex gap-2">
+		<div class="card container flex flex-col content-center p-8 w-1/2">
+			<h3 class="h3 capitalize">Active Plan</h3>
+			<div class="py-4">
+				<p class="text-gray-400">This organization is currently on the plan:</p>
+				<p class="text-xl font-medium uppercase text-green-400">{activePlanName}</p>
+			</div>
+		</div>
+		{#if !data.activeSubscription}
+			{#each data.subscriptionPlans as plan}
+				{#if plan.billing_products}
+					<div class="card container flex flex-col content-center p-8 gap-4 w-1/2">
+						<div>
+							<p class="text-xl font-medium uppercase text-green-400">
+								{plan.billing_products.name}
+							</p>
+							<p class="text-gray-400">{plan.billing_products.description}</p>
+						</div>
+						<button
+							type="button"
+							class="btn variant-ghost-secondary"
+							disabled={activePlanName == plan.billing_products.name}
+							on:click={() => {
+								subscribe(data.organization.id, plan.id);
+							}}
+						>
+							<span>Upgrade to {plan.billing_products.name}</span>
+						</button>
+					</div>
+				{/if}
+			{/each}
+		{:else}
+			<div class="card container flex flex-col content-center p-8 justify-center">
+				<div class="flex flex-col gap-2">
+					<div class="flex justify-between">
+						<div>
+							<p class="text-gray-200">
+								Current billing cycle - ({formatDate(data.activeSubscription.current_period_start)} -
+								{formatDate(data.activeSubscription.current_period_end)})
+							</p>
+							<p class="text-gray-400">{subscriptionStatus()}</p>
+						</div>
+						<p class="text-gray-400 self-center">{remainingSubscriptionDays()} days remaining</p>
+					</div>
+					<ProgressBar label="Progress Bar" value={remainingSubscriptionDays()} max={30} />
+				</div>
+				<div class="flex justify-end mt-4 gap-2">
+					<button
+						type="button"
+						class="btn variant-ghost-primary"
+						on:click={() => {
+							if (data.activeSubscription) manage(data.organization.id, data.activeSubscription.id);
+						}}
+					>
+						<span>Upgrade plan</span>
+					</button>
+					<button
+						type="button"
+						class="btn variant-ghost-secondary"
+						on:click={() => {
+							if (data.activeSubscription) manage(data.organization.id, data.activeSubscription.id);
+						}}
+					>
+						<span>Manage subscription plan</span>
+					</button>
+				</div>
+			</div>
+		{/if}
 	</div>
 </div>
